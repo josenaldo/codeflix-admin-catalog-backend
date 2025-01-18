@@ -1,0 +1,15 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: admin-catalog-backend
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:mysql://codeflix-catalog-backend-db:3306/codeflix
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
