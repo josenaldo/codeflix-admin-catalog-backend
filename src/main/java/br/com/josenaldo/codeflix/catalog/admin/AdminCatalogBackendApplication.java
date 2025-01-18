@@ -1,4 +1,4 @@
-package br.com.josenaldo.codeflix.admincatalogbackend;
+package br.com.josenaldo.codeflix.catalog.admin;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
