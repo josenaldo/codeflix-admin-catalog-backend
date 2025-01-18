@@ -48,7 +48,8 @@
 				"yzhang.markdown-all-in-one", 									// Markdown All in One
 				"shd101wyy.markdown-preview-enhanced", 					// Markdown Preview Enhanced
 				"DavidAnson.vscode-markdownlint", 							// Markdown Lint
-				"esbenp.prettier-vscode" 												// Prettier - Code formatter
+				"esbenp.prettier-vscode",												// Prettier - Code formatter
+				"eamodio.gitlens" 															// GitLens — Git supercharged	
 			]
 		}
 	}
