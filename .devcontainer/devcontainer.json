@@ -3,17 +3,22 @@
 {
 	"name": "Java",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
+	//"image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "devcontainer",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}", 
 
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
-			"installGradle": true,
-			"installMaven": true,
-			"version": "latest",
+			"version": "21",
 			"jdkDistro": "ms",
+			"installGradle": true,
 			"gradleVersion": "latest",
+			"installMaven": true,
 			"mavenVersion": "latest",
+			"installAnt": true,
 			"antVersion": "latest",
+			"installGroovy": true,
 			"groovyVersion": "latest"
 		},
 		"ghcr.io/schlich/devcontainer-features/powerlevel10k:1": {},
@@ -22,7 +27,7 @@
 			"omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
 			"username": "vscode"
 		}
-	}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -31,7 +36,22 @@
 	// "postCreateCommand": "java -version",
 
 	// Configure tool-specific properties.
-	// "customizations": {},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack", 										// Extension Pack for Java
+				"vmware.vscode-boot-dev-pack", 									// Spring Boot Extension Pack
+				"vscjava.vscode-lombok", 												// Lombok Annotations Support for VS Code 
+				"johnpapa.vscode-peacock", 											// Peacock
+				"oderwat.indent-rainbow", 											// Indent Rainbow
+				"RobertOstermann.inline-parameters-extended", 	// Inline Parameters
+				"yzhang.markdown-all-in-one", 									// Markdown All in One
+				"shd101wyy.markdown-preview-enhanced", 					// Markdown Preview Enhanced
+				"DavidAnson.vscode-markdownlint", 							// Markdown Lint
+				"esbenp.prettier-vscode" 												// Prettier - Code formatter
+			]
+		}
+	}
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
