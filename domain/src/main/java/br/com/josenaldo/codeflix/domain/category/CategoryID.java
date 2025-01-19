@@ -1,41 +1,36 @@
-package br.com.josenaldo.codeflix.domain;
+package br.com.josenaldo.codeflix.domain.category;
 
+import br.com.josenaldo.codeflix.domain.Identifier;
 import br.com.josenaldo.codeflix.domain.exceptions.InvalidIdException;
 import com.github.f4b6a3.ulid.Ulid;
 import com.github.f4b6a3.ulid.UlidCreator;
-import java.io.Serial;
-import java.io.Serializable;
+
 import java.util.Objects;
 
-public class UlidId extends Identifier implements Serializable {
-
-  @Serial
-  private static final long serialVersionUID = 1L;
+public class CategoryID extends Identifier {
 
   private final String value;
 
-  private UlidId() {
-    Ulid ulid = UlidCreator.getUlid();
-    this.value = ulid.toString();
+  private CategoryID(String value) {
+    Objects.requireNonNull(value, "value must not be null");
+    this.value = value;
   }
 
-  private UlidId(String value) {
+  public static CategoryID unique() {
+    Ulid ulid = UlidCreator.getUlid();
+    return new CategoryID(ulid.toString().toLowerCase());
+  }
+
+  public static CategoryID fromString(String value) {
     try {
-      Ulid ulid = Ulid.from(value);
-      this.value = ulid.toString();
+      Ulid ulid = Ulid.from(value.toLowerCase());
+      return new CategoryID(ulid.toString().toLowerCase());
     } catch (IllegalArgumentException e) {
       throw new InvalidIdException();
     }
   }
 
-  public static UlidId generate() {
-    return new UlidId();
-  }
-
-  public static UlidId from(String aValue) {
-    return new UlidId(aValue);
-  }
-
+  @Override
   public String getValue() {
     return value;
   }
@@ -52,8 +47,9 @@ public class UlidId extends Identifier implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UlidId ulidId = (UlidId) o;
-    return Objects.equals(value, ulidId.value);
+
+    CategoryID categoryID = (CategoryID) o;
+    return Objects.equals(value, categoryID.value);
   }
 
   @Override
