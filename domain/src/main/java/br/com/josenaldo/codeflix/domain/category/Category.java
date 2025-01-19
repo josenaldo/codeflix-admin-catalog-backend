@@ -1,11 +1,11 @@
 package br.com.josenaldo.codeflix.domain.category;
 
-import br.com.josenaldo.codeflix.domain.EntityId;
+import br.com.josenaldo.codeflix.domain.UlidId;
 import java.time.Instant;
 
 public class Category {
 
-  private EntityId id;
+  private UlidId id;
   private String name;
   private String description;
   private boolean active;
@@ -14,7 +14,7 @@ public class Category {
   private Instant deletedAt;
 
   private Category(
-      final EntityId id,
+      final UlidId id,
       final String name,
       final String description,
       final boolean active,
@@ -37,7 +37,7 @@ public class Category {
       final boolean active
   ) {
 
-    EntityId id = EntityId.generate();
+    UlidId id = UlidId.generate();
     var now = Instant.now();
 
     return new Category(
@@ -51,7 +51,7 @@ public class Category {
     );
   }
 
-  public EntityId getId() {
+  public UlidId getId() {
     return id;
   }
 

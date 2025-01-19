@@ -7,19 +7,19 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class EntityId implements Serializable {
+public class UlidId extends Identifier implements Serializable {
 
   @Serial
   private static final long serialVersionUID = 1L;
 
   private final String value;
 
-  private EntityId() {
+  private UlidId() {
     Ulid ulid = UlidCreator.getUlid();
     this.value = ulid.toString();
   }
 
-  private EntityId(String value) {
+  private UlidId(String value) {
     try {
       Ulid ulid = Ulid.from(value);
       this.value = ulid.toString();
@@ -28,12 +28,12 @@ public class EntityId implements Serializable {
     }
   }
 
-  public static EntityId generate() {
-    return new EntityId();
+  public static UlidId generate() {
+    return new UlidId();
   }
 
-  public static EntityId from(String aValue) {
-    return new EntityId(aValue);
+  public static UlidId from(String aValue) {
+    return new UlidId(aValue);
   }
 
   public String getValue() {
@@ -52,8 +52,8 @@ public class EntityId implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    EntityId entityId = (EntityId) o;
-    return Objects.equals(value, entityId.value);
+    UlidId ulidId = (UlidId) o;
+    return Objects.equals(value, ulidId.value);
   }
 
   @Override
