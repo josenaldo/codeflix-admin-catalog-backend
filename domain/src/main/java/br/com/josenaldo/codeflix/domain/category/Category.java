@@ -1,6 +1,7 @@
 package br.com.josenaldo.codeflix.domain.category;
 
 import br.com.josenaldo.codeflix.domain.AggregateRoot;
+import br.com.josenaldo.codeflix.domain.validation.ValidationHandler;
 import java.time.Instant;
 
 public class Category extends AggregateRoot<CategoryID> {
@@ -13,22 +14,22 @@ public class Category extends AggregateRoot<CategoryID> {
   private Instant deletedAt;
 
   private Category(
-      final CategoryID anId,
-      final String aName,
-      final String aDescription,
-      final boolean isActive,
-      final Instant aCreatedAt,
-      final Instant anUpdatedAt,
-      final Instant aDeletedAt
+      final CategoryID id,
+      final String name,
+      final String description,
+      final boolean active,
+      final Instant createdAt,
+      final Instant updatedAt,
+      final Instant deletedAt
   ) {
-    super(anId);
+    super(id);
 
-    this.name = aName;
-    this.description = aDescription;
-    this.active = isActive;
-    this.createdAt = aCreatedAt;
-    this.updatedAt = anUpdatedAt;
-    this.deletedAt = aDeletedAt;
+    this.name = name;
+    this.description = description;
+    this.active = active;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt;
   }
 
   public static Category newCategory(
@@ -49,6 +50,12 @@ public class Category extends AggregateRoot<CategoryID> {
         now,
         null
     );
+  }
+
+  @Override
+  public void validate(ValidationHandler validationHandler) {
+    // TODO: usar uma fábrica de validador
+    new CategoryValidator(this, validationHandler).validate();
   }
 
   public CategoryID getId() {
