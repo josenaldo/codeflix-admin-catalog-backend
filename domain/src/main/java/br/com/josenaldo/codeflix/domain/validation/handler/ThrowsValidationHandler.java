@@ -9,8 +9,7 @@ public class ThrowsValidationHandler implements ValidationHandler {
 
   @Override
   public ValidationHandler append(Error error) {
-    List<Error> errorList = List.of(error);
-    throw DomainException.with(errorList);
+    throw DomainException.with(error);
   }
 
   @Override
