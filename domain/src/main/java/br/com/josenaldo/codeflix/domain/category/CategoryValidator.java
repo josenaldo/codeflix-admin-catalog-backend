@@ -15,7 +15,11 @@ public class CategoryValidator extends Validator {
 
   @Override
   public void validate() {
-    if (category.getName() == null || category.getName().isEmpty()) {
+    if (category.getName() == null) {
+      this.validationHandler().append(new Error("'name' should not be null"));
+    }
+
+    if (category.getName() != null && category.getName().isEmpty()) {
       this.validationHandler().append(new Error("'name' should not be empty"));
     }
   }
