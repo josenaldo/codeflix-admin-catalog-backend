@@ -1,8 +1,9 @@
 package br.com.josenaldo.codeflix.domain.category;
 
+import java.time.Instant;
+
 import br.com.josenaldo.codeflix.domain.AggregateRoot;
 import br.com.josenaldo.codeflix.domain.validation.ValidationHandler;
-import java.time.Instant;
 
 public class Category extends AggregateRoot<CategoryID> {
 
@@ -20,8 +21,7 @@ public class Category extends AggregateRoot<CategoryID> {
       final boolean active,
       final Instant createdAt,
       final Instant updatedAt,
-      final Instant deletedAt
-  ) {
+      final Instant deletedAt) {
     super(id);
 
     this.name = name;
@@ -35,11 +35,10 @@ public class Category extends AggregateRoot<CategoryID> {
   public static Category newCategory(
       final String name,
       final String description,
-      final boolean active
-  ) {
-
-    var id = CategoryID.unique();
-    var now = Instant.now();
+      final boolean active) {
+    final var id = CategoryID.unique();
+    final var now = Instant.now();
+    final var deletedAt = active ? null : now;
 
     return new Category(
         id,
@@ -48,8 +47,7 @@ public class Category extends AggregateRoot<CategoryID> {
         active,
         now,
         now,
-        null
-    );
+        deletedAt);
   }
 
   @Override

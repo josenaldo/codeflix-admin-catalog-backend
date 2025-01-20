@@ -1,13 +1,16 @@
 package br.com.josenaldo.codeflix.domain.category;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.catchException;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import br.com.josenaldo.codeflix.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.domain.validation.Error;
 import br.com.josenaldo.codeflix.domain.validation.handler.ThrowsValidationHandler;
-import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class CategoryTest {
 
@@ -22,8 +25,7 @@ public class CategoryTest {
     final var actualCategory = Category.newCategory(
         expectedName,
         expectedDescription,
-        expectedIsActive
-    );
+        expectedIsActive);
 
     // Then
     assertThat(actualCategory).isNotNull();
@@ -62,7 +64,7 @@ public class CategoryTest {
   @Test
   public void givenAnInvalidEmptyName_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
     // Given
-    var category = Category.newCategory("", "A categoria mais assistida", true);
+    var category = Category.newCategory("    ", "A categoria mais assistida", true);
 
     // When
     final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
@@ -84,7 +86,7 @@ public class CategoryTest {
   @Test
   public void givenAnInvalidNameLengthLessThan3_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
     // Given
-    var category = Category.newCategory("Fi", "A categoria mais assistida", true);
+    var category = Category.newCategory("Fi    ", "A categoria mais assistida", true);
 
     // When
     final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
@@ -123,5 +125,36 @@ public class CategoryTest {
     final List<Error> errors = actualDomainException.getErrors();
     assertThat(errors).hasSize(1);
     assertThat(errors.getFirst().message()).isEqualTo(expectedMessage);
+  }
+
+  @Test
+  public void givenAValidEmptyDescription_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
+    // Given
+    var category = Category.newCategory("Filmes", "", true);
+
+    // When
+    final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
+
+    // Then
+    assertThat(actualException).isNull();
+  }
+
+  @Test
+  public void givenAValidFalseIsActive_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
+    // Given
+    var category = Category.newCategory("Filmes", "A categoria mais assistida", false);
+
+    // When - Then
+    assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
+
+    assertThat(category).isNotNull();
+    assertThat(category.getId()).isNotNull();
+    assertThat(category.getName()).isEqualTo("Filmes");
+    assertThat(category.getDescription()).isEqualTo("A categoria mais assistida");
+    assertThat(category.isActive()).isFalse();
+    assertThat(category.getCreatedAt()).isNotNull();
+    assertThat(category.getUpdatedAt()).isNotNull();
+    assertThat(category.getDeletedAt()).isNotNull();
+
   }
 }
