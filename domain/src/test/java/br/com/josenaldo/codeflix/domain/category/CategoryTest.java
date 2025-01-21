@@ -208,4 +208,97 @@ public class CategoryTest {
     assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
     assertThat(actualCategory.getDeletedAt()).isNull();
   }
+
+  @Test
+  public void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated() {
+    // Given
+    final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
+    final Instant createdAt = category.getCreatedAt();
+    final Instant updatedAt = category.getUpdatedAt();
+    final Instant deletedAt = category.getDeletedAt();
+
+    assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
+    assertThat(category.isActive()).isTrue();
+    assertThat(createdAt).isNotNull();
+    assertThat(updatedAt).isNotNull();
+    assertThat(deletedAt).isNull();
+
+    // When
+    final Category actualCategory = category.update("Séries", "A categoria menos assistida", true);
+
+    // Then
+    assertThat(actualCategory).isNotNull();
+    assertThat(actualCategory.getId()).isEqualTo(category.getId());
+    assertThat(actualCategory.getName()).isEqualTo("Séries");
+    assertThat(actualCategory.getDescription()).isEqualTo("A categoria menos assistida");
+
+    assertThat(actualCategory.isActive()).isTrue();
+    assertThat(actualCategory.getCreatedAt()).isEqualTo(createdAt);
+    assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+    assertThat(actualCategory.getDeletedAt()).isNull();
+  }
+
+  @Test
+  public void givenAValidCategory_whenCallUpdateWithInactive_thenReturnCategoryUpdatedAndDeactivates() {
+    // Given
+    final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
+    final Instant createdAt = category.getCreatedAt();
+    final Instant updatedAt = category.getUpdatedAt();
+    final Instant deletedAt = category.getDeletedAt();
+
+    assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
+    assertThat(category.isActive()).isTrue();
+    assertThat(createdAt).isNotNull();
+    assertThat(updatedAt).isNotNull();
+    assertThat(deletedAt).isNull();
+
+    // When
+    final Category actualCategory = category.update("Séries", "A categoria menos assistida", false);
+
+    // Then
+    assertThat(actualCategory).isNotNull();
+    assertThat(actualCategory.getId()).isEqualTo(category.getId());
+    assertThat(actualCategory.getName()).isEqualTo("Séries");
+    assertThat(actualCategory.getDescription()).isEqualTo("A categoria menos assistida");
+    assertThat(actualCategory.isActive()).isFalse();
+
+    assertThat(actualCategory.getCreatedAt()).isEqualTo(createdAt);
+    assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+    assertThat(actualCategory.getDeletedAt()).isNotNull();
+  }
+
+  @Test
+  public void givenAValidCategory_whenCallUpdateWithInvalidName_thenItShouldThrowDomainExceptionOnValidate() {
+    // Given
+    final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
+    final Instant updatedAt = category.getUpdatedAt();
+
+    assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
+    assertThat(category.isActive()).isTrue();
+
+    // When
+    final Category actualCategory = category.update(null, "A categoria menos assistida", true);
+
+    final var actualException = catchException(() -> actualCategory.validate(new ThrowsValidationHandler()));
+
+    // Then
+    String expectedMessage = "'name' should not be null";
+
+    assertThat(actualCategory.getName()).isNull();
+    assertThat(actualCategory.getDescription()).isEqualTo("A categoria menos assistida");
+    assertThat(actualCategory.isActive()).isTrue();
+    assertThat(actualCategory.getCreatedAt()).isNotNull();
+    assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+    assertThat(actualCategory.getDeletedAt()).isNull();
+
+    assertThat(actualException).isNotNull();
+    assertThat(actualException).isInstanceOf(DomainException.class);
+    assertThat(actualException).hasMessage(expectedMessage);
+    assertThat(actualException).hasNoCause();
+
+    final DomainException actualDomainException = (DomainException) actualException;
+    final List<Error> errors = actualDomainException.getErrors();
+    assertThat(errors).hasSize(1);
+    assertThat(errors.getFirst().message()).isEqualTo(expectedMessage);
+  }
 }
