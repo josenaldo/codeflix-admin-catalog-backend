@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.catchException;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -156,5 +157,55 @@ public class CategoryTest {
     assertThat(category.getUpdatedAt()).isNotNull();
     assertThat(category.getDeletedAt()).isNotNull();
 
+  }
+
+  @Test
+  public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactive() {
+    // Given
+    final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
+    final Instant updatedAt = category.getUpdatedAt();
+
+    assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
+    assertThat(category.isActive()).isTrue();
+    assertThat(category.getDeletedAt()).isNull();
+
+    // When
+    final Category actualCategory = category.deactivate();
+
+    // Then
+    assertThat(actualCategory).isNotNull();
+    assertThat(actualCategory.getId()).isEqualTo(category.getId());
+    assertThat(actualCategory.getName()).isEqualTo(category.getName());
+    assertThat(actualCategory.getDescription()).isEqualTo(category.getDescription());
+
+    assertThat(actualCategory.isActive()).isFalse();
+    assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
+    assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+    assertThat(actualCategory.getDeletedAt()).isNotNull();
+  }
+
+  @Test
+  public void givenAValidDeactivatedCategory_whenCallActivate_thenReturnCategoryActive() {
+    // Given
+    final var category = Category.newCategory("Filmes", "A categoria mais assistida", false);
+    final Instant updatedAt = category.getUpdatedAt();
+
+    assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
+    assertThat(category.isActive()).isFalse();
+    assertThat(category.getDeletedAt()).isNotNull();
+
+    // When
+    final Category actualCategory = category.activate();
+
+    // Then
+    assertThat(actualCategory).isNotNull();
+    assertThat(actualCategory.getId()).isEqualTo(category.getId());
+    assertThat(actualCategory.getName()).isEqualTo(category.getName());
+    assertThat(actualCategory.getDescription()).isEqualTo(category.getDescription());
+
+    assertThat(actualCategory.isActive()).isTrue();
+    assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
+    assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+    assertThat(actualCategory.getDeletedAt()).isNull();
   }
 }

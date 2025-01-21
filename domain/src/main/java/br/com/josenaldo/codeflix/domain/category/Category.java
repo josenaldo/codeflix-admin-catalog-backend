@@ -10,9 +10,6 @@ public class Category extends AggregateRoot<CategoryID> {
   private String name;
   private String description;
   private boolean active;
-  private Instant createdAt;
-  private Instant updatedAt;
-  private Instant deletedAt;
 
   private Category(
       final CategoryID id,
@@ -22,14 +19,11 @@ public class Category extends AggregateRoot<CategoryID> {
       final Instant createdAt,
       final Instant updatedAt,
       final Instant deletedAt) {
-    super(id);
+    super(id, createdAt, updatedAt, deletedAt);
 
     this.name = name;
     this.description = description;
     this.active = active;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.deletedAt = deletedAt;
   }
 
   public static Category newCategory(
@@ -52,7 +46,6 @@ public class Category extends AggregateRoot<CategoryID> {
 
   @Override
   public void validate(ValidationHandler validationHandler) {
-    // TODO: usar uma fábrica de validador
     new CategoryValidator(this, validationHandler).validate();
   }
 
@@ -72,15 +65,22 @@ public class Category extends AggregateRoot<CategoryID> {
     return active;
   }
 
-  public Instant getCreatedAt() {
-    return createdAt;
+  public Category deactivate() {
+    if (getDeletedAt() == null) {
+      this.deletedAt = Instant.now();
+    }
+
+    this.active = false;
+    this.touch();
+
+    return this;
   }
 
-  public Instant getUpdatedAt() {
-    return updatedAt;
-  }
+  public Category activate() {
+    this.deletedAt = null;
+    this.active = true;
+    this.touch();
 
-  public Instant getDeletedAt() {
-    return deletedAt;
+    return this;
   }
 }
