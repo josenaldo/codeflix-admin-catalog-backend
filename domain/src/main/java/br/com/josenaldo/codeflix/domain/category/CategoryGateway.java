@@ -1,5 +1,6 @@
 package br.com.josenaldo.codeflix.domain.category;
 
+import br.com.josenaldo.codeflix.domain.pagination.Pagination;
 import java.util.Optional;
 
 public interface CategoryGateway {
@@ -12,5 +13,5 @@ public interface CategoryGateway {
 
   Category update(Category category);
 
-  Pagination<Category> list(Search pagination);
+    Pagination<Category> list(CategorySearchQuery searchQuery);
 }
