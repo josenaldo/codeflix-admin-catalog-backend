@@ -1,8 +1,11 @@
 package br.com.josenaldo.codeflix.application.category.create;
 
+import static io.vavr.API.Try;
+
 import br.com.josenaldo.codeflix.domain.category.Category;
 import br.com.josenaldo.codeflix.domain.category.CategoryGateway;
-import br.com.josenaldo.codeflix.domain.validation.handler.ThrowsValidationHandler;
+import br.com.josenaldo.codeflix.domain.validation.handler.Notification;
+import io.vavr.control.Either;
 import java.util.Objects;
 
 public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
@@ -14,16 +17,22 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
     }
 
     @Override
-    public CreateCategoryOutput execute(final CreateCategoryCommand command) {
+    public Either<Notification, CreateCategoryOutput> execute(final CreateCategoryCommand command) {
         final var name = command.name();
         final var description = command.description();
         final var isActive = command.isActive();
 
+        final var notification = Notification.create();
+
         final var category = Category.newCategory(name, description, isActive);
+        category.validate(notification);
 
-        category.validate(new ThrowsValidationHandler());
-        this.categoryGateway.create(category);
+        return notification.hasErrors() ? Either.left(notification) : createCategory(category);
+    }
 
-        return CreateCategoryOutput.from(category);
+    private Either<Notification, CreateCategoryOutput> createCategory(Category category) {
+        return Try(() -> categoryGateway.create(category))
+            .toEither()
+            .bimap(Notification::create, CreateCategoryOutput::from);
     }
 }

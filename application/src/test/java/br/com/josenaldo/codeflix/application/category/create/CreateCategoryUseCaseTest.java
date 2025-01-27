@@ -1,7 +1,6 @@
 package br.com.josenaldo.codeflix.application.category.create;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -10,9 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import br.com.josenaldo.codeflix.domain.category.CategoryGateway;
-import br.com.josenaldo.codeflix.domain.exceptions.DomainException;
-import br.com.josenaldo.codeflix.domain.validation.Error;
-import java.util.List;
+import br.com.josenaldo.codeflix.domain.validation.handler.Notification;
+import io.vavr.control.Either;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,11 +44,14 @@ public class CreateCategoryUseCaseTest {
         when(categoryGateway.create(any())).thenAnswer(returnsFirstArg());
 
         // Act - When
-        var output = useCase.execute(command);
+        Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(output).isNotNull();
-        assertThat(output.id()).isNotNull();
+        assertThat(executeOutput.isRight()).isTrue();
+
+        CreateCategoryOutput createCategoryOutput = executeOutput.get();
+        assertThat(createCategoryOutput).isNotNull();
+        assertThat(createCategoryOutput.id()).isNotNull();
 
         verify(categoryGateway).create(
             argThat(category ->
@@ -63,40 +64,6 @@ public class CreateCategoryUseCaseTest {
                             && Objects.isNull(category.getDeletedAt())
             )
         );
-    }
-
-    // Tentar criar uma categoria com dados inválidos
-    @Test
-    public void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
-        // Arrange - Given
-        final String expectedName = null;
-        final var expectedDescription = "A categoria mais assistida";
-        final var expectedIsActive = true;
-
-        final var command = CreateCategoryCommand.with(
-            expectedName,
-            expectedDescription,
-            expectedIsActive
-        );
-
-        // Act
-        final var actualException = catchException(() -> useCase.execute(command));
-
-        // Then
-        String expectedMessage = "'name' should not be null";
-
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage(expectedMessage);
-        assertThat(actualException).hasNoCause();
-
-        final DomainException actualDomainException = (DomainException) actualException;
-        final List<Error> errors = actualDomainException.getErrors();
-
-        assertThat(errors).hasSize(1);
-        assertThat(errors.getFirst().message()).isEqualTo(expectedMessage);
-
-        verify(categoryGateway, times(0)).create(any());
     }
 
     // Tentar criar uma categoria inativa com dados válidos
@@ -116,11 +83,14 @@ public class CreateCategoryUseCaseTest {
         when(categoryGateway.create(any())).thenAnswer(returnsFirstArg());
 
         // Act - When
-        var output = useCase.execute(command);
+        Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(output).isNotNull();
-        assertThat(output.id()).isNotNull();
+        assertThat(executeOutput.isRight()).isTrue();
+
+        CreateCategoryOutput createCategoryOutput = executeOutput.get();
+        assertThat(createCategoryOutput).isNotNull();
+        assertThat(createCategoryOutput.id()).isNotNull();
 
         verify(categoryGateway).create(
             argThat(category ->
@@ -135,6 +105,37 @@ public class CreateCategoryUseCaseTest {
         );
     }
 
+    // Tentar criar uma categoria com dados inválidos
+    @Test
+    public void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
+        // Arrange - Given
+        final String expectedName = null;
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final String expectedMessage = "'name' should not be null";
+        final int expectedErrorCount = 1;
+
+        final var command = CreateCategoryCommand.with(
+            expectedName,
+            expectedDescription,
+            expectedIsActive
+        );
+
+        // Act
+        Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
+
+        // Then
+        assertThat(executeOutput.isLeft()).isTrue();
+        Notification notification = useCase.execute(command).getLeft();
+        assertThat(notification).isNotNull();
+        assertThat(notification.hasErrors()).isTrue();
+        assertThat(notification.getErrors()).hasSize(expectedErrorCount);
+        assertThat(notification.fisrtError().message()).isEqualTo(expectedMessage);
+
+        verify(categoryGateway, times(0)).create(any());
+    }
+
     // Tentar criar uma categoria e ocorrer um erro inesperado no gateway
     @Test
     public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldThrowDomainException() {
@@ -142,6 +143,9 @@ public class CreateCategoryUseCaseTest {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
+
+        final var expectedErrorCount = 1;
+        final var expectedMessage = "Gateway error";
 
         final var command = CreateCategoryCommand.with(
             expectedName,
@@ -152,14 +156,17 @@ public class CreateCategoryUseCaseTest {
         when(categoryGateway.create(any())).thenThrow(new IllegalStateException("Gateway error"));
 
         // Act - When
-        final var actualException = catchException(() -> useCase.execute(command));
+        Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).hasMessage("Gateway error");
-        assertThat(actualException).hasNoCause();
+        assertThat(executeOutput.isLeft()).isTrue();
+        Notification notification = executeOutput.getLeft();
+        assertThat(notification).isNotNull();
+        assertThat(notification.hasErrors()).isTrue();
+        assertThat(notification.getErrors()).hasSize(expectedErrorCount);
+        assertThat(notification.fisrtError().message()).isEqualTo(expectedMessage);
 
-        verify(categoryGateway, times(1)).create(
+        verify(categoryGateway).create(
             argThat(category ->
                         Objects.equals(expectedName, category.getName())
                             && Objects.equals(expectedDescription, category.getDescription())

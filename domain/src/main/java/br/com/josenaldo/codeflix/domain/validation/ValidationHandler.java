@@ -20,4 +20,8 @@ public interface ValidationHandler {
 
     void validate();
   }
+
+    default Error fisrtError() {
+        return getErrors().stream().findFirst().orElse(null);
+    }
 }
