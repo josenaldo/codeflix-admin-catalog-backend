@@ -1,11 +1,10 @@
 package br.com.josenaldo.codeflix.domain.category;
 
-import java.time.Instant;
-
 import br.com.josenaldo.codeflix.domain.AggregateRoot;
 import br.com.josenaldo.codeflix.domain.validation.ValidationHandler;
+import java.time.Instant;
 
-public class Category extends AggregateRoot<CategoryID> {
+public class Category extends AggregateRoot<CategoryID> implements Cloneable {
 
   private String name;
   private String description;
@@ -98,4 +97,17 @@ public class Category extends AggregateRoot<CategoryID> {
 
     return this;
   }
+
+    /**
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    @Override
+    public Category clone() {
+        try {
+            return (Category) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalStateException("The Category object could not be cloned.", e);
+        }
+    }
 }

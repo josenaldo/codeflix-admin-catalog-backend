@@ -13,7 +13,7 @@ public class DomainException extends NoStackTraceException {
   }
 
   public static DomainException with(final List<Error> errors) {
-    return new DomainException("", errors);
+      return new DomainException(errors.getFirst().message(), errors);
   }
 
   public static DomainException with(final Error error) {
@@ -23,4 +23,5 @@ public class DomainException extends NoStackTraceException {
   public List<Error> getErrors() {
     return errors;
   }
+
 }
