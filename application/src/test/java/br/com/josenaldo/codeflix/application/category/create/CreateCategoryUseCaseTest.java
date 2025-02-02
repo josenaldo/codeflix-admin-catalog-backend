@@ -18,6 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * Testes unitários para o caso de uso CreateCategoryUseCase
+ */
 @ExtendWith(MockitoExtension.class)
 public class CreateCategoryUseCaseTest {
 
@@ -27,7 +30,9 @@ public class CreateCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    // Tentar criar uma categoria ativa com dados válidos
+    /**
+     * Tentar criar uma categoria ativa com dados válidos
+     */
     @Test
     public void givenAValidCommand_whenCreateCategory_thenShouldReturnCategoryId() {
         // Arrange - Given
@@ -66,7 +71,9 @@ public class CreateCategoryUseCaseTest {
         );
     }
 
-    // Tentar criar uma categoria inativa com dados válidos
+    /**
+     * Tentar criar uma categoria inativa com dados válidos
+     */
     @Test
     public void givenAValidCommandWithInactiveCategory_whenCreateCategory_thenShouldReturnInactiveCategoryId() {
         // Arrange - Given
@@ -105,7 +112,9 @@ public class CreateCategoryUseCaseTest {
         );
     }
 
-    // Tentar criar uma categoria com dados inválidos
+    /**
+     * Tentar criar uma categoria com dados inválidos
+     */
     @Test
     public void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
         // Arrange - Given
@@ -136,7 +145,9 @@ public class CreateCategoryUseCaseTest {
         verify(categoryGateway, times(0)).create(any());
     }
 
-    // Tentar criar uma categoria e ocorrer um erro inesperado no gateway
+    /**
+     * Tentar criar uma categoria e ocorrer um erro inesperado no gateway
+     */
     @Test
     public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldThrowDomainException() {
         // Arrange - Given
