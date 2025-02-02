@@ -26,6 +26,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * Unit tests for the UpdateCategoryUseCase.
+ */
 @ExtendWith(MockitoExtension.class)
 public class UpdateCategoryUseCaseTest {
 
@@ -35,7 +38,11 @@ public class UpdateCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    // 1. Teste do caminho feliz
+    /**
+     * Tests the happy path for updating a category. It verifies that when a valid command is
+     * provided, the category is updated correctly and the updated category output contains a valid
+     * id.
+     */
     @Test
     public void givenAValidCommand_whenUpdateCategory_thenReturnCategory() {
         // Arrange - Given
@@ -75,10 +82,13 @@ public class UpdateCategoryUseCaseTest {
                     && aCategory.getUpdatedAt().isAfter(category.getUpdatedAt())
                     && Objects.isNull(aCategory.getDeletedAt())
         ));
-
     }
 
-    // 2. Teste passando uma propriedade inválida (nome)
+    /**
+     * Tests that updating a category with an invalid name (empty string) results in a
+     * DomainException containing the expected error message. Also verifies that the update method
+     * on the gateway is not invoked.
+     */
     @Test
     public void givenAInvalidName_whenCallsUpdateCategory_thenReturnDomainExpception() {
         // Arrange - Given
@@ -111,10 +121,13 @@ public class UpdateCategoryUseCaseTest {
         assertThat(notification.getErrors().size()).isEqualTo(expectedErrorCount);
 
         verify(categoryGateway, times(0)).update(any());
-
     }
 
-    // 3. Teste atualizando uma categoria para inativa
+    /**
+     * Tests that updating a category to inactive status updates the deletedAt field accordingly.
+     * Verifies that the category is updated correctly and that the updated category output contains
+     * a valid id.
+     */
     @Test
     public void givenAnInactiveCategory_whenUpdateCategory_thenReturnDomainException() {
         // Arrange - Given
@@ -157,11 +170,13 @@ public class UpdateCategoryUseCaseTest {
                     && aCategory.getUpdatedAt().isAfter(category.getUpdatedAt())
                     && Objects.nonNull(aCategory.getDeletedAt())
         ));
-
-
     }
 
-    // 4. Teste simulando erro ao atualizar a categoria
+    /**
+     * Tests that when the gateway throws an unexpected exception during update, the use case
+     * returns a notification with the gateway's error message. Also verifies that the gateway's
+     * update method is called with the correct parameters.
+     */
     @Test
     public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldReturnDomainException() {
         // Arrange - Given
@@ -195,7 +210,6 @@ public class UpdateCategoryUseCaseTest {
         assertThat(notification.fisrtError().message()).isEqualTo(expectedMessage);
 
         verify(categoryGateway, times(1)).findById(eq(expectedId));
-
         verify(categoryGateway, times(1)).update(argThat(
             aCategory ->
                 Objects.deepEquals(aCategory.getId(), expectedId)
@@ -209,7 +223,11 @@ public class UpdateCategoryUseCaseTest {
         ));
     }
 
-    // 5. Teste atualizar categoria passando ID inválido
+    /**
+     * Tests that when an invalid category id is provided for update, the use case throws a
+     * DomainException indicating that the category was not found. Also verifies that the gateway's
+     * update method is not invoked.
+     */
     @Test
     public void givenAnInvalidId_whenCallsUpdateCategory_thenReturnDomainException() {
         // Arrange - Given
@@ -236,7 +254,6 @@ public class UpdateCategoryUseCaseTest {
 
         // Assert - Then
         verify(categoryGateway, times(0)).update(any());
-
         assertThat(actualException).isNotNull();
         assertThat(actualException).isInstanceOf(DomainException.class);
 
@@ -249,6 +266,5 @@ public class UpdateCategoryUseCaseTest {
 
         Error firstError = errors.getFirst();
         assertThat(firstError.message()).isEqualTo(expectedMessage);
-
     }
 }

@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Testes unitários para o caso de uso CreateCategoryUseCase
+ * Unit tests for the CreateCategoryUseCase.
  */
 @ExtendWith(MockitoExtension.class)
 public class CreateCategoryUseCaseTest {
@@ -31,7 +31,9 @@ public class CreateCategoryUseCaseTest {
     private CategoryGateway categoryGateway;
 
     /**
-     * Tentar criar uma categoria ativa com dados válidos
+     * Tests that when a valid command is provided for creating an active category, the use case
+     * returns a valid category id. It also verifies that the category gateway is invoked with the
+     * correct parameters and that the category has no deletion date.
      */
     @Test
     public void givenAValidCommand_whenCreateCategory_thenShouldReturnCategoryId() {
@@ -72,7 +74,9 @@ public class CreateCategoryUseCaseTest {
     }
 
     /**
-     * Tentar criar uma categoria inativa com dados válidos
+     * Tests that when a valid command is provided for creating an inactive category, the use case
+     * returns a valid category id. It also verifies that the category gateway is invoked with the
+     * correct parameters and that the category has a non-null deletion date.
      */
     @Test
     public void givenAValidCommandWithInactiveCategory_whenCreateCategory_thenShouldReturnInactiveCategoryId() {
@@ -113,7 +117,9 @@ public class CreateCategoryUseCaseTest {
     }
 
     /**
-     * Tentar criar uma categoria com dados inválidos
+     * Tests that when an invalid command (with a null name) is provided, the use case returns a
+     * left with a notification containing the expected error message, and the category gateway is
+     * not invoked.
      */
     @Test
     public void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
@@ -146,7 +152,9 @@ public class CreateCategoryUseCaseTest {
     }
 
     /**
-     * Tentar criar uma categoria e ocorrer um erro inesperado no gateway
+     * Tests that when a valid command is provided but the gateway throws an unexpected exception,
+     * the use case returns a left with a notification containing the gateway's error message, and
+     * the category gateway is invoked with the correct parameters.
      */
     @Test
     public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldThrowDomainException() {
