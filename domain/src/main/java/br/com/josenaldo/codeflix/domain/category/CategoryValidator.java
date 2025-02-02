@@ -110,7 +110,6 @@ public class CategoryValidator extends Validator {
         int length = name.trim().length();
         if (length < NAME_MIN_LENGTH || length > NAME_MAX_LENGTH) {
             this.validationHandler().append(new Error(NAME_LENGTH_OUT_OF_RANGE_ERROR));
-            return;
         }
     }
 }

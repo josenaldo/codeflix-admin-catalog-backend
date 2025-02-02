@@ -59,9 +59,6 @@ class PaginationTest {
 
         assertThat(pagination.isEmpty()).isFalse();
         assertThat(pagination.isNotEmpty()).isTrue();
-
-        assertThat(pagination.isEmpty()).isFalse();
-        assertThat(pagination.isNotEmpty()).isTrue();
     }
 
     /**
@@ -104,8 +101,6 @@ class PaginationTest {
         assertThat(pagination.isEmpty()).isFalse();
         assertThat(pagination.isNotEmpty()).isTrue();
 
-        assertThat(pagination.isEmpty()).isFalse();
-        assertThat(pagination.isNotEmpty()).isTrue();
     }
 
     /**
@@ -154,9 +149,6 @@ class PaginationTest {
         assertThat(pagination.hasNextPage()).isTrue();
         assertThat(pagination.isFirstPage()).isFalse();
         assertThat(pagination.isLastPage()).isFalse();
-
-        assertThat(pagination.isEmpty()).isFalse();
-        assertThat(pagination.isNotEmpty()).isTrue();
 
         assertThat(pagination.isEmpty()).isFalse();
         assertThat(pagination.isNotEmpty()).isTrue();

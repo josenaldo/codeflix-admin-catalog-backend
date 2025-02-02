@@ -155,7 +155,7 @@ class NotificationTest {
         // Assert - Then
         assertThat(notification.hasErrors()).isTrue();
         // Verifies that the first error's message matches the exception message.
-        assertThat(notification.getErrors().get(0).message()).isEqualTo("Generic error");
+        assertThat(notification.getErrors().getFirst().message()).isEqualTo("Generic error");
     }
 
     /**
