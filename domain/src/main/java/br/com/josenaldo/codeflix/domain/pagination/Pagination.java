@@ -40,7 +40,7 @@ public record Pagination<T>(
      * @param total   The total count of items across all pages.
      * @param data    The list of items for the given page.
      */
-    public Pagination(int page, int perPage, long total, List<T> data) {
+    public Pagination {
 
         if (page < 1) {
             throw new IllegalArgumentException("Page number must be greater than 0.");
@@ -63,11 +63,6 @@ public record Pagination<T>(
         }
 
         Objects.requireNonNull(data, "Data cannot be null.");
-
-        this.page = page;
-        this.perPage = perPage;
-        this.total = total;
-        this.data = data;
     }
 
     /**

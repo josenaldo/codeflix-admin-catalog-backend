@@ -27,6 +27,7 @@ class CategoryIDTest {
 
         // Verify that the value is in lowercase.
         assertThat(categoryID.getValue()).isEqualTo(categoryID.getValue().toLowerCase());
+        assertThat(ulid).isNotNull();
     }
 
     /**
