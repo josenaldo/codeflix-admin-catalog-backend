@@ -12,10 +12,12 @@ import br.com.josenaldo.codeflix.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.domain.validation.handler.Notification;
 import io.vavr.control.Either;
 import java.util.Objects;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -29,6 +31,14 @@ public class CreateCategoryUseCaseTest {
 
     @Mock
     private CategoryGateway categoryGateway;
+
+    /**
+     * Resets the mock objects before each test.
+     */
+    @BeforeEach
+    void cleanUp() {
+        Mockito.reset(categoryGateway);
+    }
 
     /**
      * Tests that when a valid command is provided for creating an active category, the use case

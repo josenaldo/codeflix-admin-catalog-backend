@@ -20,10 +20,12 @@ import br.com.josenaldo.codeflix.domain.validation.handler.Notification;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -37,6 +39,14 @@ public class UpdateCategoryUseCaseTest {
 
     @Mock
     private CategoryGateway categoryGateway;
+
+    /**
+     * Resets the mock objects before each test.
+     */
+    @BeforeEach
+    void cleanUp() {
+        Mockito.reset(categoryGateway);
+    }
 
     /**
      * Tests the happy path for updating a category. It verifies that when a valid command is
