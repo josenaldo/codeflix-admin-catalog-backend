@@ -33,4 +33,22 @@ public class CategoryExceptions {
             return DomainException.with(error);
         };
     }
+
+    /**
+     * Returns a supplier that, when invoked, produces a {@link DomainException} indicating that the
+     * category with the specified ID was not found.
+     * <p>
+     * The exception message will include the provided category ID value.
+     *
+     * @param id the {@link String} for which the category was not found.
+     * @return a supplier of {@link DomainException} that creates an exception with an appropriate
+     * error message.
+     */
+    public static Supplier<DomainException> categoryNotFoundException(String id) {
+        return () -> {
+            Error error = new Error("Category with ID %s was not found".formatted(id));
+            return DomainException.with(error);
+        };
+    }
+
 }
