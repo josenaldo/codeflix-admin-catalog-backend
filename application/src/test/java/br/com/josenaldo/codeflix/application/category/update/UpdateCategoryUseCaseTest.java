@@ -44,7 +44,7 @@ public class UpdateCategoryUseCaseTest {
      * Resets the mock objects before each test.
      */
     @BeforeEach
-    void cleanUp() {
+    void tearDown() {
         Mockito.reset(categoryGateway);
     }
 
