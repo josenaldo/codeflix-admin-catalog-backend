@@ -24,9 +24,6 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -34,6 +31,8 @@ dependencies {
 }
 
 subprojects {
+    val mockitoAgent = configurations.create("mockitoAgent")
+
     apply(plugin = "java")
     apply(plugin = "io.spring.dependency-management")
 
@@ -48,16 +47,24 @@ subprojects {
         implementation("io.vavr:vavr:1.0.0-alpha-4")
 
         compileOnly("org.projectlombok:lombok")
-
-        runtimeOnly("com.mysql:mysql-connector-j")
-
         annotationProcessor("org.projectlombok:lombok")
 
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+        mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
+    }
+
+    tasks.test {
+        useJUnitPlatform()
+        jvmArgs("-javaagent:${mockitoAgent.asPath}")
     }
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks.register<Test>("allTests") {
+    description = "Executa todos os testes de todos os módulos"
+    group = "verification"
+
+    subprojects.forEach { subproject ->
+        dependsOn(subproject.tasks.withType<Test>())
+    }
 }

@@ -1,5 +1,7 @@
 plugins {
     id("java")
+    id("application")
+    id("org.springframework.boot")
 }
 
 group = "br.com.josenaldo.codeflix.infrastructure"
@@ -13,8 +15,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
 
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    runtimeOnly("com.mysql:mysql-connector-j")
 }
 
 tasks.test {
