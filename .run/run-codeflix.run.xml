@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="run-codeflix" type="SpringBootApplicationConfigurationType"
+      factoryName="Spring Boot">
+        <module name="admin-catalog-backend.infrastructure.main"/>
+        <option name="SPRING_BOOT_MAIN_CLASS"
+          value="br.com.josenaldo.codeflix.infrastructure.Application"/>
+        <extension name="coverage">
+            <pattern>
+                <option name="PATTERN" value="br.com.josenaldo.codeflix.infrastructure.*"/>
+                <option name="ENABLED" value="true"/>
+            </pattern>
+        </extension>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>

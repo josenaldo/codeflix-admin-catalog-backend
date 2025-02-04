@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Run Codeflix (dev)"
+    <configuration default="false" name="run-codeflix-prod"
       type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-        <option name="ACTIVE_PROFILES" value="dev"/>
+        <option name="ACTIVE_PROFILES" value="prod"/>
         <module name="admin-catalog-backend.infrastructure.main"/>
         <option name="SPRING_BOOT_MAIN_CLASS"
           value="br.com.josenaldo.codeflix.infrastructure.Application"/>
