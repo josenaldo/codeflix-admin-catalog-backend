@@ -43,6 +43,7 @@ subprojects {
     }
 
     dependencies {
+
         implementation("com.github.f4b6a3:ulid-creator:5.2.3")
         implementation("io.vavr:vavr:1.0.0-alpha-4")
 
@@ -66,5 +67,17 @@ tasks.register<Test>("allTests") {
 
     subprojects.forEach { subproject ->
         dependsOn(subproject.tasks.withType<Test>())
+    }
+}
+
+tasks {
+    bootRun {
+        mainClass.set("br.com.josenaldo.codeflix.infrastructure.Application")
+        classpath =
+            sourceSets["main"].runtimeClasspath + project(":infrastructure").sourceSets["main"].runtimeClasspath
+    }
+    bootJar {
+        mainClass.set("br.com.josenaldo.codeflix.infrastructure.Application")
+        dependsOn(":infrastructure:bootJar")
     }
 }

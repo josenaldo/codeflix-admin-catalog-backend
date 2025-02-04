@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("application")
     id("org.springframework.boot")
+    id("io.spring.dependency-management")
 }
 
 group = "br.com.josenaldo.codeflix.infrastructure"
@@ -15,9 +16,17 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
 
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
+
     runtimeOnly("com.mysql:mysql-connector-j")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks {
+    bootJar {
+        archiveFileName.set("application.jar")
+        destinationDirectory.set(file("${rootProject.layout.buildDirectory.get()}/libs"))
+    }
 }
