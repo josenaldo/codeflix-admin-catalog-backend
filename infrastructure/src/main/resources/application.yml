@@ -1,0 +1,19 @@
+server:
+    port: ${SERVER_PORT:8080}
+    compression:
+        # Whether to enable response compression.
+        enabled: true
+        # Comma-separated list of MIME types that should be compressed.
+        mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+        # Minimum response size that is required for compression to be performed.
+        min-response-size: 1024
+    undertow:
+        threads:
+            # Number of I/O threads to create for the worker, to handle non-blocking tasks.
+            # More threads can improve concurrency and throughput. The default is derived from the
+            # number of available processors.
+            io: 4
+            # Number of worker threads for handling requests. The default is 8 times the number of
+            # I/O threads. Increasing this value can enhance the server’s ability to process
+            # multiple requests simultaneously.
+            worker: 64
