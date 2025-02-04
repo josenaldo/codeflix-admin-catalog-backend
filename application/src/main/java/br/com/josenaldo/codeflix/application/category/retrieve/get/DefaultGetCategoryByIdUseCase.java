@@ -2,10 +2,10 @@ package br.com.josenaldo.codeflix.application.category.retrieve.get;
 
 import static br.com.josenaldo.codeflix.application.category.exceptions.CategoryExceptions.categoryNotFoundException;
 
-import br.com.josenaldo.codeflix.application.category.retrieve.CategoryOutput;
 import br.com.josenaldo.codeflix.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.domain.category.CategoryID;
 import io.vavr.API;
+import java.util.Objects;
 
 /**
  * Default implementation of the use case for retrieving a category by its identifier.
@@ -40,7 +40,7 @@ public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
      * @param categoryGateway the gateway responsible for accessing category data.
      */
     public DefaultGetCategoryByIdUseCase(CategoryGateway categoryGateway) {
-        this.categoryGateway = categoryGateway;
+        this.categoryGateway = Objects.requireNonNull(categoryGateway);
     }
 
     /**

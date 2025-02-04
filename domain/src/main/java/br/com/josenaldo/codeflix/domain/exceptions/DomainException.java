@@ -53,6 +53,15 @@ public class DomainException extends NoStackTraceException {
     }
 
     /**
+     * Creates a new {@code DomainException} with the specified message.
+     *
+     * @param message The detail message for this exception.
+     * @return A new {@code DomainException} containing the provided message.
+     */
+    public static DomainException with(final String message) {
+        return new DomainException(message, List.of(new Error(message)));
+    }
+    /**
      * Retrieves the list of errors associated with this exception.
      *
      * @return The list of {@link Error} objects.

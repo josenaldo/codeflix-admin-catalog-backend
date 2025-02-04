@@ -2,6 +2,7 @@ package br.com.josenaldo.codeflix.application.category.delete;
 
 import br.com.josenaldo.codeflix.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.domain.category.CategoryID;
+import java.util.Objects;
 
 /**
  * Default implementation of the delete category use case.
@@ -31,7 +32,7 @@ public class DefaultDeleteCategoryUseCase extends DeleteCategoryUseCase {
      * @param categoryGateway the gateway responsible for category persistence and deletion.
      */
     public DefaultDeleteCategoryUseCase(final CategoryGateway categoryGateway) {
-        this.categoryGateway = categoryGateway;
+        this.categoryGateway = Objects.requireNonNull(categoryGateway);
     }
 
     /**

@@ -2,6 +2,7 @@ package br.com.josenaldo.codeflix.domain.pagination;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Represents a paginated result set within the application, containing:
@@ -247,5 +248,23 @@ public record Pagination<T>(
      */
     public boolean isNotEmpty() {
         return !data.isEmpty();
+    }
+
+    /**
+     * Transforms the elements of the current pagination data to a different type.
+     * <p>
+     * This method applies the provided mapping function to each element in the data list, producing
+     * a new list of mapped results. It then creates a new {@code Pagination} instance with the same
+     * pagination details (page, perPage, and total) but with the new mapped data.
+     * <p>
+     *
+     * @param mapper the function used to transform each element of type {@code T} into type
+     *               {@code R}.
+     * @param <R>    the type of elements in the resulting {@code Pagination}.
+     * @return a new {@code Pagination} instance containing the mapped data.
+     */
+    public <R> Pagination<R> map(final Function<T, R> mapper) {
+        final List<R> mappedList = this.data().stream().map(mapper).toList();
+        return new Pagination<>(this.page(), this.perPage(), this.total(), mappedList);
     }
 }

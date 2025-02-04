@@ -57,5 +57,5 @@ public interface CategoryGateway {
      *                    categories.
      * @return A {@link Pagination} of categories that match the specified search query.
      */
-    Pagination<Category> list(CategorySearchQuery searchQuery);
+    Pagination<Category> findAll(CategorySearchQuery searchQuery);
 }

@@ -1,4 +1,4 @@
-package br.com.josenaldo.codeflix.application.category.retrieve;
+package br.com.josenaldo.codeflix.application.category.retrieve.get;
 
 import br.com.josenaldo.codeflix.domain.category.Category;
 import br.com.josenaldo.codeflix.domain.category.CategoryID;

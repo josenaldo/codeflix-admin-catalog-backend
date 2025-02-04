@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import br.com.josenaldo.codeflix.application.category.retrieve.CategoryOutput;
 import br.com.josenaldo.codeflix.domain.category.Category;
 import br.com.josenaldo.codeflix.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.domain.category.CategoryID;

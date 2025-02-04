@@ -1,7 +1,6 @@
 package br.com.josenaldo.codeflix.application.category.retrieve.get;
 
 import br.com.josenaldo.codeflix.application.UseCase;
-import br.com.josenaldo.codeflix.application.category.retrieve.CategoryOutput;
 
 /**
  * Represents an abstract use case for retrieving a category by its identifier.
