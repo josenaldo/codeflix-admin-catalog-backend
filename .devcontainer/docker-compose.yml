@@ -29,11 +29,6 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
-
-volumes:
-  postgres-data:
-
-
 networks:
   codeflix:
     driver: bridge

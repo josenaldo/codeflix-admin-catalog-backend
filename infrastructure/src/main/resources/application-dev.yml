@@ -1,0 +1,15 @@
+# Server configuration
+server:
+    port: 8080
+    undertow:
+        threads:
+            io: 2
+            worker: 16
+
+# Database configuration
+mysql:
+    url: jdbc:mysql://codeflix-catalog-backend-db
+    port: 3306
+    schema: codeflix
+    username: root
+    password: root

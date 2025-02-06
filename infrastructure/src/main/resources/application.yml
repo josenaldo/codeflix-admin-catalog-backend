@@ -1,5 +1,5 @@
 server:
-    port: ${SERVER_PORT:8080}
+    port: 8080
     compression:
         # Whether to enable response compression.
         enabled: true
@@ -12,8 +12,13 @@ server:
             # Number of I/O threads to create for the worker, to handle non-blocking tasks.
             # More threads can improve concurrency and throughput. The default is derived from the
             # number of available processors.
-            io: ${SERVER_UNDERTOW_THREADS_IO:2}
+            io: 8
             # Number of worker threads for handling requests. The default is 8 times the number of
             # I/O threads. Increasing this value can enhance the server’s ability to process
             # multiple requests simultaneously.
-            worker: ${SERVER_UNDERTOW_THREADS_WORKER:16}
+            worker: 16
+spring:
+    datasource:
+        url: jdbc:mysql://${mysql.url:codeflix-catalog-backend-db}:${mysql.port:3306}/${mysql.schema:codeflix}
+        username: ${mysql.user}
+        password: ${mysql.password}
