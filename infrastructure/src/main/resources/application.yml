@@ -1,27 +1,66 @@
 server:
+    # The port on which the application runs.
     port: 8080
     compression:
-        # Whether to enable response compression.
+        # Enable HTTP response compression to reduce response size.
         enabled: true
-        # Comma-separated list of MIME types that should be compressed.
+        # Comma-separated list of MIME types to compress. These types are commonly used for text and JSON responses.
         mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
-        # Minimum response size that is required for compression to be performed.
+        # Minimum response size (in bytes) required to trigger compression. Responses smaller than 1024 bytes are not compressed.
         min-response-size: 1024
     undertow:
         threads:
             # Number of I/O threads to create for the worker, to handle non-blocking tasks.
             # More threads can improve concurrency and throughput. The default is derived from the
-            # number of available processors.
+            # number of available processors. The value 8 is chosen to balance performance with
+            # available CPU cores.
             io: 8
             # Number of worker threads for handling requests. The default is 8 times the number of
             # I/O threads. Increasing this value can enhance the server’s ability to process
-            # multiple requests simultaneously.
+            # multiple requests simultaneously. A value of 16 enhances the server's ability to
+            # process multiple requests concurrently.
             worker: 16
 spring:
     datasource:
+        # JDBC driver class name for connecting to the database. Defaults to MySQL driver.
         driver-class-name: ${database.driver:com.mysql.cj.jdbc.Driver}
+        # JDBC URL for the database connection. Points to the specific database instance.
         url: ${database.url:jdbc:mysql://codeflix-catalog-backend-db:3306/codeflix_adm_videos}
+        # Username for the database connection, provided via environment variable.
         username: ${database.user}
+        # Password for the database connection, provided via environment variable.
         password: ${database.password}
+        hikari:
+            # Disable auto-commit to allow explicit transaction management.
+            auto-commit: false
+            # Maximum time (in milliseconds) that a client will wait for a connection from the pool.
+            # A low value (250 ms) is used to quickly detect connection availability issues.
+            connection-timeout: 250
+            # Maximum lifetime (in milliseconds) of a connection in the pool. Connections older than this are recycled.
+            max-lifetime: 600000
+            # Maximum number of connections in the pool to support high concurrency.
+            maximum-pool-size: 20
+            # Minimum number of idle connections maintained in the pool for immediate use.
+            minimum-idle: 10
+            # Name of the connection pool, which helps in identifying the pool in logs and monitoring tools.
+            pool-name: master
     jpa:
+        # Specifies the database platform for Hibernate to generate compatible SQL syntax.
+        database-platform: org.hibernate.dialect.MySQLDialect
+        # Defers datasource initialization if needed. This setting can prevent initialization issues
+        # when the datasource is not immediately available.
         defer-datasource-initialization: ${database.defer-datasource-initialization:false}
+        # Disables the Open Session in View pattern to avoid performance and session management issues.
+        open-in-view: false
+        # Enable logging of SQL statements for debugging purposes.
+        show-sql: true
+        hibernate:
+            # Hibernate will not automatically create or update the database schema.
+            ddl-auto: none
+        properties:
+            # Specifies the Hibernate dialect for MySQL to generate compatible SQL syntax.
+            "[hibernate-dialect]": org.hibernate.dialect.MySQLDialect
+            # Enables generation of Hibernate statistics, which can be used for performance analysis.
+            "[hibernate.hibernate.generate_statistics]": true
+            # Disables auto-commit in the Hibernate connection provider for controlled transaction management.
+            "[hibernate.connection.provider_disables_autocommit]": true
