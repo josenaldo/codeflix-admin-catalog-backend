@@ -8,6 +8,9 @@ services:
     command: sleep infinity
     networks:
       - codeflix
+    ports:
+        - "9090:9090"
+        - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -19,7 +22,7 @@ services:
       - ./.docker/dbdata:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=codeflix
+      - MYSQL_DATABASE=codeflix_adm_videos
     ports:
       - "33064:3306"
     networks:

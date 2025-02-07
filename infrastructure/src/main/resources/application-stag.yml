@@ -7,9 +7,8 @@ server:
             worker: 32
 
 # Database configuration
-mysql:
-    url: jdbc:mysql://codeflix-catalog-backend-db
-    port: 3306
-    schema: codeflix
-    username: root
+database:
+    driver: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://codeflix-catalog-backend-db:3306/codeflix_adm_videos
+    user: root
     password: root

@@ -45,7 +45,7 @@ subprojects {
     dependencies {
 
         implementation("com.github.f4b6a3:ulid-creator:5.2.3")
-        implementation("io.vavr:vavr:1.0.0-alpha-4")
+        implementation("io.vavr:vavr:0.10.6")
 
         compileOnly("org.projectlombok:lombok")
         annotationProcessor("org.projectlombok:lombok")
