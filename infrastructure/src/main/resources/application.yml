@@ -27,9 +27,9 @@ spring:
         # JDBC URL for the database connection. Points to the specific database instance.
         url: ${database.url:jdbc:mysql://codeflix-catalog-backend-db:3306/codeflix_adm_videos}
         # Username for the database connection, provided via environment variable.
-        username: ${database.user}
+        username: ${database.user:root}
         # Password for the database connection, provided via environment variable.
-        password: ${database.password}
+        password: ${database.password:root}
         hikari:
             # Disable auto-commit to allow explicit transaction management.
             auto-commit: false

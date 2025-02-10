@@ -1,30 +1,61 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.flyway.mysql)
+    }
+}
+
 plugins {
     id("java")
     id("application")
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
+
+    alias(libs.plugins.spring.boot.plugin)
+    alias(libs.plugins.spring.dependency.management.plugin)
+    alias(libs.plugins.flyway.plugin)
 }
 
 group = "br.com.josenaldo.codeflix.infrastructure"
 version = "0.0.1-SNAPSHOT"
 
+java { // Accessing a convention
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
+
     implementation(project(":domain"))
     implementation(project(":application"))
 
-    implementation("org.springframework.boot:spring-boot-starter-web") {
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+    implementation(libs.spring.boot.starter.web) {
+        exclude(
+            group = libs.spring.boot.starter.tomcat.get().group,
+            module = libs.spring.boot.starter.tomcat.get().module.name
+        )
     }
-    implementation("org.springframework.boot:spring-boot-starter-undertow")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(libs.spring.boot.starter.undertow)
+    implementation(libs.spring.boot.starter.data.jpa)
 
-    runtimeOnly("com.mysql:mysql-connector-j")
-    implementation("com.h2database:h2")
+    runtimeOnly(libs.mysql.connector.j)
+    implementation(libs.h2)
+//    implementation(libs.flyway.core)
+    implementation(libs.flyway.mysql)
+    implementation(libs.flyway.gradle.plugin)
 
+}
+
+flyway {
+    url = System.getenv("FLYWAY_DB_URL")
+        ?: "jdbc:mysql://codeflix-catalog-backend-db:3306/codeflix_adm_videos"
+    user = System.getenv("FLYWAY_DB_USER") ?: "root"
+    password = System.getenv("FLYWAY_DB_PASSWORD") ?: "root"
+    cleanDisabled = false
 }
 
 tasks {

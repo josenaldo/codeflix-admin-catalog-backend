@@ -1,7 +1,7 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.4.1"
-	id("io.spring.dependency-management") version "1.1.7"
+    alias(libs.plugins.spring.boot.plugin)
+    alias(libs.plugins.spring.dependency.management.plugin)
 }
 
 group = "br.com.josenaldo.codeflix"
@@ -24,34 +24,35 @@ repositories {
 }
 
 dependencies {
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    developmentOnly(libs.spring.boot.devtools)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(libs.spring.boot.starter.test)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 subprojects {
     val mockitoAgent = configurations.create("mockitoAgent")
 
     apply(plugin = "java")
-    apply(plugin = "io.spring.dependency-management")
+    apply(plugin = rootProject.libs.plugins.spring.dependency.management.plugin.get().pluginId)
 
     dependencyManagement {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.1")
+            mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+//            mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.1")
         }
     }
 
     dependencies {
 
-        implementation("com.github.f4b6a3:ulid-creator:5.2.3")
-        implementation("io.vavr:vavr:0.10.6")
+        implementation(rootProject.libs.ulid)
+        implementation(rootProject.libs.vavr)
 
         compileOnly("org.projectlombok:lombok")
         annotationProcessor("org.projectlombok:lombok")
 
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+        testImplementation(rootProject.libs.spring.boot.starter.test)
+        testRuntimeOnly(rootProject.libs.junit.platform.launcher)
         mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
     }
 

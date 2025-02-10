@@ -1,0 +1,34 @@
+[versions]
+spring-boot = "3.4.1"
+spring-dependency-management = "1.1.7"
+flyway = "11.3.1"
+mysql-connector-j = "9.1.0"
+h2 = "2.3.232"
+ulid = "5.2.3"
+vavr = "0.10.6"
+mockito = "3.12.4"
+
+[plugins]
+spring-boot-plugin = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management-plugin = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+flyway-plugin = { id = "org.flywaydb.flyway", version.ref = "flyway" }
+
+[libraries]
+spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-starter-tomcat = { module = "org.springframework.boot:spring-boot-starter-tomcat", version.ref = "spring-boot" }
+spring-boot-starter-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "spring-boot" }
+
+mysql-connector-j = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-connector-j" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
+flyway-gradle-plugin = { module = "org.flywaydb.flyway:org.flywaydb.flyway.gradle.plugin", version.ref = "flyway" }
+
+ulid = { module = "com.github.f4b6a3:ulid-creator", version.ref = "ulid" }
+vavr = { module = "io.vavr:vavr", version.ref = "vavr" }
+
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
