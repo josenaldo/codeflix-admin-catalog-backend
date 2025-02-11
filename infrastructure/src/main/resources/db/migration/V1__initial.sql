@@ -5,6 +5,6 @@ CREATE TABLE category
     updated_at  TIMESTAMP    NOT NULL,
     deleted_at  TIMESTAMP,
     name        VARCHAR(255) NOT NULL,
-    description VARCHAR(2000),
+    description VARCHAR(4000),
     active      BOOLEAN      NOT NULL
 )

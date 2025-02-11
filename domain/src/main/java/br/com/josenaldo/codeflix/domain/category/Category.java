@@ -46,12 +46,12 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
      */
     private Category(
         final CategoryID id,
-        final String name,
-        final String description,
-        final boolean active,
         final Instant createdAt,
         final Instant updatedAt,
-        final Instant deletedAt
+        final Instant deletedAt,
+        final String name,
+        final String description,
+        final boolean active
     ) {
         super(id, createdAt, updatedAt, deletedAt);
         this.name = name;
@@ -77,7 +77,52 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
         final var now = Instant.now();
         final var deletedAt = active ? null : now;
 
-        return new Category(id, name, description, active, now, now, deletedAt);
+        return new Category(id, now, now, deletedAt, name, description, active);
+    }
+
+    /**
+     * Creates a new {@code Category} instance with the specified attributes. The {@code deletedAt}
+     * field will be set to {@code null} if the category is active; otherwise, it will be set to the
+     * current time.
+     *
+     * @param categoryID  The unique identifier of the category.
+     * @param createdAt   The date/time when the category was created.
+     * @param updatedAt   The date/time when the category was last updated.
+     * @param deletedAt   The date/time when the category was deactivated, or {@code null} if it is
+     *                    still active.
+     * @param name        The name of the category.
+     * @param description A textual description of the category.
+     * @param active      {@code true} if the category is active; {@code false} otherwise.
+     * @return A new {@code Category} instance.
+     */
+    public static Category with(
+        final CategoryID categoryID,
+        final Instant createdAt,
+        final Instant updatedAt,
+        final Instant deletedAt,
+        final String name,
+        final String description,
+        final boolean active
+    ) {
+        return new Category(categoryID, createdAt, updatedAt, deletedAt, name, description, active);
+    }
+
+    /**
+     * Creates a new {@code Category} instance with the same attributes as the specified category.
+     *
+     * @param category The category to copy.
+     * @return A new {@code Category} instance.
+     */
+    public static Category with(final Category category) {
+        return with(
+            category.getId(),
+            category.getCreatedAt(),
+            category.getUpdatedAt(),
+            category.getDeletedAt(),
+            category.getName(),
+            category.getDescription(),
+            category.isActive()
+        );
     }
 
     /**
