@@ -39,7 +39,6 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-//            mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.1")
         }
     }
 
@@ -47,9 +46,6 @@ subprojects {
 
         implementation(rootProject.libs.ulid)
         implementation(rootProject.libs.vavr)
-
-        compileOnly("org.projectlombok:lombok")
-        annotationProcessor("org.projectlombok:lombok")
 
         testImplementation(rootProject.libs.spring.boot.starter.test)
         testRuntimeOnly(rootProject.libs.junit.platform.launcher)
