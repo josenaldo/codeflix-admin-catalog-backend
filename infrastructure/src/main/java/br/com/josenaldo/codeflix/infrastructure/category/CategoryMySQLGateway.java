@@ -1,0 +1,107 @@
+package br.com.josenaldo.codeflix.infrastructure.category;
+
+import br.com.josenaldo.codeflix.domain.category.Category;
+import br.com.josenaldo.codeflix.domain.category.CategoryGateway;
+import br.com.josenaldo.codeflix.domain.category.CategoryID;
+import br.com.josenaldo.codeflix.domain.category.CategorySearchQuery;
+import br.com.josenaldo.codeflix.domain.pagination.Pagination;
+import br.com.josenaldo.codeflix.infrastructure.category.persistence.CategoryRepository;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
+
+/**
+ * Implements the {@link CategoryGateway} interface using MySQL as the persistence layer.
+ * <p>
+ * This class serves as a gateway for performing CRUD operations on {@link Category} objects,
+ * delegating the database interactions to a {@link CategoryRepository}.
+ * <p>
+ *
+ * @author Josenaldo de Oliveira Matos Filho
+ * @version 1.0
+ */
+@Service
+public class CategoryMySQLGateway implements CategoryGateway {
+
+    /**
+     * The repository used to access category data from the MySQL database.
+     */
+    private final CategoryRepository categoryRepository;
+
+    /**
+     * Constructs a new {@code CategoryMySQLGateway} with the specified {@link CategoryRepository}.
+     * <p>
+     * The provided repository is used to perform all persistence operations for categories.
+     *
+     * @param categoryRepository the repository responsible for category persistence.
+     */
+    public CategoryMySQLGateway(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+
+    /**
+     * Persists a new {@link Category} in the database.
+     * <p>
+     * This method should save the provided category and return the persisted instance.
+     *
+     * @param category the category to be created.
+     * @return the persisted category, or null if not implemented.
+     */
+    @Override
+    public Category create(Category category) {
+        return null;
+    }
+
+    /**
+     * Deletes a {@link Category} from the database by its unique identifier.
+     * <p>
+     * This method should remove the category corresponding to the given ID from the database.
+     *
+     * @param id the unique identifier of the category to be deleted.
+     */
+    @Override
+    public void deleteById(CategoryID id) {
+
+    }
+
+    /**
+     * Finds a {@link Category} in the database by its unique identifier.
+     * <p>
+     * This method should return an {@link Optional} containing the category if found, or an empty
+     * {@link Optional} if no category exists with the given ID.
+     *
+     * @param id the unique identifier of the category to be retrieved.
+     * @return an {@link Optional} containing the found category, or empty if not found.
+     */
+    @Override
+    public Optional<Category> findById(CategoryID id) {
+        return Optional.empty();
+    }
+
+    /**
+     * Updates an existing {@link Category} in the database.
+     * <p>
+     * This method should update the category details and return the updated instance.
+     *
+     * @param category the category with updated information.
+     * @return the updated category, or null if not implemented.
+     */
+    @Override
+    public Category update(Category category) {
+        return null;
+    }
+
+    /**
+     * Retrieves a paginated list of {@link Category} objects based on the search query.
+     * <p>
+     * This method should execute the search using the criteria provided in
+     * {@link CategorySearchQuery} and return a {@link Pagination} object containing the list of
+     * categories.
+     *
+     * @param searchQuery the search query containing filtering and pagination parameters.
+     * @return a {@link Pagination} containing the list of categories, or null if not implemented.
+     */
+    @Override
+    public Pagination<Category> findAll(CategorySearchQuery searchQuery) {
+        return null;
+    }
+}

@@ -44,9 +44,11 @@ dependencies {
 
     runtimeOnly(libs.mysql.connector.j)
     implementation(libs.h2)
-//    implementation(libs.flyway.core)
+
     implementation(libs.flyway.mysql)
     implementation(libs.flyway.gradle.plugin)
+
+    testImplementation(libs.flyway.core)
 
 }
 

@@ -47,9 +47,6 @@ spring:
     jpa:
         # Specifies the database platform for Hibernate to generate compatible SQL syntax.
         database-platform: org.hibernate.dialect.MySQLDialect
-        # Defers datasource initialization if needed. This setting can prevent initialization issues
-        # when the datasource is not immediately available.
-        defer-datasource-initialization: ${database.defer-datasource-initialization:false}
         # Disables the Open Session in View pattern to avoid performance and session management issues.
         open-in-view: false
         # Enable logging of SQL statements for debugging purposes.
