@@ -351,8 +351,6 @@ ij_xml_space_inside_empty_tag = false
 ij_xml_text_wrap = normal
 
 [{*.markdown,*.md}]
-indent_size = 4
-tab_width = 4
 ij_continuation_indent_size = 8
 ij_markdown_force_one_space_after_blockquote_symbol = true
 ij_markdown_force_one_space_after_header_symbol = true

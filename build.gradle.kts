@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 plugins {
 	java
     alias(libs.plugins.spring.boot.plugin)
@@ -49,7 +51,7 @@ subprojects {
 
         testImplementation(rootProject.libs.spring.boot.starter.test)
         testRuntimeOnly(rootProject.libs.junit.platform.launcher)
-        mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
+        mockitoAgent(rootProject.libs.mockito.core.get().module.toString()) { isTransitive = false }
     }
 
     tasks.test {

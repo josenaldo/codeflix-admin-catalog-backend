@@ -27,10 +27,9 @@ public class RepositoryCleanUpExtensions implements BeforeEachCallback {
      * and triggers the cleanup process by deleting all entries in each repository.
      *
      * @param context the current extension context; never null.
-     * @throws Exception if an error occurs during the cleanup process.
      */
     @Override
-    public void beforeEach(final ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) {
         final var repositories = SpringExtension.getApplicationContext(context)
                                                 .getBeansOfType(CrudRepository.class).values();
         cleanUp(repositories);
@@ -44,6 +43,7 @@ public class RepositoryCleanUpExtensions implements BeforeEachCallback {
      *
      * @param repositories a collection of repositories to be cleaned; must not be null.
      */
+    @SuppressWarnings("rawtypes")
     private void cleanUp(final Collection<CrudRepository> repositories) {
         repositories.forEach(CrudRepository::deleteAll);
     }

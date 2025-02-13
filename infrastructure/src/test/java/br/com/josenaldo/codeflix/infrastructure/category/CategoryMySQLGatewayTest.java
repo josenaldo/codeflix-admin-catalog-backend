@@ -7,7 +7,6 @@ import br.com.josenaldo.codeflix.infrastructure.category.persistence.CategoryRep
 import br.com.josenaldo.codeflix.infrastructure.testutils.MySQLGatewayTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 /**
  * Test class for verifying dependency injection of MySQL gateway components.
@@ -36,9 +35,6 @@ class CategoryMySQLGatewayTest {
      */
     @Autowired
     private CategoryMySQLGateway categoryGateway;
-    @Autowired
-    private TestEntityManager testEntityManager;
-
 
     @Test
     public void givenAValidCategory_whenCallsCreate_shouldReturnANewCategory() {
@@ -70,9 +66,8 @@ class CategoryMySQLGatewayTest {
         assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
         assertThat(actualCategory.getDeletedAt()).isNull();
 
-        final var createdCategoryEntity = categoryRepository.findById(actualCategory.getId()
-                                                                                    .getValue())
-                                                            .get();
+        String id = actualCategory.getId().getValue();
+        final var createdCategoryEntity = categoryRepository.findById(id).orElse(null);
 
         assertThat(createdCategoryEntity).isNotNull();
         assertThat(createdCategoryEntity.getId()).isEqualTo(category.getId().getValue());

@@ -24,7 +24,7 @@ public abstract class Entity<ID extends Identifier> {
     /**
      * The timestamp when the entity was created.
      */
-    protected Instant createdAt;
+    protected final Instant createdAt;
 
     /**
      * The timestamp when the entity was last updated.
@@ -47,7 +47,7 @@ public abstract class Entity<ID extends Identifier> {
     protected Entity(final ID id) {
 
         this.id = Objects.requireNonNull(id, "id must not be null");
-        ;
+
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
     }
@@ -68,8 +68,7 @@ public abstract class Entity<ID extends Identifier> {
         final Instant deletedAt
     ) {
         this.id = Objects.requireNonNull(id, "id must not be null");
-        ;
-        ;
+
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
         this.updatedAt = Objects.requireNonNull(updatedAt, "updatedAt must not be null");
         this.deletedAt = deletedAt;
