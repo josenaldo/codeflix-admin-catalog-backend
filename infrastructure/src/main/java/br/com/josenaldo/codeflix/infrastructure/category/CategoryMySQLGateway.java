@@ -70,6 +70,14 @@ public class CategoryMySQLGateway implements CategoryGateway {
         return save(category);
     }
 
+    /**
+     * Persists a {@link Category} in the database.
+     * <p>
+     * This method should save the provided category and return the persisted instance.
+     *
+     * @param category the category to be saved.
+     * @return the persisted category.
+     */
     private Category save(Category category) {
         return this.categoryRepository.save(CategoryJpaEntity.from(category)).to();
     }

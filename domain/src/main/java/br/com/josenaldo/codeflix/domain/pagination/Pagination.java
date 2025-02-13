@@ -36,10 +36,12 @@ public record Pagination<T>(
      * Creates a new {@code Pagination} object by specifying the current page number, the number of
      * items per page, the total count of items, and the list of items for the current page.
      *
-     * @param page    The current page number.
-     * @param perPage The number of items to display per page.
-     * @param total   The total count of items across all pages.
-     * @param data    The list of items for the given page.
+     * @param page    The current page number. Must be equal or greater than 0, but cannot exceed
+     *                the total number of pages.
+     * @param perPage The number of items to display per page. Must be greater than 0.
+     * @param total   The total count of items across all pages. Must be greater than or equal to
+     *                0.
+     * @param data    The list of items for the given page. Must not be null.
      */
     public Pagination {
 
