@@ -169,4 +169,47 @@ class CategoryMySQLGatewayTest {
         assertThat(deletedCategoryEntity).isNull();
     }
 
+    @Test
+    public void givenAPrePersistedCategoryAndAValidCategoryId_whenCallsFindById_shouldReturnACategory() {
+        // Arrange - Given
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var category = Category.newCategory(
+            expectedName,
+            expectedDescription,
+            expectedIsActive
+        );
+
+        assertThat(categoryRepository.count()).isEqualTo(0);
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
+        assertThat(categoryRepository.count()).isEqualTo(1);
+
+        // Act - When
+        Category actualCategory = categoryGateway.findById(category.getId()).orElse(null);
+
+        // Assert - Then
+        assertThat(categoryRepository.count()).isEqualTo(1);
+
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getId()).isEqualTo(category.getId());
+        assertThat(actualCategory.getName()).isEqualTo(category.getName());
+        assertThat(actualCategory.getDescription()).isEqualTo(category.getDescription());
+        assertThat(actualCategory.isActive()).isEqualTo(category.isActive());
+        assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
+        assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(actualCategory.getDeletedAt()).isNull();
+    }
+
+    @Test
+    public void givenNotStoredCategoryId_whenCallsFindById_shouldReturnEmpty() {
+        // Arrange - Given
+        final var id = CategoryID.unique();
+
+        // Act - When
+        final var actualCategory = categoryGateway.findById(id);
+
+        // Assert - Then
+        assertThat(actualCategory.isEmpty()).isTrue();
+    }
 }
