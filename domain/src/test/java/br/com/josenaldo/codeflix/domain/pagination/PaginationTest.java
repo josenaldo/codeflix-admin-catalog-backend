@@ -289,7 +289,7 @@ class PaginationTest {
     @Test
     public void givenInvalidPage_whenCreatePagination_thenShouldThrowException() {
         // Arrange
-        final int page = 0;
+        final int page = -1;
         final int perPage = 10;
         final long total = 100;
         final List<String> data = List.of();
@@ -301,7 +301,7 @@ class PaginationTest {
         // Assert - Then
         assertThat(exception).isNotNull();
         assertThat(exception).isInstanceOf(IllegalArgumentException.class);
-        assertThat(exception).hasMessageContaining("Page number must be greater than 0.");
+        assertThat(exception).hasMessageContaining("Page number must be equal or greater than 0.");
     }
 
     /**

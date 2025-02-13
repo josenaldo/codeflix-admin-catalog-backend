@@ -43,8 +43,8 @@ public record Pagination<T>(
      */
     public Pagination {
 
-        if (page < 1) {
-            throw new IllegalArgumentException("Page number must be greater than 0.");
+        if (page < 0) {
+            throw new IllegalArgumentException("Page number must be equal or greater than 0.");
         }
 
         if (perPage < 1) {

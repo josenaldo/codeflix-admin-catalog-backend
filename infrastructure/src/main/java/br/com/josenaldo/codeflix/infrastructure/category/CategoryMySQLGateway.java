@@ -8,6 +8,11 @@ import br.com.josenaldo.codeflix.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.infrastructure.category.persistence.CategoryRepository;
 import java.util.Optional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 /**
@@ -99,17 +104,38 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     /**
-     * Retrieves a paginated list of {@link Category} objects based on the search query.
+     * Retrieves a paginated list of {@link Category} objects based on the search searchQuery.
      * <p>
      * This method should execute the search using the criteria provided in
      * {@link CategorySearchQuery} and return a {@link Pagination} object containing the list of
      * categories.
      *
-     * @param searchQuery the search query containing filtering and pagination parameters.
+     * @param searchQuery the search searchQuery containing filtering and pagination parameters.
      * @return a {@link Pagination} containing the list of categories, or null if not implemented.
      */
     @Override
     public Pagination<Category> findAll(CategorySearchQuery searchQuery) {
-        return null;
+
+        Pageable pageable = PageRequest.of(
+            searchQuery.page(),
+            searchQuery.perPage(),
+            Sort.by(
+                Direction.fromString(searchQuery.direction()),
+                searchQuery.sort()
+            )
+        );
+
+        Specification<CategoryJpaEntity> termLikeSpecification = CategoryRepository.getTermLikeSpecification(
+            searchQuery);
+
+        final var pageResult = this.categoryRepository.findAll(
+            Specification.where(termLikeSpecification), pageable);
+
+        return Pagination.fromPage(
+            pageResult.getNumber(),
+            pageResult.getSize(),
+            pageResult.getTotalElements(),
+            pageResult.map(CategoryJpaEntity::to).toList()
+        );
     }
 }
