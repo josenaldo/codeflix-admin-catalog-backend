@@ -49,9 +49,24 @@ public class CategoryMySQLGateway implements CategoryGateway {
      */
     @Override
     public Category create(final Category category) {
-        CategoryJpaEntity categoryJpaEntity = CategoryJpaEntity.from(category);
-        CategoryJpaEntity savedCategoryEntity = this.categoryRepository.save(categoryJpaEntity);
-        return savedCategoryEntity.to();
+        return save(category);
+    }
+
+    /**
+     * Updates an existing {@link Category} in the database.
+     * <p>
+     * This method should update the category details and return the updated instance.
+     *
+     * @param category the category with updated information.
+     * @return the updated category, or null if not implemented.
+     */
+    @Override
+    public Category update(Category category) {
+        return save(category);
+    }
+
+    private Category save(Category category) {
+        return this.categoryRepository.save(CategoryJpaEntity.from(category)).to();
     }
 
     /**
@@ -63,7 +78,10 @@ public class CategoryMySQLGateway implements CategoryGateway {
      */
     @Override
     public void deleteById(CategoryID id) {
-
+        final String idValue = id.getValue();
+        if (categoryRepository.existsById(idValue)) {
+            this.categoryRepository.deleteById(idValue);
+        }
     }
 
     /**
@@ -78,19 +96,6 @@ public class CategoryMySQLGateway implements CategoryGateway {
     @Override
     public Optional<Category> findById(CategoryID id) {
         return Optional.empty();
-    }
-
-    /**
-     * Updates an existing {@link Category} in the database.
-     * <p>
-     * This method should update the category details and return the updated instance.
-     *
-     * @param category the category with updated information.
-     * @return the updated category, or null if not implemented.
-     */
-    @Override
-    public Category update(Category category) {
-        return null;
     }
 
     /**

@@ -3,7 +3,6 @@ package br.com.josenaldo.codeflix.domain.category;
 import br.com.josenaldo.codeflix.domain.AggregateRoot;
 import br.com.josenaldo.codeflix.domain.validation.ValidationHandler;
 import java.time.Instant;
-import java.util.Objects;
 
 /**
  * Represents a category in the application's domain layer. A {@code Category} has a name,
@@ -55,7 +54,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
         final boolean active
     ) {
         super(id, createdAt, updatedAt, deletedAt);
-        this.name = Objects.requireNonNull(name);
+        this.name = name;
         this.description = description;
         this.active = active;
     }

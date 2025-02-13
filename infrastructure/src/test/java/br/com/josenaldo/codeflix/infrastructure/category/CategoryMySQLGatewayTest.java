@@ -3,6 +3,8 @@ package br.com.josenaldo.codeflix.infrastructure.category;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.josenaldo.codeflix.domain.category.Category;
+import br.com.josenaldo.codeflix.domain.category.CategoryID;
+import br.com.josenaldo.codeflix.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.infrastructure.category.persistence.CategoryRepository;
 import br.com.josenaldo.codeflix.infrastructure.testutils.MySQLGatewayTest;
 import org.junit.jupiter.api.Test;
@@ -74,8 +76,97 @@ class CategoryMySQLGatewayTest {
         assertThat(createdCategoryEntity.getName()).isEqualTo(expectedName);
         assertThat(createdCategoryEntity.getDescription()).isEqualTo(expectedDescription);
         assertThat(createdCategoryEntity.isActive()).isEqualTo(expectedIsActive);
-        assertThat(createdCategoryEntity.getCreatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(createdCategoryEntity.getCreatedAt()).isEqualTo(category.getCreatedAt());
         assertThat(createdCategoryEntity.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
         assertThat(createdCategoryEntity.getDeletedAt()).isNull();
     }
+
+    @Test
+    public void givenAValidCategory_whenCallsUpdate_shouldReturnAUpdatedCategory() {
+        // Arrange - Given
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var category = Category.newCategory("Film", null, expectedIsActive);
+
+        assertThat(categoryRepository.count()).isEqualTo(0);
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
+        assertThat(categoryRepository.count()).isEqualTo(1);
+
+        final var currentInvalidCategory = categoryRepository.findById(category.getId().getValue())
+                                                             .orElse(null);
+        assertThat(currentInvalidCategory).isNotNull();
+        assertThat(currentInvalidCategory.getName()).isEqualTo("Film");
+        assertThat(currentInvalidCategory.getDescription()).isNull();
+        assertThat(currentInvalidCategory.isActive()).isTrue();
+
+        // Act - When
+        final var updatedCategory = category.clone()
+                                            .update(
+                                                expectedName,
+                                                expectedDescription,
+                                                expectedIsActive
+                                            );
+        Category actualCategory = categoryGateway.update(updatedCategory);
+
+        // Assert - Then
+        assertThat(categoryRepository.count()).isEqualTo(1);
+
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getId()).isEqualTo(updatedCategory.getId());
+        assertThat(actualCategory.getName()).isEqualTo(expectedName);
+        assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
+        assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
+        assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
+        assertThat(actualCategory.getUpdatedAt()).isAfter(category.getUpdatedAt());
+        assertThat(actualCategory.getDeletedAt()).isNull();
+
+        String id = actualCategory.getId().getValue();
+        final var updatedCategoryEntity = categoryRepository.findById(id).orElse(null);
+
+        assertThat(updatedCategoryEntity).isNotNull();
+        assertThat(updatedCategoryEntity.getId()).isEqualTo(category.getId().getValue());
+        assertThat(updatedCategoryEntity.getName()).isEqualTo(expectedName);
+        assertThat(updatedCategoryEntity.getDescription()).isEqualTo(expectedDescription);
+        assertThat(updatedCategoryEntity.isActive()).isEqualTo(expectedIsActive);
+        assertThat(updatedCategoryEntity.getCreatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(updatedCategoryEntity.getUpdatedAt()).isAfter(category.getUpdatedAt());
+        assertThat(updatedCategoryEntity.getDeletedAt()).isNull();
+    }
+
+    @Test
+    public void givenAPrePersistedCategory_whenTryToDelete_thenShouldDeleteCategory() {
+        // Arrange - Given
+        final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
+
+        assertThat(categoryRepository.count()).isEqualTo(0);
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
+        assertThat(categoryRepository.count()).isEqualTo(1);
+
+        // Act - When
+        categoryGateway.deleteById(category.getId());
+
+        // Assert - Then
+        assertThat(categoryRepository.count()).isEqualTo(0);
+
+        final var deletedCategoryEntity = categoryRepository.findById(category.getId().getValue())
+                                                            .orElse(null);
+
+        assertThat(deletedCategoryEntity).isNull();
+
+    }
+
+    @Test
+    public void givenAnInvalidCategoryId_whenTryToDelete_thenShouldDeleteCategory() {
+        // Arrange - Given
+        final var id = CategoryID.unique();
+
+        // Act - When
+        categoryGateway.deleteById(id);
+
+        // Assert - Then
+        final var deletedCategoryEntity = categoryRepository.findById(id.getValue()).orElse(null);
+        assertThat(deletedCategoryEntity).isNull();
+    }
+
 }
