@@ -1,7 +1,6 @@
 package br.com.josenaldo.codeflix.infrastructure.category.persistence;
 
 import br.com.josenaldo.codeflix.domain.category.CategorySearchQuery;
-import br.com.josenaldo.codeflix.infrastructure.utils.SpecificationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,9 +36,11 @@ public interface CategoryRepository extends JpaRepository<CategoryJpaEntity, Str
     static Specification<CategoryJpaEntity> getTermLikeSpecification(CategorySearchQuery searchQuery) {
         return Optional.ofNullable(searchQuery.terms())
                 .filter(str -> !str.isBlank())
-                .map(str -> SpecificationUtils
-                        .<CategoryJpaEntity>like("name", str)
-                        .or(like("description", str)))
+                .map(str -> {
+                    Specification<CategoryJpaEntity> nameLike = like("name", str);
+                    Specification<CategoryJpaEntity> descriptionLike = like("description", str);
+                    return nameLike.or(descriptionLike);
+                })
                 .orElse(null);
     }
 
