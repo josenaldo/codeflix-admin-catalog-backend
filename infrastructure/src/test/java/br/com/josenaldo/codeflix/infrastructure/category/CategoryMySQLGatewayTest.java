@@ -1,10 +1,13 @@
 package br.com.josenaldo.codeflix.infrastructure.category;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import br.com.josenaldo.codeflix.domain.category.Category;
 import br.com.josenaldo.codeflix.infrastructure.category.persistence.CategoryRepository;
 import br.com.josenaldo.codeflix.infrastructure.testutils.MySQLGatewayTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 /**
  * Test class for verifying dependency injection of MySQL gateway components.
@@ -33,16 +36,51 @@ class CategoryMySQLGatewayTest {
      */
     @Autowired
     private CategoryMySQLGateway categoryGateway;
+    @Autowired
+    private TestEntityManager testEntityManager;
 
-    /**
-     * Tests that the dependencies are correctly injected.
-     * <p>
-     * This test verifies that both {@code categoryGateway} and {@code categoryRepository} are not
-     * null, ensuring that the Spring dependency injection configuration is working as expected.
-     */
+
     @Test
-    public void testInjectedDependencies() {
-        Assertions.assertThat(categoryGateway).isNotNull();
-        Assertions.assertThat(categoryRepository).isNotNull();
+    public void givenAValidCategory_whenCallsCreate_shouldReturnANewCategory() {
+
+        // Arrange - Given
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var category = Category.newCategory(
+            expectedName,
+            expectedDescription,
+            expectedIsActive
+        );
+
+        assertThat(categoryRepository.count()).isEqualTo(0);
+
+        // Act - When
+        Category actualCategory = categoryGateway.create(category);
+
+        // Assert - Then
+        assertThat(categoryRepository.count()).isEqualTo(1);
+
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getId()).isEqualTo(category.getId());
+        assertThat(actualCategory.getName()).isEqualTo(expectedName);
+        assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
+        assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
+        assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(actualCategory.getDeletedAt()).isNull();
+
+        final var createdCategoryEntity = categoryRepository.findById(actualCategory.getId()
+                                                                                    .getValue())
+                                                            .get();
+
+        assertThat(createdCategoryEntity).isNotNull();
+        assertThat(createdCategoryEntity.getId()).isEqualTo(category.getId().getValue());
+        assertThat(createdCategoryEntity.getName()).isEqualTo(expectedName);
+        assertThat(createdCategoryEntity.getDescription()).isEqualTo(expectedDescription);
+        assertThat(createdCategoryEntity.isActive()).isEqualTo(expectedIsActive);
+        assertThat(createdCategoryEntity.getCreatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(createdCategoryEntity.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(createdCategoryEntity.getDeletedAt()).isNull();
     }
 }

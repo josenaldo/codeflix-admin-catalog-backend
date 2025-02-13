@@ -45,8 +45,9 @@ public abstract class Entity<ID extends Identifier> {
      * @throws NullPointerException If the {@code id} is {@code null}.
      */
     protected Entity(final ID id) {
-        Objects.requireNonNull(id, "id must not be null");
-        this.id = id;
+
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        ;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
     }
@@ -66,9 +67,11 @@ public abstract class Entity<ID extends Identifier> {
         final Instant updatedAt,
         final Instant deletedAt
     ) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        ;
+        ;
+        this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
+        this.updatedAt = Objects.requireNonNull(updatedAt, "updatedAt must not be null");
         this.deletedAt = deletedAt;
     }
 

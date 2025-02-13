@@ -66,20 +66,11 @@ public class CategoryValidator extends Validator {
     /**
      * Executes the validation logic for the category.
      * <p>
-     * This method triggers the internal validation process by calling the extraction method that
+     * This method triggers the internal validation process by calling the checkNameConstraints method that
      * performs the name constraint checks.
      */
     @Override
     public void validate() {
-        extracted();
-    }
-
-    /**
-     * Extracted method to perform validation steps.
-     * <p>
-     * Currently, this method only invokes the check for name constraints.
-     */
-    private void extracted() {
         checkNameConstraints();
     }
 
