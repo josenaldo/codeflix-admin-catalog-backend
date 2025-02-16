@@ -25,7 +25,7 @@ import java.util.Objects;
  * @author Josenaldo de Oliveira Matos Filho
  * @version 1.0
  */
-public class DefaultUpdateCategoyUseCase extends UpdateCategoryUseCase {
+public class DefaultUpdateCategoryUseCase extends UpdateCategoryUseCase {
 
     /**
      * The gateway used for performing operations related to categories.
@@ -41,7 +41,7 @@ public class DefaultUpdateCategoyUseCase extends UpdateCategoryUseCase {
      *
      * @param categoryGateway the category gateway; must not be {@code null}.
      */
-    public DefaultUpdateCategoyUseCase(final CategoryGateway categoryGateway) {
+    public DefaultUpdateCategoryUseCase(final CategoryGateway categoryGateway) {
         this.categoryGateway = Objects.requireNonNull(categoryGateway);
     }
 

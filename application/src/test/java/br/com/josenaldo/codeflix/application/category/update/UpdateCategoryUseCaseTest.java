@@ -35,7 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class UpdateCategoryUseCaseTest {
 
     @InjectMocks
-    private DefaultUpdateCategoyUseCase useCase;
+    private DefaultUpdateCategoryUseCase useCase;
 
     @Mock
     private CategoryGateway categoryGateway;
