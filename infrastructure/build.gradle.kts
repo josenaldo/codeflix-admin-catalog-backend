@@ -49,7 +49,6 @@ dependencies {
     implementation(libs.flyway.gradle.plugin)
 
     testImplementation(libs.flyway.core)
-
 }
 
 flyway {

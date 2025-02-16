@@ -1,4 +1,4 @@
-package br.com.josenaldo.codeflix.catalog.infrastructure.config.usecases;
+package br.com.josenaldo.codeflix.catalog.infrastructure.configuration.usecases;
 
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.application.category.create.DefaultCreateCategoryUseCase;

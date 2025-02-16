@@ -3,8 +3,8 @@ package br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
+import br.com.josenaldo.codeflix.catalog.annotations.MySQLGatewayTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
-import br.com.josenaldo.codeflix.catalog.infrastructure.testutils.MySQLGatewayTest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

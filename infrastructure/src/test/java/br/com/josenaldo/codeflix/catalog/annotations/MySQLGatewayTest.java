@@ -1,5 +1,6 @@
-package br.com.josenaldo.codeflix.catalog.infrastructure.testutils;
+package br.com.josenaldo.codeflix.catalog.annotations;
 
+import br.com.josenaldo.codeflix.catalog.testutils.RepositoryCleanUpExtension;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -36,7 +37,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ComponentScan(includeFilters = {
     @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*[MySQLGateway]")
 })
-@ExtendWith(RepositoryCleanUpExtensions.class)
+@ExtendWith(RepositoryCleanUpExtension.class)
 public @interface MySQLGatewayTest {
 
 }

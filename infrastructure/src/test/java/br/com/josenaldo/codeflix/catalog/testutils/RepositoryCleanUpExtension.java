@@ -1,4 +1,4 @@
-package br.com.josenaldo.codeflix.catalog.infrastructure.testutils;
+package br.com.josenaldo.codeflix.catalog.testutils;
 
 import java.util.Collection;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * @author Josenaldo de Oliveira Matos Filho
  * @version 1.0
  */
-public class RepositoryCleanUpExtensions implements BeforeEachCallback {
+public class RepositoryCleanUpExtension implements BeforeEachCallback {
 
     /**
      * Invoked before each test execution.

@@ -1,11 +1,11 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.category;
 
+import br.com.josenaldo.codeflix.catalog.annotations.MySQLGatewayTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
-import br.com.josenaldo.codeflix.catalog.infrastructure.testutils.MySQLGatewayTest;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
