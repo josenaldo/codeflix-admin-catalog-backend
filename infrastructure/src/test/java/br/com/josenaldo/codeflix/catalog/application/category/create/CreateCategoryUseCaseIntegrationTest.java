@@ -3,6 +3,7 @@ package br.com.josenaldo.codeflix.catalog.application.category.create;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -14,7 +15,6 @@ import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.Cat
 import io.vavr.control.Either;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
@@ -52,7 +52,7 @@ public class CreateCategoryUseCaseIntegrationTest {
      */
     @BeforeEach
     void tearDown() {
-        Mockito.reset(categoryGateway);
+        reset(categoryGateway);
     }
 
     /**
