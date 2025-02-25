@@ -1,0 +1,22 @@
+services:
+    db:
+        image: mysql:8.4
+        container_name: codeflix-catalog-backend-db
+        hostname: codeflix-catalog-backend-db
+        volumes:
+            - ./.docker/dbdata:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=codeflix_adm_videos
+        ports:
+            - "33064:3306"
+        networks:
+            - codeflix
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            interval: 5s
+            timeout: 10s
+            retries: 3
+networks:
+    codeflix:
+        driver: bridge

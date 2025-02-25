@@ -9,6 +9,6 @@ server:
 # Database configuration
 database:
     driver: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://codeflix-catalog-backend-db:3306/codeflix_adm_videos
+    url: jdbc:mysql://localhost:33064/codeflix_adm_videos
     user: root
     password: root

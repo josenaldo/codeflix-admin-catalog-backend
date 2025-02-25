@@ -38,3 +38,4 @@ out/
 
 # Devcontainer docker
 .devcontainer/.docker
+.docker
