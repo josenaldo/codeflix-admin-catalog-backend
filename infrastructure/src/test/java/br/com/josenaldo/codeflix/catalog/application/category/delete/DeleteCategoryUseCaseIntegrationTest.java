@@ -16,6 +16,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +57,35 @@ public class DeleteCategoryUseCaseIntegrationTest {
     private CategoryGateway categoryGateway;
 
     /**
+     * The id of the category used in the tests.
+     */
+    private CategoryID categoryId;
+
+    /**
      * Resets the category gateway spy before each test.
      * <p>
-     * This ensures that previous interactions do not affect subsequent tests.
+     * This ensures that previous interactions do not affect subsequent tests. It also resets the
+     * repository to a clean state before each test and creates a new category to be used in the
+     * tests.
      */
     @BeforeEach
     public void setup() {
+        final var category = Category.newCategory("Movie", null, true);
+        CategoryTestUtils.save(repository, category);
+        assertThat(repository.count()).isEqualTo(1);
+
+        categoryId = category.getId();
+    }
+
+    /**
+     * Deletes all categories from the repository after each test.
+     * <p>
+     * This ensures that the repository is clean before each test. It also resets the category
+     * gateway spy after each test.
+     */
+    @AfterEach
+    public void tearDown() {
+        repository.deleteAll();
         reset(categoryGateway);
     }
 
@@ -75,11 +99,7 @@ public class DeleteCategoryUseCaseIntegrationTest {
     @Test
     public void givenAValidId_whenCallDelete_thenShouldBeOk() {
         // Arrange - Given
-        final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
-        CategoryTestUtils.save(repository, category);
-        assertThat(repository.count()).isEqualTo(1);
-
-        final var expectedId = category.getId();
+        final var expectedId = categoryId;
 
         // Act - When
         final var actualException = catchException(() -> useCase.execute(expectedId.getValue()));
@@ -99,10 +119,6 @@ public class DeleteCategoryUseCaseIntegrationTest {
     @Test
     public void givenANoExistentId_whenCallDelete_thenShouldBeOk() {
         // Arrange - Given
-        final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
-        CategoryTestUtils.save(repository, category);
-        assertThat(repository.count()).isEqualTo(1);
-
         final var expectedId = CategoryID.unique();
 
         // Act - When
@@ -124,11 +140,7 @@ public class DeleteCategoryUseCaseIntegrationTest {
     @Test
     public void givenAValidId_whenCallDeleteByIdAndAnErrorOccur_thenShouldReturnAnException() {
         // Arrange - Given
-        final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
-        CategoryTestUtils.save(repository, category);
-        assertThat(repository.count()).isEqualTo(1);
-
-        final var expectedId = category.getId();
+        final var expectedId = categoryId;
 
         doThrow(new IllegalStateException("Gateway error"))
             .when(categoryGateway).deleteById(eq(expectedId));

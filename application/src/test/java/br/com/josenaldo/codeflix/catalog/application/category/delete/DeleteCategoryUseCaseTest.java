@@ -14,7 +14,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,8 +30,13 @@ public class DeleteCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    @AfterEach
-    public void tearDown() {
+    /**
+     * Resets the category gateway mock before each test.
+     * <p>
+     * This ensures that previous interactions do not affect the outcome of subsequent tests.
+     */
+    @BeforeEach
+    public void setup() {
         reset(categoryGateway);
     }
 

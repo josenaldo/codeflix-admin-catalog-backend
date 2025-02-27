@@ -17,6 +17,7 @@ import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +58,40 @@ public class GetCategoryByIdUseCaseIntegrationTest {
     private CategoryGateway categoryGateway;
 
     /**
-     * Resets the category gateway mock before each test.
+     * The id of the category used in the tests.
+     */
+    private CategoryID categoryId;
+
+    /**
+     * The category used in the tests.
+     */
+    private Category category;
+
+    /**
+     * Resets the category gateway spy before each test.
      * <p>
-     * This ensures that previous interactions do not affect the outcome of subsequent tests.
+     * This ensures that previous interactions do not affect subsequent tests. It also resets the
+     * repository to a clean state before each test and creates a new category to be used in the
+     * tests.
      */
     @BeforeEach
     public void setup() {
+        category = Category.newCategory("Filmes", "A categoria mais assistida", true);
+        CategoryTestUtils.save(repository, category);
+        assertThat(repository.count()).isEqualTo(1);
+
+        categoryId = category.getId();
+    }
+
+    /**
+     * Deletes all categories from the repository after each test.
+     * <p>
+     * This ensures that the repository is clean before each test. It also resets the category
+     * gateway spy after each test.
+     */
+    @AfterEach
+    public void tearDown() {
+        repository.deleteAll();
         reset(categoryGateway);
     }
 
@@ -81,14 +110,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
-        final var category = Category.newCategory(
-            expectedName,
-            expectedDescription,
-            expectedIsActive
-        );
-        final var expectedId = category.getId();
-
-        CategoryTestUtils.save(repository, category);
+        final var expectedId = categoryId;
         assertThat(repository.count()).isEqualTo(1);
 
         // Act - When

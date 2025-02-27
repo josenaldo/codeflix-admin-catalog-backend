@@ -13,7 +13,7 @@ import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import io.vavr.control.Either;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -35,23 +35,33 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @IntegrationTest
 public class CreateCategoryUseCaseIntegrationTest {
 
+    /**
+     * The use case for creating a category
+     */
     @Autowired
     private CreateCategoryUseCase useCase;
 
+    /**
+     * The repository used for accessing category data.
+     */
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryRepository repository;
 
+    /**
+     * The category gateway, spied to verify its interactions.
+     */
     @MockitoSpyBean
     private CategoryGateway categoryGateway;
 
     /**
-     * Resets the mock objects before each test.
+     * Deletes all categories from the repository after each test.
      * <p>
-     * This ensures that previous interactions with the CategoryGateway do not affect subsequent
-     * tests.
+     * This ensures that the repository is clean before each test. It also resets the category
+     * gateway spy after each test.
      */
-    @BeforeEach
-    void tearDown() {
+    @AfterEach
+    public void tearDown() {
+        repository.deleteAll();
         reset(categoryGateway);
     }
 
@@ -74,20 +84,20 @@ public class CreateCategoryUseCaseIntegrationTest {
             expectedDescription,
             expectedIsActive
         );
-        assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(repository.count()).isEqualTo(0);
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(repository.count()).isEqualTo(1);
         assertThat(executeOutput.isRight()).isTrue();
         CreateCategoryOutput createCategoryOutput = executeOutput.get();
         assertThat(createCategoryOutput).isNotNull();
         assertThat(createCategoryOutput.id()).isNotNull();
 
         String id = createCategoryOutput.id().getValue();
-        CategoryJpaEntity entity = categoryRepository.findById(id).orElse(null);
+        CategoryJpaEntity entity = repository.findById(id).orElse(null);
         assertThat(entity).isNotNull();
         assertThat(entity.getId()).isEqualTo(id);
         assertThat(entity.getName()).isEqualTo(expectedName);
@@ -114,20 +124,20 @@ public class CreateCategoryUseCaseIntegrationTest {
             expectedDescription,
             expectedIsActive
         );
-        assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(repository.count()).isEqualTo(0);
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(repository.count()).isEqualTo(1);
         assertThat(executeOutput.isRight()).isTrue();
         CreateCategoryOutput createCategoryOutput = executeOutput.get();
         String id = createCategoryOutput.id().getValue();
         assertThat(createCategoryOutput).isNotNull();
         assertThat(id).isNotNull();
 
-        CategoryJpaEntity entity = categoryRepository.findById(id).orElse(null);
+        CategoryJpaEntity entity = repository.findById(id).orElse(null);
         assertThat(entity).isNotNull();
         assertThat(entity.getId()).isEqualTo(id);
         assertThat(entity.getName()).isEqualTo(expectedName);
@@ -156,13 +166,13 @@ public class CreateCategoryUseCaseIntegrationTest {
             expectedDescription,
             expectedIsActive
         );
-        assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(repository.count()).isEqualTo(0);
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(repository.count()).isEqualTo(0);
         assertThat(executeOutput.isLeft()).isTrue();
         Notification notification = executeOutput.getLeft();
         assertThat(notification).isNotNull();
@@ -194,13 +204,13 @@ public class CreateCategoryUseCaseIntegrationTest {
         );
 
         doThrow(new IllegalStateException("Gateway error")).when(categoryGateway).create(any());
-        assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(repository.count()).isEqualTo(0);
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(repository.count()).isEqualTo(0);
         assertThat(executeOutput.isLeft()).isTrue();
         Notification notification = executeOutput.getLeft();
         assertThat(notification).isNotNull();
