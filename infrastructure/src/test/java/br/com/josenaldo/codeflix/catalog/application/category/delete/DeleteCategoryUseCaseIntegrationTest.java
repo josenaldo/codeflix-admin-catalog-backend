@@ -175,7 +175,7 @@ class DeleteCategoryUseCaseIntegrationTest {
         assertThat(actualException)
             .isNotNull()
             .isInstanceOf(DomainException.class)
-            .hasMessage("Invalid category ID");
+            .hasMessage("the Id invalid-id is invalid");
 
         verify(categoryGateway, times(0)).deleteById(any());
     }
