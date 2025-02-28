@@ -4,7 +4,7 @@
         <option name="ACTIVE_PROFILES" value="stag"/>
         <module name="admin-catalog-backend.infrastructure.main"/>
         <option name="SPRING_BOOT_MAIN_CLASS"
-          value="br.com.josenaldo.codeflix.infrastructure.Application"/>
+          value="br.com.josenaldo.codeflix.catalog.infrastructure.Application"/>
         <extension name="coverage">
             <pattern>
                 <option name="PATTERN" value="br.com.josenaldo.codeflix.infrastructure.*"/>
