@@ -126,6 +126,16 @@ public record Pagination<T>(
         return (int) Math.ceil((double) total / perPage);
     }
 
+
+    /**
+     * Calculates and returns the number of items in the current page.
+     *
+     * @return The number of items
+     */
+    public int itemsCount() {
+        return data.size();
+    }
+
     /**
      * Determines the zero-based index at which the items for this page start.
      *
