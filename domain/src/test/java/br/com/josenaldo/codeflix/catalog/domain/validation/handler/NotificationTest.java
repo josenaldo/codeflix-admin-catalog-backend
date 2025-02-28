@@ -15,7 +15,7 @@ class NotificationTest {
      * notification.
      */
     @Test
-    public void givenCreateMethod_whenCalled_thenNotificationHasNoErrors() {
+    void givenCreateMethod_whenCalled_thenNotificationHasNoErrors() {
         // Arrange - Given
 
         // Act - When
@@ -32,7 +32,7 @@ class NotificationTest {
      * error.
      */
     @Test
-    public void givenCreateWithErrorMethod_whenCalled_thenNotificationHasThatError() {
+    void givenCreateWithErrorMethod_whenCalled_thenNotificationHasThatError() {
         // Arrange - Given
         Error error = new Error("Test error");
 
@@ -50,7 +50,7 @@ class NotificationTest {
      * error with the throwable's message.
      */
     @Test
-    public void givenCreateWithThrowableMethod_whenCalled_thenNotificationContainsThrowableMessage() {
+    void givenCreateWithThrowableMethod_whenCalled_thenNotificationContainsThrowableMessage() {
         // Arrange - Given
         Throwable throwable = new RuntimeException("Throwable error");
 
@@ -67,7 +67,7 @@ class NotificationTest {
      * Tests that appending an Error to a Notification adds the error to the list.
      */
     @Test
-    public void givenNotification_whenAppendError_thenErrorIsAdded() {
+    void givenNotification_whenAppendError_thenErrorIsAdded() {
         // Arrange - Given
         Notification notification = Notification.create();
         Error error = new Error("Another error");
@@ -84,7 +84,7 @@ class NotificationTest {
      * Tests that appending errors from another ValidationHandler adds those errors.
      */
     @Test
-    public void givenNotification_whenAppendValidationHandler_thenReturnsNullAndAddsErrors() {
+    void givenNotification_whenAppendValidationHandler_thenReturnsNullAndAddsErrors() {
         // Arrange - Given
         Notification notification = Notification.create();
         Notification anotherNotification = Notification.create(new Error("Error from handler"));
@@ -102,7 +102,7 @@ class NotificationTest {
      * leaving the notification unchanged.
      */
     @Test
-    public void givenValidValidation_whenCallingValidate_thenNoErrorsAreAdded() {
+    void givenValidValidation_whenCallingValidate_thenNoErrorsAreAdded() {
         // Arrange - Given
         Notification notification = Notification.create();
         ValidationHandler.Validation validation = () -> {
@@ -121,7 +121,7 @@ class NotificationTest {
      * Tests that validate() catches a DomainException and adds its errors to the notification.
      */
     @Test
-    public void givenDomainException_whenCallingValidate_thenDomainErrorsAreAdded() {
+    void givenDomainException_whenCallingValidate_thenDomainErrorsAreAdded() {
         // Arrange - Given
         Notification notification = Notification.create();
         Error error1 = new Error("Domain error 1");
@@ -142,7 +142,7 @@ class NotificationTest {
      * Tests that validate() catches a generic Exception and adds its message as an error.
      */
     @Test
-    public void givenGenericException_whenCallingValidate_thenErrorWithExceptionMessageIsAdded() {
+    void givenGenericException_whenCallingValidate_thenErrorWithExceptionMessageIsAdded() {
         // Arrange - Given
         Notification notification = Notification.create();
         ValidationHandler.Validation validation = () -> {
@@ -162,7 +162,7 @@ class NotificationTest {
      * Tests that hasErrors() returns false for a new Notification and true after errors are added.
      */
     @Test
-    public void givenNotification_whenNoError_thenHasErrorsReturnsFalse_andAfterAppending_returnsTrue() {
+    void givenNotification_whenNoError_thenHasErrorsReturnsFalse_andAfterAppending_returnsTrue() {
         // Arrange - Given
         Notification notification = Notification.create();
 

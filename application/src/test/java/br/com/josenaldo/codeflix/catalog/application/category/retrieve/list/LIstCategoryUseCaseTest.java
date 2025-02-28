@@ -3,7 +3,6 @@ package br.com.josenaldo.codeflix.catalog.application.category.retrieve.list;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * List Categories UseCase unit tests
  */
 @ExtendWith(MockitoExtension.class)
-public class LIstCategoryUseCaseTest {
+class LIstCategoryUseCaseTest {
 
     @InjectMocks
     private DefaultListCategoryUseCase useCase;
@@ -41,7 +40,7 @@ public class LIstCategoryUseCaseTest {
      * Given a valid query, when calls list categories, then return all categories
      */
     @Test
-    public void givenAValidQuery_whenCallsListCategories_thenReturnCategories() {
+    void givenAValidQuery_whenCallsListCategories_thenReturnCategories() {
         // Arrange - Given
         final var categories = List.of(
             Category.newCategory("Filmes", "A categoria mais vista", true),
@@ -76,27 +75,28 @@ public class LIstCategoryUseCaseTest {
 
         final var expectedResult = expectedPagination.map(CategoryListOutput::from);
 
-        when(categoryGateway.findAll(eq(query))).thenReturn(expectedPagination);
+        when(categoryGateway.findAll(query)).thenReturn(expectedPagination);
 
         // Act - When
         final var actualResult = useCase.execute(query);
 
         // Assert - Then
-        assertThat(actualResult).isNotNull();
-        assertThat(actualResult).isEqualTo(expectedResult);
-        assertThat(actualResult.page()).isEqualTo(expectedPage);
-        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        assertThat(actualResult.total()).isEqualTo(expectedItemCount);
+        assertThat(actualResult)
+            .isNotNull()
+            .isEqualTo(expectedResult)
+            .extracting(Pagination::page, Pagination::perPage, Pagination::total)
+            .containsExactly(expectedPage, expectedPerPage, (long) expectedItemCount);
 
-        assertThat(actualResult.data()).isEqualTo(expectedResult.data());
-        assertThat(actualResult.data()).hasSize(expectedItemCount);
+        assertThat(actualResult.data())
+            .isEqualTo(expectedResult.data())
+            .hasSize(expectedItemCount);
     }
 
     /**
      * Given a valid query with no results, when calls list categories, then return empty list
      */
     @Test
-    public void givenAValidQueryWithNoResults_whenCallsListCategories_thenReturnEmptyList() {
+    void givenAValidQueryWithNoResults_whenCallsListCategories_thenReturnEmptyList() {
         // Arrange - Given
         final var expectedPage = 1;
         final var expectedPerPage = 10;
@@ -122,27 +122,28 @@ public class LIstCategoryUseCaseTest {
 
         Pagination<CategoryListOutput> expectedResult = expectedPagination.map(CategoryListOutput::from);
 
-        when(categoryGateway.findAll(eq(query))).thenReturn(expectedPagination);
+        when(categoryGateway.findAll(query)).thenReturn(expectedPagination);
 
         // Act - When
         final var actualResult = useCase.execute(query);
 
         // Assert - Then
-        assertThat(actualResult).isNotNull();
-        assertThat(actualResult).isEqualTo(expectedResult);
-        assertThat(actualResult.page()).isEqualTo(expectedPage);
-        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        assertThat(actualResult.total()).isEqualTo(expectedItemCount);
+        assertThat(actualResult)
+            .isNotNull()
+            .isEqualTo(expectedResult)
+            .extracting(Pagination::page, Pagination::perPage, Pagination::total)
+            .containsExactly(expectedPage, expectedPerPage, (long) expectedItemCount);
 
-        assertThat(actualResult.data()).isEqualTo(expectedResult.data());
-        assertThat(actualResult.data()).hasSize(expectedItemCount);
+        assertThat(actualResult.data())
+            .isEqualTo(expectedResult.data())
+            .hasSize(expectedItemCount);
     }
 
     /**
      * Given a valid query, when gateway throws exception, then throw exception
      */
     @Test
-    public void givenAValidQuery_whenGatewayThrowsException_thenThrowException() {
+    void givenAValidQuery_whenGatewayThrowsException_thenThrowException() {
         // Arrange - Given
         final var expectedPage = 1;
         final var expectedPerPage = 10;
@@ -168,13 +169,15 @@ public class LIstCategoryUseCaseTest {
         final var actualException = catchException(() -> useCase.execute(query));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage(expectedErrorMessage);
-        assertThat(actualException).hasNoCause();
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedErrorMessage)
+            .hasNoCause();
 
         final var actualDomainException = (DomainException) actualException;
-        assertThat(actualDomainException.getMessage()).isEqualTo(expectedErrorMessage);
+        assertThat(actualDomainException).hasMessage(expectedErrorMessage);
+
         assertThat(actualDomainException.getErrors().getFirst().message()).isEqualTo(
             expectedErrorMessage);
 

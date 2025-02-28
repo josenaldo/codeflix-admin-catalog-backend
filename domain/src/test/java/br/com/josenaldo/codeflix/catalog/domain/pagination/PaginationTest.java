@@ -14,7 +14,7 @@ class PaginationTest {
      * values (start, end, range, etc.) match the expected results.
      */
     @Test
-    public void givenAValidPageAndPerPage_whenCallsFromPage_thenShouldCreateAValidPagination() {
+    void givenAValidPageAndPerPage_whenCallsFromPage_thenShouldCreateAValidPagination() {
         // Arrange - Given
         final int page = 2;
         final int perPage = 10;
@@ -66,7 +66,7 @@ class PaginationTest {
      * calculation and related properties (offset, limit, range) are correct.
      */
     @Test
-    public void givenAValidStartAndEnd_whenCallsFromRange_thenShouldCreateAValidPagination() {
+    void givenAValidStartAndEnd_whenCallsFromRange_thenShouldCreateAValidPagination() {
         // Arrange - Given
         final int start = 0;
         final int end = 9;
@@ -87,7 +87,7 @@ class PaginationTest {
         assertThat(pagination.end()).isEqualTo(end);
         assertThat(pagination.range()).isEqualTo(Range.of(start, end));
 
-        assertThat(pagination.offset()).isEqualTo(0);
+        assertThat(pagination.offset()).isZero();
         assertThat(pagination.limit()).isEqualTo(10);
 
         assertThat(pagination.previousPage()).isEqualTo(1);
@@ -108,7 +108,7 @@ class PaginationTest {
      * page, perPage, and other pagination details.
      */
     @Test
-    public void givenAValidRange_whenCallsFromRange_thenShouldCreateAValidPagination() {
+    void givenAValidRange_whenCallsFromRange_thenShouldCreateAValidPagination() {
         // Arrange - Given
         Range range = Range.of(40, 49);
         final int total = 100;
@@ -159,7 +159,7 @@ class PaginationTest {
      * of pages based on total items and items per page.
      */
     @Test
-    public void givenAValidPagination_whenCallTotalPages_thenShouldReturnCorrectTotalPages() {
+    void givenAValidPagination_whenCallTotalPages_thenShouldReturnCorrectTotalPages() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(1, 10, 95, List.of());
 
@@ -175,7 +175,7 @@ class PaginationTest {
      * with the current page and perPage values.
      */
     @Test
-    public void givenAValidPagination_whenCallGetRange_thenShouldReturnCorrectRange() {
+    void givenAValidPagination_whenCallGetRange_thenShouldReturnCorrectRange() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(2, 10, 100, List.of());
 
@@ -191,7 +191,7 @@ class PaginationTest {
      * previous page is available.
      */
     @Test
-    public void givenAValidPagination_whenCallHasPrevious_thenShouldReturnCorrectValue() {
+    void givenAValidPagination_whenCallHasPrevious_thenShouldReturnCorrectValue() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(2, 10, 100, List.of());
 
@@ -207,7 +207,7 @@ class PaginationTest {
      * page is available.
      */
     @Test
-    public void givenAValidPagination_whenCallHasNextPage_thenShouldReturnCorrectValue() {
+    void givenAValidPagination_whenCallHasNextPage_thenShouldReturnCorrectValue() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(1, 10, 100, List.of());
 
@@ -223,7 +223,7 @@ class PaginationTest {
      * page is page 1.
      */
     @Test
-    public void givenAValidPagination_whenCallIsFirstPage_thenShouldReturnCorrectValue() {
+    void givenAValidPagination_whenCallIsFirstPage_thenShouldReturnCorrectValue() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(1, 10, 100, List.of());
 
@@ -239,7 +239,7 @@ class PaginationTest {
      * page is the final page.
      */
     @Test
-    public void givenAValidPagination_whenCallIsLastPage_thenShouldReturnCorrectValue() {
+    void givenAValidPagination_whenCallIsLastPage_thenShouldReturnCorrectValue() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(10, 10, 100, List.of());
 
@@ -255,7 +255,7 @@ class PaginationTest {
      * where there are zero total items.
      */
     @Test
-    public void givenAValidPagination_whenCallIsEmpty_thenShouldReturnCorrectValue() {
+    void givenAValidPagination_whenCallIsEmpty_thenShouldReturnCorrectValue() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(1, 10, 0, List.of());
 
@@ -271,7 +271,7 @@ class PaginationTest {
      * is at least one item in the list.
      */
     @Test
-    public void givenAValidPagination_whenCallIsNotEmpty_thenShouldReturnCorrectValue() {
+    void givenAValidPagination_whenCallIsNotEmpty_thenShouldReturnCorrectValue() {
         // Arrange - Given
         final var pagination = Pagination.fromPage(1, 10, 100, List.of("item1"));
 
@@ -287,7 +287,7 @@ class PaginationTest {
      * than 1). Expects an {@link IllegalArgumentException}.
      */
     @Test
-    public void givenInvalidPage_whenCreatePagination_thenShouldThrowException() {
+    void givenInvalidPage_whenCreatePagination_thenShouldThrowException() {
         // Arrange
         final int page = -1;
         final int perPage = 10;
@@ -299,9 +299,10 @@ class PaginationTest {
         final var exception = catchException(() -> Pagination.fromPage(page, perPage, total, data));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
-        assertThat(exception).hasMessageContaining("Page number must be equal or greater than 0.");
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Page number must be equal or greater than 0.");
     }
 
     /**
@@ -309,7 +310,7 @@ class PaginationTest {
      * less than 1). Expects an {@link IllegalArgumentException}.
      */
     @Test
-    public void givenInvalidPerPage_whenCreatePagination_thenShouldThrowException() {
+    void givenInvalidPerPage_whenCreatePagination_thenShouldThrowException() {
         // Arrange
         final int page = 1;
         final int perPage = 0;
@@ -321,9 +322,10 @@ class PaginationTest {
         final var exception = catchException(() -> Pagination.fromPage(page, perPage, total, data));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
-        assertThat(exception).hasMessageContaining("Items per page must be greater than 0.");
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Items per page must be greater than 0.");
     }
 
     /**
@@ -331,7 +333,7 @@ class PaginationTest {
      * (i.e., negative). Expects an {@link IllegalArgumentException}.
      */
     @Test
-    public void givenInvalidTotal_whenCreatePagination_thenShouldThrowException() {
+    void givenInvalidTotal_whenCreatePagination_thenShouldThrowException() {
         // Arrange
         final int page = 1;
         final int perPage = 10;
@@ -343,9 +345,10 @@ class PaginationTest {
         final var exception = catchException(() -> Pagination.fromPage(page, perPage, total, data));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
-        assertThat(exception).hasMessageContaining("Total items must be greater than or equal to 0.");
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Total items must be greater than or equal to 0.");
     }
 
     /**
@@ -353,7 +356,7 @@ class PaginationTest {
      * Verifies that it's recognized as both first and last.
      */
     @Test
-    public void givenSinglePageScenario_whenCreatePagination_thenShouldIdentifyAsOnlyPage() {
+    void givenSinglePageScenario_whenCreatePagination_thenShouldIdentifyAsOnlyPage() {
         // Arrange - Given
         final int page = 1;
         final int perPage = 10;
@@ -383,7 +386,7 @@ class PaginationTest {
      * number of pages. Expects an {@link IllegalArgumentException}.
      */
     @Test
-    public void givenPageBeyondTotalPages_whenCreatePagination_thenShouldThrowException() {
+    void givenPageBeyondTotalPages_whenCreatePagination_thenShouldThrowException() {
         // Arrange - Given
         final int page = 20;   // maior do que totalPages = 5
         final int perPage = 10;
@@ -404,7 +407,7 @@ class PaginationTest {
      * resulting in an invalid calculation of perPage. Expects an {@link IllegalArgumentException}.
      */
     @Test
-    public void givenInvalidRange_whenCallsFromRange_thenShouldThrowException() {
+    void givenInvalidRange_whenCallsFromRange_thenShouldThrowException() {
         // Arrange - Givens
         final var range = Range.of(10, 5); // start > end
         final int total = 100;
@@ -414,9 +417,10 @@ class PaginationTest {
         final var exception = catchException(() -> Pagination.fromRange(range, total, data));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
-        assertThat(exception).hasMessageContaining("Items per page must be greater than 0.");
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Items per page must be greater than 0.");
     }
 
     /**
@@ -425,7 +429,7 @@ class PaginationTest {
      * should throw a {@link NullPointerException}.
      */
     @Test
-    public void givenNullData_whenCallsFromPage_thenShouldThrowException() {
+    void givenNullData_whenCallsFromPage_thenShouldThrowException() {
         // Arrange - Given
         final int page = 1;
         final int perPage = 10;
@@ -436,9 +440,10 @@ class PaginationTest {
         final var exception = catchException(() -> Pagination.fromPage(page, perPage, total, data));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(NullPointerException.class);
-        assertThat(exception).hasMessageContaining("Data cannot be null.");
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(NullPointerException.class)
+            .hasMessageContaining("Data cannot be null.");
     }
 
     /**
@@ -447,7 +452,7 @@ class PaginationTest {
      * throw a {@link NullPointerException}.
      */
     @Test
-    public void givenNullData_whenCallsFromRange_thenShouldThrowException() {
+    void givenNullData_whenCallsFromRange_thenShouldThrowException() {
         // Arrange - Given
         final var range = Range.of(0, 9);
         final int total = 100;
@@ -457,9 +462,10 @@ class PaginationTest {
         final var exception = catchException(() -> Pagination.fromRange(range, total, data));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(NullPointerException.class);
-        assertThat(exception).hasMessageContaining("Data cannot be null.");
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(NullPointerException.class)
+            .hasMessageContaining("Data cannot be null.");
     }
 
     /**
@@ -468,7 +474,7 @@ class PaginationTest {
      * items. It should throw an {@link IllegalArgumentException}.
      */
     @Test
-    public void givenRangeExceedsTotal_whenCallsFromRange_thenShouldThrowException() {
+    void givenRangeExceedsTotal_whenCallsFromRange_thenShouldThrowException() {
         // Arrange - Given
         final var range = Range.of(90, 99);
         final int total = 50;
@@ -478,9 +484,10 @@ class PaginationTest {
         final var exception = catchException(() -> Pagination.fromRange(range, total, data));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(IllegalArgumentException.class);
-        assertThat(exception).hasMessageContaining("cannot exceed total pages");
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("cannot exceed total pages");
     }
 
     /**
@@ -489,7 +496,7 @@ class PaginationTest {
      * an empty state.
      */
     @Test
-    public void givenIntermediatePageWithEmptyData_whenCreatePagination_thenShouldBeValidButEmpty() {
+    void givenIntermediatePageWithEmptyData_whenCreatePagination_thenShouldBeValidButEmpty() {
         // Arrange - Given
         final int page = 3;
         final int perPage = 10;
@@ -519,7 +526,7 @@ class PaginationTest {
      * ensuring the class can handle them without overflow or incorrect calculations.
      */
     @Test
-    public void givenLargeValues_whenCreatePagination_thenShouldHandleWithoutOverflow() {
+    void givenLargeValues_whenCreatePagination_thenShouldHandleWithoutOverflow() {
         // Arrange - Given
         final int page = 1;
         final int perPage = 2_000_000_000;

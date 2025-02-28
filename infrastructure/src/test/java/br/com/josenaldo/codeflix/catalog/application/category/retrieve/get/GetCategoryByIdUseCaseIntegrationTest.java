@@ -37,7 +37,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  * @version 1.0
  */
 @IntegrationTest
-public class GetCategoryByIdUseCaseIntegrationTest {
+class GetCategoryByIdUseCaseIntegrationTest {
 
     /**
      * The use case for retrieving a category by its ID.
@@ -104,7 +104,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
      * repository reflects these values.
      */
     @Test
-    public void givenExistentCategoryId_whenFindCategoryById_thenShouldReturnCategory() {
+    void givenExistentCategoryId_whenFindCategoryById_thenShouldReturnCategory() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -157,7 +157,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
      * is of type DomainException.
      */
     @Test
-    public void givenNonExistentCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
+    void givenNonExistentCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = CategoryID.unique();
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId.getValue());
@@ -166,9 +166,10 @@ public class GetCategoryByIdUseCaseIntegrationTest {
         final var actualException = catchException(() -> useCase.execute(expectedId.getValue()));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException.getMessage()).isEqualTo(expectedErrorMessage);
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedErrorMessage);
     }
 
     /**
@@ -178,7 +179,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
      * the category was not found.
      */
     @Test
-    public void givenEmptyCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
+    void givenEmptyCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = "";
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
@@ -187,9 +188,11 @@ public class GetCategoryByIdUseCaseIntegrationTest {
         final var actualException = catchException(() -> useCase.execute(expectedId));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException.getMessage()).isEqualTo(expectedErrorMessage);
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedErrorMessage);
+
         verify(categoryGateway, times(0)).findById(any());
     }
 
@@ -200,7 +203,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
      * called.
      */
     @Test
-    public void givenBlankCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
+    void givenBlankCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = "   ";
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
@@ -209,9 +212,11 @@ public class GetCategoryByIdUseCaseIntegrationTest {
         final var actualException = catchException(() -> useCase.execute(expectedId));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException.getMessage()).isEqualTo(expectedErrorMessage);
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedErrorMessage);
+
         verify(categoryGateway, times(0)).findById(any());
     }
 
@@ -222,7 +227,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
      * and that the gateway is not invoked.
      */
     @Test
-    public void givenInvalidCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
+    void givenInvalidCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = "invalid-id";
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
@@ -231,9 +236,10 @@ public class GetCategoryByIdUseCaseIntegrationTest {
         final var actualException = catchException(() -> useCase.execute(expectedId));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException.getMessage()).isEqualTo(expectedErrorMessage);
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedErrorMessage);
         verify(categoryGateway, times(0)).findById(any());
     }
 
@@ -244,7 +250,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
      * method is invoked.
      */
     @Test
-    public void givenNullCategoryId_whenGetCategoryById_thenShouldThrowDomainException() {
+    void givenNullCategoryId_whenGetCategoryById_thenShouldThrowDomainException() {
         // Arrange - Given
         final String expectedId = null;
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
@@ -253,9 +259,11 @@ public class GetCategoryByIdUseCaseIntegrationTest {
         final var actualException = catchException(() -> useCase.execute(expectedId));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException.getMessage()).isEqualTo(expectedErrorMessage);
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedErrorMessage);
+
         verify(categoryGateway, times(0)).findById(any());
     }
 
@@ -267,7 +275,7 @@ public class GetCategoryByIdUseCaseIntegrationTest {
      * verifies that the use case throws the same exception with the correct message.
      */
     @Test
-    public void givenAnyCategoryId_whenCategoryGatewayThrowsAnException_thenReturnException() {
+    void givenAnyCategoryId_whenCategoryGatewayThrowsAnException_thenReturnException() {
         // Arrange - Given
         final var expectedId = CategoryID.unique();
         final var expectedErrorMessage = "Gateway error";
@@ -279,8 +287,9 @@ public class GetCategoryByIdUseCaseIntegrationTest {
         final var actualException = catchException(() -> useCase.execute(expectedId.getValue()));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(IllegalStateException.class);
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(IllegalStateException.class);
         assertThat(actualException.getMessage()).isEqualTo(expectedErrorMessage);
     }
 }

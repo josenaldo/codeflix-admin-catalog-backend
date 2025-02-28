@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * Unit tests for the CreateCategoryUseCase.
  */
 @ExtendWith(MockitoExtension.class)
-public class CreateCategoryUseCaseTest {
+class CreateCategoryUseCaseTest {
 
     @InjectMocks
     private DefaultCreateCategoryUseCase useCase;
@@ -46,7 +46,7 @@ public class CreateCategoryUseCaseTest {
      * correct parameters and that the category has no deletion date.
      */
     @Test
-    public void givenAValidCommand_whenCreateCategory_thenShouldReturnCategoryId() {
+    void givenAValidCommand_whenCreateCategory_thenShouldReturnCategoryId() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -89,7 +89,7 @@ public class CreateCategoryUseCaseTest {
      * correct parameters and that the category has a non-null deletion date.
      */
     @Test
-    public void givenAValidCommandWithInactiveCategory_whenCreateCategory_thenShouldReturnInactiveCategoryId() {
+    void givenAValidCommandWithInactiveCategory_whenCreateCategory_thenShouldReturnInactiveCategoryId() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -132,7 +132,7 @@ public class CreateCategoryUseCaseTest {
      * not invoked.
      */
     @Test
-    public void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
+    void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
         // Arrange - Given
         final String expectedName = null;
         final var expectedDescription = "A categoria mais assistida";
@@ -167,7 +167,7 @@ public class CreateCategoryUseCaseTest {
      * the category gateway is invoked with the correct parameters.
      */
     @Test
-    public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldThrowDomainException() {
+    void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldThrowDomainException() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";

@@ -1,13 +1,15 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.category;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import br.com.josenaldo.codeflix.catalog.annotations.MySQLGatewayTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
+import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,9 +46,9 @@ class CategoryMySQLGatewayTest {
      * {@link CategoryMySQLGateway} and the {@link CategoryRepository}.
      */
     @Test
-    public void testInjectedDependencies() {
-        Assertions.assertThat(categoryGateway).isNotNull();
-        Assertions.assertThat(categoryRepository).isNotNull();
+    void testInjectedDependencies() {
+        assertThat(categoryGateway).isNotNull();
+        assertThat(categoryRepository).isNotNull();
     }
 
     /**
@@ -57,7 +59,7 @@ class CategoryMySQLGatewayTest {
      * matches the domain object.
      */
     @Test
-    public void givenAValidCategory_whenCallsCreate_thenShouldReturnANewCategory() {
+    void givenAValidCategory_whenCallsCreate_thenShouldReturnANewCategory() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -67,35 +69,35 @@ class CategoryMySQLGatewayTest {
             expectedDescription,
             expectedIsActive
         );
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
 
         // Act - When
         Category actualCategory = categoryGateway.create(category);
 
         // Assert - Then
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(1);
-        Assertions.assertThat(actualCategory).isNotNull();
-        Assertions.assertThat(actualCategory.getId()).isEqualTo(category.getId());
-        Assertions.assertThat(actualCategory.getName()).isEqualTo(expectedName);
-        Assertions.assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
-        Assertions.assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
-        Assertions.assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getUpdatedAt());
-        Assertions.assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
-        Assertions.assertThat(actualCategory.getDeletedAt()).isNull();
+        assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getId()).isEqualTo(category.getId());
+        assertThat(actualCategory.getName()).isEqualTo(expectedName);
+        assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
+        assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
+        assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(actualCategory.getDeletedAt()).isNull();
 
         String id = actualCategory.getId().getValue();
         final var createdCategoryEntity = categoryRepository.findById(id).orElse(null);
-        Assertions.assertThat(createdCategoryEntity).isNotNull();
-        Assertions.assertThat(createdCategoryEntity.getId()).isEqualTo(category.getId().getValue());
-        Assertions.assertThat(createdCategoryEntity.getName()).isEqualTo(expectedName);
-        Assertions.assertThat(createdCategoryEntity.getDescription())
-                  .isEqualTo(expectedDescription);
-        Assertions.assertThat(createdCategoryEntity.isActive()).isEqualTo(expectedIsActive);
-        Assertions.assertThat(createdCategoryEntity.getCreatedAt())
-                  .isEqualTo(category.getCreatedAt());
-        Assertions.assertThat(createdCategoryEntity.getUpdatedAt())
-                  .isEqualTo(category.getUpdatedAt());
-        Assertions.assertThat(createdCategoryEntity.getDeletedAt()).isNull();
+        assertThat(createdCategoryEntity).isNotNull();
+        assertThat(createdCategoryEntity.getId()).isEqualTo(category.getId().getValue());
+        assertThat(createdCategoryEntity.getName()).isEqualTo(expectedName);
+        assertThat(createdCategoryEntity.getDescription())
+            .isEqualTo(expectedDescription);
+        assertThat(createdCategoryEntity.isActive()).isEqualTo(expectedIsActive);
+        assertThat(createdCategoryEntity.getCreatedAt())
+            .isEqualTo(category.getCreatedAt());
+        assertThat(createdCategoryEntity.getUpdatedAt())
+            .isEqualTo(category.getUpdatedAt());
+        assertThat(createdCategoryEntity.getDeletedAt()).isNull();
     }
 
     /**
@@ -105,22 +107,24 @@ class CategoryMySQLGatewayTest {
      * and the persisted entity reflects the new values.
      */
     @Test
-    public void givenAValidCategory_whenCallsUpdate_thenShouldReturnAUpdatedCategory() {
+    void givenAValidCategory_whenCallsUpdate_thenShouldReturnAUpdatedCategory() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var category = Category.newCategory("Film", null, expectedIsActive);
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+
+        assertThat(categoryRepository.count()).isZero();
+
         categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(categoryRepository.count()).isEqualTo(1);
 
         final var currentInvalidCategory = categoryRepository.findById(category.getId().getValue())
                                                              .orElse(null);
-        Assertions.assertThat(currentInvalidCategory).isNotNull();
-        Assertions.assertThat(currentInvalidCategory.getName()).isEqualTo("Film");
-        Assertions.assertThat(currentInvalidCategory.getDescription()).isNull();
-        Assertions.assertThat(currentInvalidCategory.isActive()).isTrue();
+        assertThat(currentInvalidCategory).isNotNull();
+        assertThat(currentInvalidCategory.getName()).isEqualTo("Film");
+        assertThat(currentInvalidCategory.getDescription()).isNull();
+        assertThat(currentInvalidCategory.isActive()).isTrue();
 
         // Act - When
         final var updatedCategory = category.clone().update(
@@ -131,29 +135,29 @@ class CategoryMySQLGatewayTest {
         Category actualCategory = categoryGateway.update(updatedCategory);
 
         // Assert - Then
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(1);
-        Assertions.assertThat(actualCategory).isNotNull();
-        Assertions.assertThat(actualCategory.getId()).isEqualTo(updatedCategory.getId());
-        Assertions.assertThat(actualCategory.getName()).isEqualTo(expectedName);
-        Assertions.assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
-        Assertions.assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
-        Assertions.assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
-        Assertions.assertThat(actualCategory.getUpdatedAt()).isAfter(category.getUpdatedAt());
-        Assertions.assertThat(actualCategory.getDeletedAt()).isNull();
+        assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getId()).isEqualTo(updatedCategory.getId());
+        assertThat(actualCategory.getName()).isEqualTo(expectedName);
+        assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
+        assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
+        assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
+        assertThat(actualCategory.getUpdatedAt()).isAfter(category.getUpdatedAt());
+        assertThat(actualCategory.getDeletedAt()).isNull();
 
         String id = actualCategory.getId().getValue();
         final var updatedCategoryEntity = categoryRepository.findById(id).orElse(null);
-        Assertions.assertThat(updatedCategoryEntity).isNotNull();
-        Assertions.assertThat(updatedCategoryEntity.getId()).isEqualTo(category.getId().getValue());
-        Assertions.assertThat(updatedCategoryEntity.getName()).isEqualTo(expectedName);
-        Assertions.assertThat(updatedCategoryEntity.getDescription())
-                  .isEqualTo(expectedDescription);
-        Assertions.assertThat(updatedCategoryEntity.isActive()).isEqualTo(expectedIsActive);
-        Assertions.assertThat(updatedCategoryEntity.getCreatedAt())
-                  .isEqualTo(category.getUpdatedAt());
-        Assertions.assertThat(updatedCategoryEntity.getUpdatedAt())
-                  .isAfter(category.getUpdatedAt());
-        Assertions.assertThat(updatedCategoryEntity.getDeletedAt()).isNull();
+        assertThat(updatedCategoryEntity).isNotNull();
+        assertThat(updatedCategoryEntity.getId()).isEqualTo(category.getId().getValue());
+        assertThat(updatedCategoryEntity.getName()).isEqualTo(expectedName);
+        assertThat(updatedCategoryEntity.getDescription())
+            .isEqualTo(expectedDescription);
+        assertThat(updatedCategoryEntity.isActive()).isEqualTo(expectedIsActive);
+        assertThat(updatedCategoryEntity.getCreatedAt())
+            .isEqualTo(category.getUpdatedAt());
+        assertThat(updatedCategoryEntity.getUpdatedAt())
+            .isAfter(category.getUpdatedAt());
+        assertThat(updatedCategoryEntity.getDeletedAt()).isNull();
     }
 
     /**
@@ -163,21 +167,21 @@ class CategoryMySQLGatewayTest {
      * contains the category.
      */
     @Test
-    public void givenAPrePersistedCategory_whenTryToDelete_thenShouldDeleteCategory() {
+    void givenAPrePersistedCategory_whenTryToDelete_thenShouldDeleteCategory() {
         // Arrange - Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
         categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(categoryRepository.count()).isEqualTo(1);
 
         // Act - When
         categoryGateway.deleteById(category.getId());
 
         // Assert - Then
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
         final var deletedCategoryEntity = categoryRepository.findById(category.getId().getValue())
                                                             .orElse(null);
-        Assertions.assertThat(deletedCategoryEntity).isNull();
+        assertThat(deletedCategoryEntity).isNull();
     }
 
     /**
@@ -188,7 +192,7 @@ class CategoryMySQLGatewayTest {
      * exists with the given invalid ID.
      */
     @Test
-    public void givenAnInvalidCategoryId_whenTryToDelete_thenShouldDeleteCategory() {
+    void givenAnInvalidCategoryId_whenTryToDelete_thenShouldDeleteCategory() {
         // Arrange - Given
         final var id = CategoryID.unique();
 
@@ -197,7 +201,7 @@ class CategoryMySQLGatewayTest {
 
         // Assert - Then
         final var deletedCategoryEntity = categoryRepository.findById(id.getValue()).orElse(null);
-        Assertions.assertThat(deletedCategoryEntity).isNull();
+        assertThat(deletedCategoryEntity).isNull();
     }
 
     /**
@@ -207,7 +211,7 @@ class CategoryMySQLGatewayTest {
      * the repository.
      */
     @Test
-    public void givenAPrePersistedCategoryAndAValidCategoryId_whenCallsFindById_thenShouldReturnACategory() {
+    void givenAPrePersistedCategoryAndAValidCategoryId_whenCallsFindById_thenShouldReturnACategory() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -217,23 +221,23 @@ class CategoryMySQLGatewayTest {
             expectedDescription,
             expectedIsActive
         );
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
         categoryRepository.saveAndFlush(CategoryJpaEntity.from(category));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(categoryRepository.count()).isOne();
 
         // Act - When
         Category actualCategory = categoryGateway.findById(category.getId()).orElse(null);
 
         // Assert - Then
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(1);
-        Assertions.assertThat(actualCategory).isNotNull();
-        Assertions.assertThat(actualCategory.getId()).isEqualTo(category.getId());
-        Assertions.assertThat(actualCategory.getName()).isEqualTo(category.getName());
-        Assertions.assertThat(actualCategory.getDescription()).isEqualTo(category.getDescription());
-        Assertions.assertThat(actualCategory.isActive()).isEqualTo(category.isActive());
-        Assertions.assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
-        Assertions.assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
-        Assertions.assertThat(actualCategory.getDeletedAt()).isNull();
+        assertThat(categoryRepository.count()).isEqualTo(1);
+        assertThat(actualCategory).isNotNull();
+        assertThat(actualCategory.getId()).isEqualTo(category.getId());
+        assertThat(actualCategory.getName()).isEqualTo(category.getName());
+        assertThat(actualCategory.getDescription()).isEqualTo(category.getDescription());
+        assertThat(actualCategory.isActive()).isEqualTo(category.isActive());
+        assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
+        assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
+        assertThat(actualCategory.getDeletedAt()).isNull();
     }
 
     /**
@@ -243,7 +247,7 @@ class CategoryMySQLGatewayTest {
      * category is found.
      */
     @Test
-    public void givenNotStoredCategoryId_whenCallsFindById_thenShouldReturnEmpty() {
+    void givenNotStoredCategoryId_whenCallsFindById_thenShouldReturnEmpty() {
         // Arrange - Given
         final var id = CategoryID.unique();
 
@@ -251,7 +255,7 @@ class CategoryMySQLGatewayTest {
         final var actualCategory = categoryGateway.findById(id);
 
         // Assert - Then
-        Assertions.assertThat(actualCategory.isEmpty()).isTrue();
+        assertThat(actualCategory).isEmpty();
     }
 
     /**
@@ -261,7 +265,7 @@ class CategoryMySQLGatewayTest {
      * paginated result contains the expected data for the first page.
      */
     @Test
-    public void givenAPrePersistedCategories_whenCallsFindAll_thenShouldReturnAPaginated() {
+    void givenAPrePersistedCategories_whenCallsFindAll_thenShouldReturnAPaginated() {
         // Arrange - Given
         final var expectedPage = 0;
         final var expectedPerPage = 1;
@@ -270,13 +274,13 @@ class CategoryMySQLGatewayTest {
         final var filmes = Category.newCategory("Filmes", null, true);
         final var series = Category.newCategory("Series", null, true);
         final var documentarios = Category.newCategory("Documentários", null, true);
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
         categoryRepository.saveAllAndFlush(List.of(
             CategoryJpaEntity.from(filmes),
             CategoryJpaEntity.from(series),
             CategoryJpaEntity.from(documentarios)
         ));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(3);
+        assertThat(categoryRepository.count()).isEqualTo(3);
 
         CategorySearchQuery query = CategorySearchQuery.of(0, 1, null, "name", "ASC");
 
@@ -284,27 +288,27 @@ class CategoryMySQLGatewayTest {
         final var actualResult = categoryGateway.findAll(query);
 
         // Assert - Then
-        Assertions.assertThat(actualResult).isNotNull();
-        Assertions.assertThat(actualResult.page()).isEqualTo(expectedPage);
-        Assertions.assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        Assertions.assertThat(actualResult.total()).isEqualTo(expectedTotal);
-        Assertions.assertThat(actualResult.data()).hasSize(expectedPerPage);
-        Assertions.assertThat(actualResult.data()).isNotNull();
-        Assertions.assertThat(actualResult.data()).isNotEmpty();
-        Assertions.assertThat(actualResult.data()).extracting(Category::getName)
-                  .containsExactly(documentarios.getName());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getId)
-                  .containsExactly(documentarios.getId());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDescription)
-                  .containsExactly(documentarios.getDescription());
-        Assertions.assertThat(actualResult.data()).extracting(Category::isActive)
-                  .containsExactly(documentarios.isActive());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getCreatedAt)
-                  .containsExactly(documentarios.getCreatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
-                  .containsExactly(documentarios.getUpdatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDeletedAt)
-                  .containsExactly(documentarios.getDeletedAt());
+        assertThat(actualResult).isNotNull();
+        assertThat(actualResult.page()).isEqualTo(expectedPage);
+        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
+        assertThat(actualResult.total()).isEqualTo(expectedTotal);
+        assertThat(actualResult.data()).hasSize(expectedPerPage);
+        assertThat(actualResult.data()).isNotNull();
+        assertThat(actualResult.data()).isNotEmpty();
+        assertThat(actualResult.data()).extracting(Category::getName)
+                                       .containsExactly(documentarios.getName());
+        assertThat(actualResult.data()).extracting(Category::getId)
+                                       .containsExactly(documentarios.getId());
+        assertThat(actualResult.data()).extracting(Category::getDescription)
+                                       .containsExactly(documentarios.getDescription());
+        assertThat(actualResult.data()).extracting(Category::isActive)
+                                       .containsExactly(documentarios.isActive());
+        assertThat(actualResult.data()).extracting(Category::getCreatedAt)
+                                       .containsExactly(documentarios.getCreatedAt());
+        assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
+                                       .containsExactly(documentarios.getUpdatedAt());
+        assertThat(actualResult.data()).extracting(Category::getDeletedAt)
+                                       .containsExactly(documentarios.getDeletedAt());
     }
 
     /**
@@ -314,12 +318,12 @@ class CategoryMySQLGatewayTest {
      * repository is empty.
      */
     @Test
-    public void givenEmptyCategoriesTable_whenCallsFindAll_thenShouldReturnEmptyPaginated() {
+    void givenEmptyCategoriesTable_whenCallsFindAll_thenShouldReturnEmptyPaginated() {
         // Arrange - Given
         final var expectedPage = 0;
         final var expectedPerPage = 1;
         final var expectedTotal = 0;
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
 
         CategorySearchQuery query = CategorySearchQuery.of(0, 1, null, "name", "ASC");
 
@@ -327,12 +331,12 @@ class CategoryMySQLGatewayTest {
         final var actualResult = categoryGateway.findAll(query);
 
         // Assert - Then
-        Assertions.assertThat(actualResult).isNotNull();
-        Assertions.assertThat(actualResult.page()).isEqualTo(expectedPage);
-        Assertions.assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        Assertions.assertThat(actualResult.total()).isEqualTo(expectedTotal);
-        Assertions.assertThat(actualResult.data()).hasSize(expectedTotal);
-        Assertions.assertThat(actualResult.data()).isEmpty();
+        assertThat(actualResult).isNotNull();
+        assertThat(actualResult.page()).isEqualTo(expectedPage);
+        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
+        assertThat(actualResult.total()).isEqualTo(expectedTotal);
+        assertThat(actualResult.data()).hasSize(expectedTotal);
+        assertThat(actualResult.data()).isEmpty();
     }
 
     /**
@@ -342,50 +346,56 @@ class CategoryMySQLGatewayTest {
      * pagination correctly returns the expected category for each page.
      */
     @Test
-    public void givenFollowPagination_whenCallsFindAll_thenShouldReturnAPaginated() {
+    void givenFollowPagination_whenCallsFindAll_thenShouldReturnAPaginated() {
         // Arrange - Given
         final var expectedPage = 0;
         final var expectedPerPage = 1;
-        final var expectedTotal = 3;
+        final var expectedTotal = 3L;
 
         final var filmes = Category.newCategory("Filmes", null, true);
         final var series = Category.newCategory("Series", null, true);
         final var documentarios = Category.newCategory("Documentários", null, true);
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+
+        assertThat(categoryRepository.count()).isZero();
+
         categoryRepository.saveAllAndFlush(List.of(
             CategoryJpaEntity.from(filmes),
             CategoryJpaEntity.from(series),
             CategoryJpaEntity.from(documentarios)
         ));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(3);
+        assertThat(categoryRepository.count()).isEqualTo(3);
 
         CategorySearchQuery query = CategorySearchQuery.of(0, 1, null, "name", "ASC");
 
-        // Act - When (Page 0)
+        // Act - When
         var actualResult = categoryGateway.findAll(query);
 
-        // Assert - Then (Page 0)
-        Assertions.assertThat(actualResult).isNotNull();
-        Assertions.assertThat(actualResult.page()).isEqualTo(expectedPage);
-        Assertions.assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        Assertions.assertThat(actualResult.total()).isEqualTo(expectedTotal);
-        Assertions.assertThat(actualResult.data()).hasSize(expectedPerPage);
-        Assertions.assertThat(actualResult.data()).isNotNull();
-        Assertions.assertThat(actualResult.data()).isNotEmpty();
-        Assertions.assertThat(actualResult.data()).extracting(Category::getName)
-                  .containsExactly(documentarios.getName());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getId)
-                  .containsExactly(documentarios.getId());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDescription)
-                  .containsExactly(documentarios.getDescription());
-        Assertions.assertThat(actualResult.data()).extracting(Category::isActive)
-                  .containsExactly(documentarios.isActive());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getCreatedAt)
-                  .containsExactly(documentarios.getCreatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
-                  .containsExactly(documentarios.getUpdatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDeletedAt)
-                  .containsExactly(documentarios.getDeletedAt());
+        // Assert - Then
+        assertThat(actualResult)
+            .isNotNull()
+            .extracting(Pagination::page, Pagination::perPage, Pagination::total)
+            .containsExactly(expectedPage, expectedPerPage, expectedTotal);
+
+        List<Category> data = actualResult.data();
+        assertThat(data)
+            .isNotNull()
+            .isNotEmpty()
+            .hasSize(expectedPerPage)
+            .extracting(Category::getName)
+            .containsExactly(documentarios.getName());
+
+        assertThat(data).extracting(Category::getId)
+                        .containsExactly(documentarios.getId());
+        assertThat(data).extracting(Category::getDescription)
+                        .containsExactly(documentarios.getDescription());
+        assertThat(data).extracting(Category::isActive)
+                        .containsExactly(documentarios.isActive());
+        assertThat(data).extracting(Category::getCreatedAt)
+                        .containsExactly(documentarios.getCreatedAt());
+        assertThat(data).extracting(Category::getUpdatedAt)
+                        .containsExactly(documentarios.getUpdatedAt());
+        assertThat(data).extracting(Category::getDeletedAt)
+                        .containsExactly(documentarios.getDeletedAt());
 
         // Arrange - Given new expected page for next test
         final var newExpectedPage = 2;
@@ -395,27 +405,32 @@ class CategoryMySQLGatewayTest {
         actualResult = categoryGateway.findAll(query);
 
         // Assert - Then (Page 2)
-        Assertions.assertThat(actualResult).isNotNull();
-        Assertions.assertThat(actualResult.page()).isEqualTo(newExpectedPage);
-        Assertions.assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        Assertions.assertThat(actualResult.total()).isEqualTo(expectedTotal);
-        Assertions.assertThat(actualResult.data()).hasSize(expectedPerPage);
-        Assertions.assertThat(actualResult.data()).isNotNull();
-        Assertions.assertThat(actualResult.data()).isNotEmpty();
-        Assertions.assertThat(actualResult.data()).extracting(Category::getName)
-                  .containsExactly(series.getName());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getId)
-                  .containsExactly(series.getId());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDescription)
-                  .containsExactly(series.getDescription());
-        Assertions.assertThat(actualResult.data()).extracting(Category::isActive)
-                  .containsExactly(series.isActive());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getCreatedAt)
-                  .containsExactly(series.getCreatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
-                  .containsExactly(series.getUpdatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDeletedAt)
-                  .containsExactly(series.getDeletedAt());
+        assertThat(actualResult).isNotNull();
+        assertThat(actualResult.page()).isEqualTo(newExpectedPage);
+        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
+        assertThat(actualResult.total()).isEqualTo(expectedTotal);
+
+        final var actualData = actualResult.data();
+
+        assertThat(actualData)
+            .isNotNull()
+            .isNotEmpty()
+            .hasSize(expectedPerPage);
+
+        assertThat(actualData).extracting(Category::getName)
+                              .containsExactly(series.getName());
+        assertThat(actualData).extracting(Category::getId)
+                              .containsExactly(series.getId());
+        assertThat(actualData).extracting(Category::getDescription)
+                              .containsExactly(series.getDescription());
+        assertThat(actualData).extracting(Category::isActive)
+                              .containsExactly(series.isActive());
+        assertThat(actualData).extracting(Category::getCreatedAt)
+                              .containsExactly(series.getCreatedAt());
+        assertThat(actualData).extracting(Category::getUpdatedAt)
+                              .containsExactly(series.getUpdatedAt());
+        assertThat(actualData).extracting(Category::getDeletedAt)
+                              .containsExactly(series.getDeletedAt());
     }
 
     /**
@@ -426,7 +441,7 @@ class CategoryMySQLGatewayTest {
      * matches the term.
      */
     @Test
-    public void givenAPrePersistedCategoriesAndDocAsTerm_whenCallsFindAllAndTermsMatchesCategoryName_thenShouldReturnAPaginated() {
+    void givenAPrePersistedCategoriesAndDocAsTerm_whenCallsFindAllAndTermsMatchesCategoryName_thenShouldReturnAPaginated() {
         // Arrange - Given
         final var expectedPage = 0;
         final var expectedPerPage = 1;
@@ -435,13 +450,13 @@ class CategoryMySQLGatewayTest {
         final var filmes = Category.newCategory("Filmes", null, true);
         final var series = Category.newCategory("Series", null, true);
         final var documentarios = Category.newCategory("Documentários", null, true);
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
         categoryRepository.saveAllAndFlush(List.of(
             CategoryJpaEntity.from(filmes),
             CategoryJpaEntity.from(series),
             CategoryJpaEntity.from(documentarios)
         ));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(3);
+        assertThat(categoryRepository.count()).isEqualTo(3);
 
         CategorySearchQuery query = CategorySearchQuery.of(0, 1, "doc", "name", "ASC");
 
@@ -449,27 +464,27 @@ class CategoryMySQLGatewayTest {
         final var actualResult = categoryGateway.findAll(query);
 
         // Assert - Then
-        Assertions.assertThat(actualResult).isNotNull();
-        Assertions.assertThat(actualResult.page()).isEqualTo(expectedPage);
-        Assertions.assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        Assertions.assertThat(actualResult.total()).isEqualTo(expectedTotal);
-        Assertions.assertThat(actualResult.data()).hasSize(expectedPerPage);
-        Assertions.assertThat(actualResult.data()).isNotNull();
-        Assertions.assertThat(actualResult.data()).isNotEmpty();
-        Assertions.assertThat(actualResult.data()).extracting(Category::getName)
-                  .containsExactly(documentarios.getName());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getId)
-                  .containsExactly(documentarios.getId());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDescription)
-                  .containsExactly(documentarios.getDescription());
-        Assertions.assertThat(actualResult.data()).extracting(Category::isActive)
-                  .containsExactly(documentarios.isActive());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getCreatedAt)
-                  .containsExactly(documentarios.getCreatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
-                  .containsExactly(documentarios.getUpdatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDeletedAt)
-                  .containsExactly(documentarios.getDeletedAt());
+        assertThat(actualResult).isNotNull();
+        assertThat(actualResult.page()).isEqualTo(expectedPage);
+        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
+        assertThat(actualResult.total()).isEqualTo(expectedTotal);
+        assertThat(actualResult.data()).hasSize(expectedPerPage);
+        assertThat(actualResult.data()).isNotNull();
+        assertThat(actualResult.data()).isNotEmpty();
+        assertThat(actualResult.data()).extracting(Category::getName)
+                                       .containsExactly(documentarios.getName());
+        assertThat(actualResult.data()).extracting(Category::getId)
+                                       .containsExactly(documentarios.getId());
+        assertThat(actualResult.data()).extracting(Category::getDescription)
+                                       .containsExactly(documentarios.getDescription());
+        assertThat(actualResult.data()).extracting(Category::isActive)
+                                       .containsExactly(documentarios.isActive());
+        assertThat(actualResult.data()).extracting(Category::getCreatedAt)
+                                       .containsExactly(documentarios.getCreatedAt());
+        assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
+                                       .containsExactly(documentarios.getUpdatedAt());
+        assertThat(actualResult.data()).extracting(Category::getDeletedAt)
+                                       .containsExactly(documentarios.getDeletedAt());
     }
 
     /**
@@ -480,7 +495,7 @@ class CategoryMySQLGatewayTest {
      * whose description matches the term.
      */
     @Test
-    public void givenAPrePersistedCategoriesAndMaisAssistidaAsTerm_whenCallsFindAllAndTermsMatchesCategoryDescription_thenShouldReturnAPaginated() {
+    void givenAPrePersistedCategoriesAndMaisAssistidaAsTerm_whenCallsFindAllAndTermsMatchesCategoryDescription_thenShouldReturnAPaginated() {
         // Arrange - Given
         final var expectedPage = 0;
         final var expectedPerPage = 1;
@@ -493,13 +508,13 @@ class CategoryMySQLGatewayTest {
             "A categoria menos assistida",
             true
         );
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
         categoryRepository.saveAllAndFlush(List.of(
             CategoryJpaEntity.from(filmes),
             CategoryJpaEntity.from(series),
             CategoryJpaEntity.from(documentarios)
         ));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(3);
+        assertThat(categoryRepository.count()).isEqualTo(3);
 
         CategorySearchQuery query = CategorySearchQuery.of(0, 1, "MAIS ASSISTIDA", "name", "ASC");
 
@@ -507,27 +522,27 @@ class CategoryMySQLGatewayTest {
         final var actualResult = categoryGateway.findAll(query);
 
         // Assert - Then
-        Assertions.assertThat(actualResult).isNotNull();
-        Assertions.assertThat(actualResult.page()).isEqualTo(expectedPage);
-        Assertions.assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        Assertions.assertThat(actualResult.total()).isEqualTo(expectedTotal);
-        Assertions.assertThat(actualResult.data()).hasSize(expectedPerPage);
-        Assertions.assertThat(actualResult.data()).isNotNull();
-        Assertions.assertThat(actualResult.data()).isNotEmpty();
-        Assertions.assertThat(actualResult.data()).extracting(Category::getName)
-                  .containsExactly(filmes.getName());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getId)
-                  .containsExactly(filmes.getId());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDescription)
-                  .containsExactly(filmes.getDescription());
-        Assertions.assertThat(actualResult.data()).extracting(Category::isActive)
-                  .containsExactly(filmes.isActive());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getCreatedAt)
-                  .containsExactly(filmes.getCreatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
-                  .containsExactly(filmes.getUpdatedAt());
-        Assertions.assertThat(actualResult.data()).extracting(Category::getDeletedAt)
-                  .containsExactly(filmes.getDeletedAt());
+        assertThat(actualResult).isNotNull();
+        assertThat(actualResult.page()).isEqualTo(expectedPage);
+        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
+        assertThat(actualResult.total()).isEqualTo(expectedTotal);
+        assertThat(actualResult.data()).hasSize(expectedPerPage);
+        assertThat(actualResult.data()).isNotNull();
+        assertThat(actualResult.data()).isNotEmpty();
+        assertThat(actualResult.data()).extracting(Category::getName)
+                                       .containsExactly(filmes.getName());
+        assertThat(actualResult.data()).extracting(Category::getId)
+                                       .containsExactly(filmes.getId());
+        assertThat(actualResult.data()).extracting(Category::getDescription)
+                                       .containsExactly(filmes.getDescription());
+        assertThat(actualResult.data()).extracting(Category::isActive)
+                                       .containsExactly(filmes.isActive());
+        assertThat(actualResult.data()).extracting(Category::getCreatedAt)
+                                       .containsExactly(filmes.getCreatedAt());
+        assertThat(actualResult.data()).extracting(Category::getUpdatedAt)
+                                       .containsExactly(filmes.getUpdatedAt());
+        assertThat(actualResult.data()).extracting(Category::getDeletedAt)
+                                       .containsExactly(filmes.getDeletedAt());
     }
 
     /**
@@ -537,7 +552,7 @@ class CategoryMySQLGatewayTest {
      * result is returned in the correct descending order.
      */
     @Test
-    public void givenAPrePersistedCategoriesAndDescAsOrders_whenCallsFindAll_thenShouldReturnAPaginatedInDescOrder() {
+    void givenAPrePersistedCategoriesAndDescAsOrders_whenCallsFindAll_thenShouldReturnAPaginatedInDescOrder() {
         // Arrange - Given
         final var expectedPage = 0;
         final var expectedPerPage = 3;
@@ -550,31 +565,31 @@ class CategoryMySQLGatewayTest {
             "A categoria menos assistida",
             true
         );
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(0);
+        assertThat(categoryRepository.count()).isZero();
         categoryRepository.saveAllAndFlush(List.of(
             CategoryJpaEntity.from(filmes),
             CategoryJpaEntity.from(series),
             CategoryJpaEntity.from(documentarios)
         ));
-        Assertions.assertThat(categoryRepository.count()).isEqualTo(3);
+        assertThat(categoryRepository.count()).isEqualTo(3);
 
         // Act - When
         CategorySearchQuery query = CategorySearchQuery.of(0, 3, null, "name", "DESC");
         var actualResult = categoryGateway.findAll(query);
 
         // Assert - Then
-        Assertions.assertThat(actualResult).isNotNull();
-        Assertions.assertThat(actualResult.page()).isEqualTo(expectedPage);
-        Assertions.assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
-        Assertions.assertThat(actualResult.total()).isEqualTo(expectedTotal);
-        Assertions.assertThat(actualResult.data()).hasSize(expectedPerPage);
-        Assertions.assertThat(actualResult.data()).isNotNull();
-        Assertions.assertThat(actualResult.data()).isNotEmpty();
-        Assertions.assertThat(actualResult.data()).extracting(Category::getId)
-                  .containsExactly(
-                      series.getId(),
-                      filmes.getId(),
-                      documentarios.getId()
-                  );
+        assertThat(actualResult).isNotNull();
+        assertThat(actualResult.page()).isEqualTo(expectedPage);
+        assertThat(actualResult.perPage()).isEqualTo(expectedPerPage);
+        assertThat(actualResult.total()).isEqualTo(expectedTotal);
+        assertThat(actualResult.data()).hasSize(expectedPerPage);
+        assertThat(actualResult.data()).isNotNull();
+        assertThat(actualResult.data()).isNotEmpty();
+        assertThat(actualResult.data()).extracting(Category::getId)
+                                       .containsExactly(
+                                           series.getId(),
+                                           filmes.getId(),
+                                           documentarios.getId()
+                                       );
     }
 }

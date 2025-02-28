@@ -11,10 +11,10 @@ import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class CategoryTest {
+class CategoryTest {
 
     @Test
-    public void givenAValidParams_whenCallNewCategory_thenNewInstanceIsCreated() {
+    void givenAValidParams_whenCallNewCategory_thenNewInstanceIsCreated() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -39,7 +39,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAnInvalidNullName_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
+    void givenAnInvalidNullName_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
         // Given
         var category = Category.newCategory(null, "A categoria mais assistida", true);
 
@@ -49,10 +49,11 @@ public class CategoryTest {
         // Then
         String expectedMessage = "'name' should not be null";
 
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage(expectedMessage);
-        assertThat(actualException).hasNoCause();
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedMessage)
+            .hasNoCause();
 
         final DomainException actualDomainException = (DomainException) actualException;
         final List<Error> errors = actualDomainException.getErrors();
@@ -62,7 +63,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAnInvalidEmptyName_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
+    void givenAnInvalidEmptyName_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
         // Given
         var category = Category.newCategory("    ", "A categoria mais assistida", true);
 
@@ -72,10 +73,11 @@ public class CategoryTest {
         // Then
         String expectedMessage = "'name' should not be empty";
 
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage(expectedMessage);
-        assertThat(actualException).hasNoCause();
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedMessage)
+            .hasNoCause();
 
         final DomainException actualDomainException = (DomainException) actualException;
         final List<Error> errors = actualDomainException.getErrors();
@@ -84,7 +86,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAnInvalidNameLengthLessThan3_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
+    void givenAnInvalidNameLengthLessThan3_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
         // Given
         var category = Category.newCategory("Fi    ", "A categoria mais assistida", true);
 
@@ -94,10 +96,11 @@ public class CategoryTest {
         // Then
         String expectedMessage = "'name' length must be between 3 and 255 characters";
 
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage(expectedMessage);
-        assertThat(actualException).hasNoCause();
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedMessage)
+            .hasNoCause();
 
         final DomainException actualDomainException = (DomainException) actualException;
         final List<Error> errors = actualDomainException.getErrors();
@@ -106,7 +109,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAnInvalidNameLengthMoreThan255_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
+    void givenAnInvalidNameLengthMoreThan255_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
         // Given
         var category = Category.newCategory("F".repeat(256), "A categoria mais assistida", true);
 
@@ -116,10 +119,11 @@ public class CategoryTest {
         // Then
         String expectedMessage = "'name' length must be between 3 and 255 characters";
 
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage(expectedMessage);
-        assertThat(actualException).hasNoCause();
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedMessage)
+            .hasNoCause();
 
         final DomainException actualDomainException = (DomainException) actualException;
         final List<Error> errors = actualDomainException.getErrors();
@@ -128,7 +132,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidEmptyDescription_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
+    void givenAValidEmptyDescription_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
         // Given
         var category = Category.newCategory("Filmes", "", true);
 
@@ -140,7 +144,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidFalseIsActive_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
+    void givenAValidFalseIsActive_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
         // Given
         var category = Category.newCategory("Filmes", "A categoria mais assistida", false);
 
@@ -159,7 +163,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactive() {
+    void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactive() {
         // Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         final Instant updatedAt = category.getUpdatedAt();
@@ -184,7 +188,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidDeactivatedCategory_whenCallActivate_thenReturnCategoryActive() {
+    void givenAValidDeactivatedCategory_whenCallActivate_thenReturnCategoryActive() {
         // Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", false);
         final Instant updatedAt = category.getUpdatedAt();
@@ -209,7 +213,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated() {
+    void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated() {
         // Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         final Instant createdAt = category.getCreatedAt();
@@ -242,7 +246,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdateWithInactive_thenReturnCategoryUpdatedAndDeactivates() {
+    void givenAValidCategory_whenCallUpdateWithInactive_thenReturnCategoryUpdatedAndDeactivates() {
         // Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         final Instant createdAt = category.getCreatedAt();
@@ -275,7 +279,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdateWithInvalidName_thenItShouldThrowDomainExceptionOnValidate() {
+    void givenAValidCategory_whenCallUpdateWithInvalidName_thenItShouldThrowDomainExceptionOnValidate() {
         // Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         final Instant updatedAt = category.getUpdatedAt();
@@ -298,10 +302,11 @@ public class CategoryTest {
         assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
         assertThat(actualCategory.getDeletedAt()).isNull();
 
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage(expectedMessage);
-        assertThat(actualException).hasNoCause();
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage(expectedMessage)
+            .hasNoCause();
 
         final DomainException actualDomainException = (DomainException) actualException;
         final List<Error> errors = actualDomainException.getErrors();

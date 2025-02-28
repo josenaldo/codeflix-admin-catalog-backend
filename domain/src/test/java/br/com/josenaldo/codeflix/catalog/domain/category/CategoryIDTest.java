@@ -13,7 +13,7 @@ class CategoryIDTest {
      * Tests that the unique() method returns a CategoryID with a valid ULID string in lowercase.
      */
     @Test
-    public void givenUniqueMethod_whenCalled_thenReturnsValidCategoryID() {
+    void givenUniqueMethod_whenCalled_thenReturnsValidCategoryID() {
         // Arrange - Given
 
         // Act - When
@@ -35,7 +35,7 @@ class CategoryIDTest {
      * insensitive).
      */
     @Test
-    public void givenValidULIDString_whenFromString_thenReturnsCategoryID() {
+    void givenValidULIDString_whenFromString_thenReturnsCategoryID() {
         // Arrange - Given
         // Generate a valid ULID and convert to uppercase.
         Ulid ulid = Ulid.from("01ARYZ6S41TSV4RRFFQ69G5FAV");
@@ -55,7 +55,7 @@ class CategoryIDTest {
      * ULID string.
      */
     @Test
-    public void givenInvalidULIDString_whenFromString_thenThrowsDomainException() {
+    void givenInvalidULIDString_whenFromString_thenThrowsDomainException() {
         // Arrange - Given
         String invalidUlid = "invalid-id";
 
@@ -72,7 +72,7 @@ class CategoryIDTest {
      * Tests that getValue() and toString() return the same value for a CategoryID.
      */
     @Test
-    public void givenCategoryID_whenGetValueAndToString_thenReturnSameValue() {
+    void givenCategoryID_whenGetValueAndToString_thenReturnSameValue() {
         // Arrange - Given
         CategoryID categoryID = CategoryID.unique();
 
@@ -89,7 +89,7 @@ class CategoryIDTest {
      * have the same hash code.
      */
     @Test
-    public void givenSameULIDString_whenCreatingTwoCategoryIDs_thenTheyAreEqual() {
+    void givenSameULIDString_whenCreatingTwoCategoryIDs_thenTheyAreEqual() {
         // Arrange - Given
         String ulidString = CategoryID.unique().getValue();
         CategoryID categoryID1 = CategoryID.fromString(ulidString);
@@ -99,14 +99,14 @@ class CategoryIDTest {
 
         // Assert - Then
         assertThat(categoryID1).isEqualTo(categoryID2);
-        assertThat(categoryID1.hashCode()).isEqualTo(categoryID2.hashCode());
+        assertThat(categoryID1.hashCode()).hasSameHashCodeAs(categoryID2.hashCode());
     }
 
     /**
      * Tests that calling fromString() with a null value throws a NullPointerException.
      */
     @Test
-    public void givenNullValue_whenFromString_thenThrowsNullPointerException() {
+    void givenNullValue_whenFromString_thenThrowsNullPointerException() {
         // Arrange - Given
         String nullValue = null;
 

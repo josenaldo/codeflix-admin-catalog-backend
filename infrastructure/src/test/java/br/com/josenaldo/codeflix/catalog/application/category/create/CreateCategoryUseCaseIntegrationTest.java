@@ -33,7 +33,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  * @version 1.0
  */
 @IntegrationTest
-public class CreateCategoryUseCaseIntegrationTest {
+class CreateCategoryUseCaseIntegrationTest {
 
     /**
      * The use case for creating a category
@@ -74,7 +74,7 @@ public class CreateCategoryUseCaseIntegrationTest {
      * and deletion state.
      */
     @Test
-    public void givenAValidCommand_whenCreateCategory_thenShouldReturnCategoryId() {
+    void givenAValidCommand_whenCreateCategory_thenShouldReturnCategoryId() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -84,7 +84,7 @@ public class CreateCategoryUseCaseIntegrationTest {
             expectedDescription,
             expectedIsActive
         );
-        assertThat(repository.count()).isEqualTo(0);
+        assertThat(repository.count()).isZero();
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
@@ -114,7 +114,7 @@ public class CreateCategoryUseCaseIntegrationTest {
      * and that the persisted entity has its deletion date set, indicating an inactive category.
      */
     @Test
-    public void givenAValidCommandWithInactiveCategory_whenCreateCategory_thenShouldReturnInactiveCategoryId() {
+    void givenAValidCommandWithInactiveCategory_whenCreateCategory_thenShouldReturnInactiveCategoryId() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -124,7 +124,7 @@ public class CreateCategoryUseCaseIntegrationTest {
             expectedDescription,
             expectedIsActive
         );
-        assertThat(repository.count()).isEqualTo(0);
+        assertThat(repository.count()).isZero();
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
@@ -154,7 +154,7 @@ public class CreateCategoryUseCaseIntegrationTest {
      * expected error message, and that the create method of the category gateway is not called.
      */
     @Test
-    public void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
+    void givenAnInvalidName_whenCallsCreateCategory_thenShouldThrowDomainException() {
         // Arrange - Given
         final String expectedName = null;
         final var expectedDescription = "A categoria mais assistida";
@@ -166,13 +166,13 @@ public class CreateCategoryUseCaseIntegrationTest {
             expectedDescription,
             expectedIsActive
         );
-        assertThat(repository.count()).isEqualTo(0);
+        assertThat(repository.count()).isZero();
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(repository.count()).isEqualTo(0);
+        assertThat(repository.count()).isZero();
         assertThat(executeOutput.isLeft()).isTrue();
         Notification notification = executeOutput.getLeft();
         assertThat(notification).isNotNull();
@@ -190,7 +190,7 @@ public class CreateCategoryUseCaseIntegrationTest {
      * the expected error message, indicating that the exception was handled appropriately.
      */
     @Test
-    public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldThrowDomainException() {
+    void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldThrowDomainException() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -204,13 +204,13 @@ public class CreateCategoryUseCaseIntegrationTest {
         );
 
         doThrow(new IllegalStateException("Gateway error")).when(categoryGateway).create(any());
-        assertThat(repository.count()).isEqualTo(0);
+        assertThat(repository.count()).isZero();
 
         // Act - When
         Either<Notification, CreateCategoryOutput> executeOutput = useCase.execute(command);
 
         // Assert - Then
-        assertThat(repository.count()).isEqualTo(0);
+        assertThat(repository.count()).isZero();
         assertThat(executeOutput.isLeft()).isTrue();
         Notification notification = executeOutput.getLeft();
         assertThat(notification).isNotNull();

@@ -3,7 +3,6 @@ package br.com.josenaldo.codeflix.catalog.application.category.delete;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -36,7 +35,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  * @version 1.0
  */
 @IntegrationTest
-public class DeleteCategoryUseCaseIntegrationTest {
+class DeleteCategoryUseCaseIntegrationTest {
 
     /**
      * The use case for deleting a category.
@@ -97,7 +96,7 @@ public class DeleteCategoryUseCaseIntegrationTest {
      * repository count becomes zero.
      */
     @Test
-    public void givenAValidId_whenCallDelete_thenShouldBeOk() {
+    void givenAValidId_whenCallDelete_thenShouldBeOk() {
         // Arrange - Given
         final var expectedId = categoryId;
 
@@ -106,7 +105,7 @@ public class DeleteCategoryUseCaseIntegrationTest {
 
         // Assert - Then
         assertThat(actualException).isNull();
-        assertThat(repository.count()).isEqualTo(0);
+        assertThat(repository.count()).isZero();
     }
 
     /**
@@ -117,7 +116,7 @@ public class DeleteCategoryUseCaseIntegrationTest {
      * unchanged.
      */
     @Test
-    public void givenANoExistentId_whenCallDelete_thenShouldBeOk() {
+    void givenANoExistentId_whenCallDelete_thenShouldBeOk() {
         // Arrange - Given
         final var expectedId = CategoryID.unique();
 
@@ -138,22 +137,23 @@ public class DeleteCategoryUseCaseIntegrationTest {
      * is thrown with the expected message, and that the repository remains unchanged.
      */
     @Test
-    public void givenAValidId_whenCallDeleteByIdAndAnErrorOccur_thenShouldReturnAnException() {
+    void givenAValidId_whenCallDeleteByIdAndAnErrorOccur_thenShouldReturnAnException() {
         // Arrange - Given
         final var expectedId = categoryId;
 
         doThrow(new IllegalStateException("Gateway error"))
-            .when(categoryGateway).deleteById(eq(expectedId));
+            .when(categoryGateway).deleteById(expectedId);
 
         // Act - When
         final var actualException = catchException(() -> useCase.execute(expectedId.getValue()));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(IllegalStateException.class);
-        assertThat(actualException).hasMessage("Gateway error");
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("Gateway error");
 
-        verify(categoryGateway, times(1)).deleteById(eq(expectedId));
+        verify(categoryGateway, times(1)).deleteById(expectedId);
         assertThat(repository.count()).isEqualTo(1);
     }
 
@@ -164,7 +164,7 @@ public class DeleteCategoryUseCaseIntegrationTest {
      * expected error message, and that the category gateway's deleteById method is not invoked.
      */
     @Test
-    public void givenAnInvalidId_whenCallDelete_thenShouldReturnAnException() {
+    void givenAnInvalidId_whenCallDelete_thenShouldReturnAnException() {
         // Arrange - Given
         final var invalidId = "invalid-id";
 
@@ -172,9 +172,10 @@ public class DeleteCategoryUseCaseIntegrationTest {
         final var actualException = catchException(() -> useCase.execute(invalidId));
 
         // Assert - Then
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
-        assertThat(actualException).hasMessage("the Id invalid-id is invalid");
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class)
+            .hasMessage("Invalid category ID");
 
         verify(categoryGateway, times(0)).deleteById(any());
     }

@@ -17,7 +17,7 @@ class CategoryRepositoryTest {
     private CategoryRepository categoryRepository;
 
     @Test
-    public void givenAnInvalidNullName_whenCallsSave_thenShouldReturnDataIntegrityViolationException() {
+    void givenAnInvalidNullName_whenCallsSave_thenShouldReturnDataIntegrityViolationException() {
         // Arrange - Given
         final var expectedPropertyName = "name";
         final var expectedErrorMessage = "not-null property references a null or transient value: br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity.name";
@@ -29,9 +29,11 @@ class CategoryRepositoryTest {
         Exception exception = catchException(() -> categoryRepository.save(entity));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(DataIntegrityViolationException.class);
-        assertThat(exception.getCause()).isInstanceOf(PropertyValueException.class);
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(DataIntegrityViolationException.class)
+            .cause()
+            .isInstanceOf(PropertyValueException.class);
 
         final var cause = (PropertyValueException) exception.getCause();
         assertThat(cause.getPropertyName()).isEqualTo(expectedPropertyName);
@@ -39,7 +41,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    public void givenAnInvalidNullCreatedAt_whenCallsSave_thenShouldReturnDataIntegrityViolationException() {
+    void givenAnInvalidNullCreatedAt_whenCallsSave_thenShouldReturnDataIntegrityViolationException() {
         // Arrange - Given
         final var expectedPropertyName = "createdAt";
         final var expectedErrorMessage = "not-null property references a null or transient value: br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity.createdAt";
@@ -51,9 +53,11 @@ class CategoryRepositoryTest {
         Exception exception = catchException(() -> categoryRepository.save(entity));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(DataIntegrityViolationException.class);
-        assertThat(exception.getCause()).isInstanceOf(PropertyValueException.class);
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(DataIntegrityViolationException.class)
+            .cause()
+            .isInstanceOf(PropertyValueException.class);
 
         final var cause = (PropertyValueException) exception.getCause();
         assertThat(cause.getPropertyName()).isEqualTo(expectedPropertyName);
@@ -62,7 +66,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    public void givenAnInvalidNullUpdatedAt_whenCallsSave_thenShouldReturnDataIntegrityViolationException() {
+    void givenAnInvalidNullUpdatedAt_whenCallsSave_thenShouldReturnDataIntegrityViolationException() {
         // Arrange - Given
         final var expectedPropertyName = "updatedAt";
         final var expectedErrorMessage = "not-null property references a null or transient value: br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity.updatedAt";
@@ -74,9 +78,12 @@ class CategoryRepositoryTest {
         Exception exception = catchException(() -> categoryRepository.save(entity));
 
         // Assert - Then
-        assertThat(exception).isNotNull();
-        assertThat(exception).isInstanceOf(DataIntegrityViolationException.class);
-        assertThat(exception.getCause()).isInstanceOf(PropertyValueException.class);
+        assertThat(exception)
+            .isNotNull()
+            .isInstanceOf(DataIntegrityViolationException.class)
+            .cause()
+            .isInstanceOf(PropertyValueException.class)
+            .hasMessageContaining(expectedPropertyName);
 
         final var cause = (PropertyValueException) exception.getCause();
         assertThat(cause.getPropertyName()).isEqualTo(expectedPropertyName);

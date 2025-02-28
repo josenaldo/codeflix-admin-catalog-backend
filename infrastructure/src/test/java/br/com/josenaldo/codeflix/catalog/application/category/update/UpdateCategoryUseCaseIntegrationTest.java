@@ -38,7 +38,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
  * @version 1.0
  */
 @IntegrationTest
-public class UpdateCategoryUseCaseIntegrationTest {
+class UpdateCategoryUseCaseIntegrationTest {
 
     @Autowired
     private UpdateCategoryUseCase useCase;
@@ -90,7 +90,7 @@ public class UpdateCategoryUseCaseIntegrationTest {
      * and that the updated category output contains a valid ID.
      */
     @Test
-    public void givenAValidCommand_whenUpdateCategory_thenReturnCategory() {
+    void givenAValidCommand_whenUpdateCategory_thenReturnCategory() {
         // Arrange - Given
         final var expectedId = categoryId;
         final var expectedName = "Filmes";
@@ -143,7 +143,7 @@ public class UpdateCategoryUseCaseIntegrationTest {
      * invoked.
      */
     @Test
-    public void givenAInvalidName_whenCallsUpdateCategory_thenReturnDomainException() {
+    void givenAInvalidName_whenCallsUpdateCategory_thenReturnDomainException() {
         // Arrange - Given
         final var expectedId = categoryId;
         final var expectedName = "";
@@ -171,7 +171,7 @@ public class UpdateCategoryUseCaseIntegrationTest {
         assertThat(notification).isNotNull();
         assertThat(notification.getErrors()).isNotEmpty();
         assertThat(notification.fisrtError().message()).isEqualTo(expectedErrorMessage);
-        assertThat(notification.getErrors().size()).isEqualTo(expectedErrorCount);
+        assertThat(notification.getErrors()).hasSize(expectedErrorCount);
 
         assertThat(repository.count()).isEqualTo(1);
 
@@ -201,7 +201,7 @@ public class UpdateCategoryUseCaseIntegrationTest {
      * output contains a valid ID.
      */
     @Test
-    public void givenAnInactivateCategory_whenUpdateCategory_thenShouldReturnAnUpdatedCategory() {
+    void givenAnInactivateCategory_whenUpdateCategory_thenShouldReturnAnUpdatedCategory() {
         // Arrange - Given
         final var expectedId = categoryId;
         final var expectedName = "Filmes";
@@ -257,7 +257,7 @@ public class UpdateCategoryUseCaseIntegrationTest {
      * It also verifies if the gateway's update method is called with the correct parameters.
      */
     @Test
-    public void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldReturnDomainException() {
+    void givenAValidCommand_whenGatewayThrowsRandomException_thenShouldReturnDomainException() {
         // Arrange - Given
         final var expectedId = categoryId;
         final var expectedName = "Filmes";
@@ -318,7 +318,7 @@ public class UpdateCategoryUseCaseIntegrationTest {
      * It also verifies that the gateway's update method is not invoked.
      */
     @Test
-    public void givenAnInvalidId_whenCallsUpdateCategory_thenReturnDomainException() {
+    void givenAnInvalidId_whenCallsUpdateCategory_thenReturnDomainException() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -341,12 +341,14 @@ public class UpdateCategoryUseCaseIntegrationTest {
 
         // Assert - Then
         verify(categoryGateway, times(0)).update(any());
-        assertThat(actualException).isNotNull();
-        assertThat(actualException).isInstanceOf(DomainException.class);
+        assertThat(actualException)
+            .isNotNull()
+            .isInstanceOf(DomainException.class);
 
         final DomainException actualDomainException = (DomainException) actualException;
-        assertThat(actualDomainException).hasMessage(expectedMessage);
-        assertThat(actualDomainException).hasNoCause();
+        assertThat(actualDomainException)
+            .hasMessage(expectedMessage)
+            .hasNoCause();
 
         final List<br.com.josenaldo.codeflix.catalog.domain.validation.Error> errors = actualDomainException.getErrors();
         assertThat(errors).hasSize(expectedErrorCount);
