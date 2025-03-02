@@ -9,6 +9,10 @@
 - [Java]
 - [Mokito](https://site.mockito.org/)
 
+## Openapi
+
+- [Openapi](http://localhost:8080/swagger-ui/index.html)
+
 ## Troubleshoot
 
 - [How to stop 2024.2.3 from installing an EAP IDE client in devcontainers](https://intellij-support.jetbrains.com/hc/en-us/community/posts/21691647785618-How-to-stop-2024-2-3-from-installing-an-EAP-IDE-client-in-devcontainers)

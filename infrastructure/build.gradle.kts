@@ -41,14 +41,14 @@ dependencies {
     }
     implementation(libs.spring.boot.starter.undertow)
     implementation(libs.spring.boot.starter.data.jpa)
-
-    runtimeOnly(libs.mysql.connector.j)
     implementation(libs.h2)
-
     implementation(libs.flyway.mysql)
     implementation(libs.flyway.gradle.plugin)
+    implementation(libs.springdoc.openapi.starter)
 
     testImplementation(libs.flyway.core)
+
+    runtimeOnly(libs.mysql.connector.j)
 }
 
 flyway {

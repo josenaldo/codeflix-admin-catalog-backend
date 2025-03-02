@@ -7,6 +7,7 @@ h2 = "2.3.232"
 ulid = "5.2.3"
 vavr = "0.10.6"
 mockito = "3.12.4"
+openapi = "2.8.5"
 
 [plugins]
 spring-boot-plugin = { id = "org.springframework.boot", version.ref = "spring-boot" }
@@ -32,3 +33,5 @@ vavr = { module = "io.vavr:vavr", version.ref = "vavr" }
 
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+
+springdoc-openapi-starter = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "openapi" }
