@@ -12,6 +12,7 @@ import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.Cat
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 /**
  * Test class for the MySQL gateway implementation for categories.
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version 1.0
  */
 @MySQLGatewayTest
+@Import(CategoryMySQLGateway.class)
 class CategoryMySQLGatewayTest {
 
     /**

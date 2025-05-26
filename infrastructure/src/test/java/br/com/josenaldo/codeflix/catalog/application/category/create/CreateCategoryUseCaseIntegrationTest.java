@@ -60,7 +60,7 @@ class CreateCategoryUseCaseIntegrationTest {
      * gateway spy after each test.
      */
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         repository.deleteAll();
         reset(categoryGateway);
     }
@@ -96,7 +96,7 @@ class CreateCategoryUseCaseIntegrationTest {
         assertThat(createCategoryOutput).isNotNull();
         assertThat(createCategoryOutput.id()).isNotNull();
 
-        String id = createCategoryOutput.id().getValue();
+        String id = createCategoryOutput.id();
         CategoryJpaEntity entity = repository.findById(id).orElse(null);
         assertThat(entity).isNotNull();
         assertThat(entity.getId()).isEqualTo(id);
@@ -133,7 +133,7 @@ class CreateCategoryUseCaseIntegrationTest {
         assertThat(repository.count()).isEqualTo(1);
         assertThat(executeOutput.isRight()).isTrue();
         CreateCategoryOutput createCategoryOutput = executeOutput.get();
-        String id = createCategoryOutput.id().getValue();
+        String id = createCategoryOutput.id();
         assertThat(createCategoryOutput).isNotNull();
         assertThat(id).isNotNull();
 

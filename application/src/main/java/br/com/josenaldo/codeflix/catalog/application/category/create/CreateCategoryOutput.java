@@ -16,7 +16,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
  * @version 1.0
  */
 public record CreateCategoryOutput(
-    CategoryID id
+    String id
 ) {
 
     /**
@@ -30,6 +30,10 @@ public record CreateCategoryOutput(
      * category.
      */
     public static CreateCategoryOutput from(final Category category) {
-        return new CreateCategoryOutput(category.getId());
+        return new CreateCategoryOutput(category.getId().getValue());
+    }
+
+    public static CreateCategoryOutput from(final CategoryID anId) {
+        return new CreateCategoryOutput(anId.getValue());
     }
 }

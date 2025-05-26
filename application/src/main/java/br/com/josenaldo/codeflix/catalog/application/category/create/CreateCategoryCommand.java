@@ -36,4 +36,12 @@ public record CreateCategoryCommand(
     ) {
         return new CreateCategoryCommand(name, description, isActive);
     }
+
+    public static CreateCategoryCommand with(
+        final String name,
+        final String description,
+        final Boolean isActive
+    ) {
+        return new CreateCategoryCommand(name, description, isActive == null || isActive);
+    }
 }

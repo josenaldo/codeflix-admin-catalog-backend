@@ -35,7 +35,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @DataJpaTest
 @ComponentScan(includeFilters = {
-    @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*[MySQLGateway]")
+    @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".[MySQLGateway]")
 })
 @ExtendWith(RepositoryCleanUpExtension.class)
 public @interface MySQLGatewayTest {
