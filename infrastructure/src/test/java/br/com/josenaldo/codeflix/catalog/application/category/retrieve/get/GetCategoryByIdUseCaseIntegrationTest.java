@@ -75,7 +75,7 @@ class GetCategoryByIdUseCaseIntegrationTest {
      * tests.
      */
     @BeforeEach
-    public void setup() {
+    void setup() {
         category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         CategoryTestUtils.save(repository, category);
         assertThat(repository.count()).isEqualTo(1);
@@ -90,7 +90,7 @@ class GetCategoryByIdUseCaseIntegrationTest {
      * gateway spy after each test.
      */
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         repository.deleteAll();
         reset(categoryGateway);
     }

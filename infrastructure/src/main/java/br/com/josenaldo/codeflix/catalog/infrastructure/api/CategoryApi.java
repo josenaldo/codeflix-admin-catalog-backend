@@ -1,6 +1,7 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.api;
 
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CategoryApiOutput;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,4 +44,15 @@ public interface CategoryApi {
         @RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") final int sortOrder
     );
 
+    @GetMapping(
+        value = "{id}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Get a category by its identifier")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Category retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Category not found"),
+        @ApiResponse(responseCode = "500", description = "An unexpected server error occurred")
+    })
+    CategoryApiOutput getById(@PathVariable(name = "id") String id);
 }

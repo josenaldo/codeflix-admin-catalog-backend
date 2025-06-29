@@ -3,10 +3,14 @@ package br.com.josenaldo.codeflix.catalog.infrastructure.api.controllers;
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryCommand;
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryOutput;
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryUseCase;
+import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.CategoryOutput;
+import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.api.CategoryApi;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CategoryApiOutput;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.presenters.CategoryApiPresenter;
 import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
@@ -18,8 +22,14 @@ public class CategoryController implements CategoryApi {
 
     private final CreateCategoryUseCase createCategoryUseCase;
 
-    public CategoryController(CreateCategoryUseCase createCategoryUseCase) {
+    private final GetCategoryByIdUseCase getCategoryByIdUseCase;
+
+    public CategoryController(
+        CreateCategoryUseCase createCategoryUseCase,
+        GetCategoryByIdUseCase getCategoryByIdUseCase
+    ) {
         this.createCategoryUseCase = Objects.requireNonNull(createCategoryUseCase);
+        this.getCategoryByIdUseCase = Objects.requireNonNull(getCategoryByIdUseCase);
     }
 
     /**
@@ -62,5 +72,16 @@ public class CategoryController implements CategoryApi {
         int sortOrder
     ) {
         return null;
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public CategoryApiOutput getById(final String id) {
+        final CategoryOutput categoryOutput = getCategoryByIdUseCase.execute(id);
+
+        return CategoryApiPresenter.present(categoryOutput);
     }
 }
