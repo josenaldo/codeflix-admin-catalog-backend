@@ -20,7 +20,7 @@ group = "br.com.josenaldo.codeflix.infrastructure"
 version = "0.0.1-SNAPSHOT"
 
 java { // Accessing a convention
-    sourceCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_22
 }
 
 repositories {
@@ -53,7 +53,7 @@ dependencies {
 
 flyway {
     url = System.getenv("FLYWAY_DB_URL")
-        ?: "jdbc:mysql://codeflix-catalog-backend-db:3306/codeflix_adm_videos"
+        ?: "jdbc:mysql://codeflix-admin-catalog-backend-db:3306/codeflix_adm_videos"
     user = System.getenv("FLYWAY_DB_USER") ?: "root"
     password = System.getenv("FLYWAY_DB_PASSWORD") ?: "root"
     cleanDisabled = false
