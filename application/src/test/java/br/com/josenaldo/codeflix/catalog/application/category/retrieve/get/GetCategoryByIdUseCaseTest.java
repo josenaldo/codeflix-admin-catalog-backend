@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
-import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,7 +87,7 @@ class GetCategoryByIdUseCaseTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
     }
 
@@ -106,7 +106,7 @@ class GetCategoryByIdUseCaseTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
 
         verify(categoryGateway, times(0)).findById(any());
@@ -127,7 +127,7 @@ class GetCategoryByIdUseCaseTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
 
         verify(categoryGateway, times(0)).findById(any());
@@ -148,7 +148,7 @@ class GetCategoryByIdUseCaseTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
 
         verify(categoryGateway, times(0)).findById(any());
@@ -158,7 +158,7 @@ class GetCategoryByIdUseCaseTest {
      * Given a null category id, when find category, then return required ID exception
      */
     @Test
-    void givenNullCategoryId_whenGetCategoryById_thenShouldThrowDomainException() {
+    void givenNullCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final String expectedId = null;
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
@@ -169,7 +169,7 @@ class GetCategoryByIdUseCaseTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
 
         verify(categoryGateway, times(0)).findById(any());

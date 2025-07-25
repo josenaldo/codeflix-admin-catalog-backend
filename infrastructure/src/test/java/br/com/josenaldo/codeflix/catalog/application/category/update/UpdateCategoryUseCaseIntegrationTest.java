@@ -15,6 +15,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryValidator;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
@@ -318,7 +319,7 @@ class UpdateCategoryUseCaseIntegrationTest {
      * It also verifies that the gateway's update method is not invoked.
      */
     @Test
-    void givenAnInvalidId_whenCallsUpdateCategory_thenReturnDomainException() {
+    void givenAnInvalidId_whenCallsUpdateCategory_thenReturnNotFoundException() {
         // Arrange - Given
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
@@ -326,7 +327,7 @@ class UpdateCategoryUseCaseIntegrationTest {
 
         final var invalidId = CategoryID.unique();
 
-        final var expectedErrorCount = 1;
+        final var expectedErrorCount = 0;
         final var expectedMessage = "Category with ID %s was not found".formatted(invalidId.getValue());
 
         final var command = UpdateCategoryCommand.with(
@@ -343,17 +344,14 @@ class UpdateCategoryUseCaseIntegrationTest {
         verify(categoryGateway, times(0)).update(any());
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class);
+            .isInstanceOf(NotFoundException.class);
 
-        final DomainException actualDomainException = (DomainException) actualException;
-        assertThat(actualDomainException)
+        final NotFoundException notFoundException = (NotFoundException) actualException;
+        assertThat(notFoundException)
             .hasMessage(expectedMessage)
             .hasNoCause();
 
-        final List<br.com.josenaldo.codeflix.catalog.domain.validation.Error> errors = actualDomainException.getErrors();
+        final List<br.com.josenaldo.codeflix.catalog.domain.validation.Error> errors = notFoundException.getErrors();
         assertThat(errors).hasSize(expectedErrorCount);
-
-        Error firstError = errors.getFirst();
-        assertThat(firstError.message()).isEqualTo(expectedMessage);
     }
 }

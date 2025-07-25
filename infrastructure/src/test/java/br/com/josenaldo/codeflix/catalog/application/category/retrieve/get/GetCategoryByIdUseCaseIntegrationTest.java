@@ -14,6 +14,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -190,7 +191,7 @@ class GetCategoryByIdUseCaseIntegrationTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
 
         verify(categoryGateway, times(0)).findById(any());
@@ -214,7 +215,7 @@ class GetCategoryByIdUseCaseIntegrationTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
 
         verify(categoryGateway, times(0)).findById(any());
@@ -238,7 +239,7 @@ class GetCategoryByIdUseCaseIntegrationTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
         verify(categoryGateway, times(0)).findById(any());
     }
@@ -261,7 +262,7 @@ class GetCategoryByIdUseCaseIntegrationTest {
         // Assert - Then
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage(expectedErrorMessage);
 
         verify(categoryGateway, times(0)).findById(any());

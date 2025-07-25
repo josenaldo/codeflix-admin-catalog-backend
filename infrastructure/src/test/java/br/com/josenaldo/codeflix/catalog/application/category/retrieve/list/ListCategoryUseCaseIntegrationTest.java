@@ -139,7 +139,7 @@ class ListCategoryUseCaseIntegrationTest {
     @CsvSource({
         "name, ASC, 0, 10, 7, 7, Amazon Originals",
         "name, DESC, 0, 10, 7, 7, Séries",
-        "createdAt, DESC, 0, 10, 7, 7, Séries",
+        "createdAt, DESC, 0, 10, 7, 7, Filmes",
         "description, DESC, 0, 10, 7, 7, Netflix Recentes"
     })
     void givenAValidSortAndDirection_whenCallsList_thenShouldReturnPageWithCategoriesSorted(
