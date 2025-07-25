@@ -1,8 +1,10 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.api.controllers;
 
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,6 +16,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleDomainException(final DomainException exception) {
         // Log the exception and return a generic error response
         return ResponseEntity.unprocessableEntity().body(ApiError.from(exception));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(final NotFoundException exception) {
+        // Log the exception and return a generic error response
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError.from(exception));
     }
 
     static record ApiError(

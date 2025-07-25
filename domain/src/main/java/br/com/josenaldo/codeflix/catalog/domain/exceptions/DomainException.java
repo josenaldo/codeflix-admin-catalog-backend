@@ -18,7 +18,7 @@ public class DomainException extends NoStackTraceException {
     /**
      * The list of errors associated with this exception.
      */
-    private final List<Error> errors;
+    protected final List<Error> errors;
 
     /**
      * Private constructor to create a new {@code DomainException} with a message and a list of
@@ -27,7 +27,7 @@ public class DomainException extends NoStackTraceException {
      * @param message The detail message for this exception.
      * @param errors  The list of {@link Error} objects associated with this exception.
      */
-    private DomainException(String message, List<Error> errors) {
+    protected DomainException(String message, List<Error> errors) {
         super(message);
         this.errors = errors;
     }

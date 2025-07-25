@@ -25,6 +25,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryValidator;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
@@ -268,7 +269,7 @@ class CategoryApiTest {
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
 
         when(getCategoryByIdUseCase.execute(any()))
-            .thenThrow(DomainException.with(expectedErrorMessage));
+            .thenThrow(NotFoundException.with(Category.class, expectedId));
 
         // Act - When
         final var request = get(
@@ -282,7 +283,7 @@ class CategoryApiTest {
         response
             .andExpect(status().isNotFound())
             .andExpect(header().string("Location", nullValue()))
-            .andExpect(jsonPath("$.errors", hasSize(1)))
-            .andExpect(jsonPath("$.errors.[0].message", equalTo(expectedErrorMessage)));
+            .andExpect(jsonPath("$.errors", hasSize(0)))
+            .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 }

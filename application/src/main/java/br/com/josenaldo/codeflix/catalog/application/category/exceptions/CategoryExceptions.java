@@ -1,7 +1,9 @@
 package br.com.josenaldo.codeflix.catalog.application.category.exceptions;
 
+import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import java.util.function.Supplier;
 
@@ -27,10 +29,9 @@ public class CategoryExceptions {
      * @return a supplier of {@link DomainException} that creates an exception with an appropriate
      * error message.
      */
-    public static Supplier<DomainException> categoryNotFoundException(CategoryID id) {
+    public static Supplier<NotFoundException> categoryNotFoundException(CategoryID id) {
         return () -> {
-            Error error = new Error("Category with ID %s was not found".formatted(id.getValue()));
-            return DomainException.with(error);
+            return NotFoundException.with(Category.class, id);
         };
     }
 
@@ -44,10 +45,9 @@ public class CategoryExceptions {
      * @return a supplier of {@link DomainException} that creates an exception with an appropriate
      * error message.
      */
-    public static Supplier<DomainException> categoryNotFoundException(String id) {
+    public static Supplier<NotFoundException> categoryNotFoundException(String id) {
         return () -> {
-            Error error = new Error("Category with ID %s was not found".formatted(id));
-            return DomainException.with(error);
+            return NotFoundException.with(Category.class, id);
         };
     }
 
