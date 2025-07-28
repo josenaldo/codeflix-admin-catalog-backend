@@ -1,13 +1,12 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.api;
 
-import static io.vavr.API.*;
 import static io.vavr.API.Left;
+import static io.vavr.API.Right;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +35,6 @@ import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vavr.API;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -328,5 +326,64 @@ class CategoryApiTest {
                 && Objects.equals(expectedDescription,cmd.description())
                 && Objects.equals(expectedIsActive,cmd.isActive())
             ));
+    }
+
+    @Test
+    void givenInvalidId_whenCallsUpdateCategory_thenShouldReturnNotFoundException() throws Exception {
+        // Arrange - Given
+        final var expectedId = CategoryID.unique().getValue();
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+
+        when(updateCategoryUseCase.execute(any()))
+            .thenThrow(NotFoundException.with(Category.class, expectedId));
+
+        // Act - When
+        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var request = put("/categories/{id}", expectedId)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(this.mapper.writeValueAsString(aCommand));
+
+        final var response = this.mvc.perform(request).andDo(print());
+
+        // Assert - Then
+        response
+            .andExpect(status().isNotFound())
+            .andExpect(header().string("Location", nullValue()))
+            .andExpect(jsonPath("$.errors", hasSize(0)))
+            .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+    }
+
+    @Test
+    void givenInvalidName_whenCallsUpdateCategory_thenShouldReturnDomainException() throws Exception {
+        // Arrange - Given
+        final var expectedId = CategoryID.unique().getValue();
+        final String expectedName = null;
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
+
+        when(updateCategoryUseCase.execute(any()))
+            .thenReturn(Left(Notification.create(new Error(expectedErrorMessage))));
+
+        // Act - When
+        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var request = put("/categories/{id}", expectedId)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(this.mapper.writeValueAsString(aCommand));
+
+        final var response = this.mvc.perform(request).andDo(print());
+
+        // Assert - Then
+        response
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(header().string("Location", nullValue()))
+            .andExpect(jsonPath("$.errors", hasSize(1)))
+            .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
     }
 }
