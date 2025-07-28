@@ -15,6 +15,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryValidator;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import java.util.List;
@@ -246,7 +247,7 @@ class UpdateCategoryUseCaseTest {
 
         final var invalidId = CategoryID.unique();
 
-        final var expectedErrorCount = 1;
+        final var expectedErrorCount = 0;
         final var expectedMessage = "Category with ID %s was not found".formatted(invalidId.getValue());
 
         final var command = UpdateCategoryCommand.with(
@@ -265,17 +266,14 @@ class UpdateCategoryUseCaseTest {
         verify(categoryGateway, times(0)).update(any());
         assertThat(actualException)
             .isNotNull()
-            .isInstanceOf(DomainException.class);
+            .isInstanceOf(NotFoundException.class);
 
-        final DomainException actualDomainException = (DomainException) actualException;
-        assertThat(actualDomainException)
+        final NotFoundException notFoundException = (NotFoundException) actualException;
+        assertThat(notFoundException)
             .hasMessage(expectedMessage)
             .hasNoCause();
 
-        final List<Error> errors = actualDomainException.getErrors();
+        final List<Error> errors = notFoundException.getErrors();
         assertThat(errors).hasSize(expectedErrorCount);
-
-        Error firstError = errors.getFirst();
-        assertThat(firstError.message()).isEqualTo(expectedMessage);
     }
 }

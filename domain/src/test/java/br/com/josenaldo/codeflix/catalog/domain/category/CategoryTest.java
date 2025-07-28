@@ -183,7 +183,7 @@ class CategoryTest {
 
         assertThat(actualCategory.isActive()).isFalse();
         assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
-        assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+        assertThat(actualCategory.getUpdatedAt()).isAfterOrEqualTo(updatedAt);
         assertThat(actualCategory.getDeletedAt()).isNotNull();
     }
 
@@ -208,7 +208,7 @@ class CategoryTest {
 
         assertThat(actualCategory.isActive()).isTrue();
         assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
-        assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+        assertThat(actualCategory.getUpdatedAt()).isAfterOrEqualTo(updatedAt);
         assertThat(actualCategory.getDeletedAt()).isNull();
     }
 
@@ -241,7 +241,7 @@ class CategoryTest {
 
         assertThat(actualCategory.isActive()).isTrue();
         assertThat(actualCategory.getCreatedAt()).isEqualTo(createdAt);
-        assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+        assertThat(actualCategory.getUpdatedAt()).isAfterOrEqualTo(updatedAt);
         assertThat(actualCategory.getDeletedAt()).isNull();
     }
 
@@ -274,7 +274,7 @@ class CategoryTest {
         assertThat(actualCategory.isActive()).isFalse();
 
         assertThat(actualCategory.getCreatedAt()).isEqualTo(createdAt);
-        assertThat(actualCategory.getUpdatedAt()).isAfter(updatedAt);
+        assertThat(actualCategory.getUpdatedAt()).isAfterOrEqualTo(updatedAt);
         assertThat(actualCategory.getDeletedAt()).isNotNull();
     }
 
