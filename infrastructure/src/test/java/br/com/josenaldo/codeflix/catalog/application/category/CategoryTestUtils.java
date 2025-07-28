@@ -3,6 +3,7 @@ package br.com.josenaldo.codeflix.catalog.application.category;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
+import jakarta.transaction.Transactional;
 import java.util.Arrays;
 
 /**
@@ -32,10 +33,13 @@ public class CategoryTestUtils {
      * @param categories one or more categories to be saved.
      */
     public static void save(CategoryRepository repository, Category... categories) {
-        repository.saveAllAndFlush(
-            Arrays.stream(categories)
-                  .map(CategoryJpaEntity::from)
-                  .toList()
-        );
+        Arrays.stream(categories)
+              .map(CategoryJpaEntity::from)
+              .forEach(entity -> {
+                  repository.save(entity);
+                  repository.flush(); // força o flush após cada save
+              });
+
     }
+
 }

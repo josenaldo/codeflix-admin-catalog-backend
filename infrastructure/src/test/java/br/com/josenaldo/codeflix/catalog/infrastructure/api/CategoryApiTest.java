@@ -7,9 +7,11 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import br.com.josenaldo.codeflix.catalog.annotations.ControllerTest;
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryOutput;
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryUseCase;
+import br.com.josenaldo.codeflix.catalog.application.category.delete.DeleteCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.CategoryOutput;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
 import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryOutput;
@@ -92,6 +95,9 @@ class CategoryApiTest {
 
     @MockitoBean
     private UpdateCategoryUseCase updateCategoryUseCase;
+
+    @MockitoBean
+    private DeleteCategoryUseCase deleteCategoryUseCase;
 
     @Autowired
     private ObjectMapper mapper;
@@ -386,5 +392,25 @@ class CategoryApiTest {
             .andExpect(header().string("Location", nullValue()))
             .andExpect(jsonPath("$.errors", hasSize(expectedErrorCount)))
             .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
+    }
+
+    @Test
+    void givenAValidId_whenCallsDeleteCategory_thenShouldReturnNoContent() throws Exception {
+        // Arrange - Given
+        final var expectedId = CategoryID.unique().getValue();
+
+        doNothing().when(this.deleteCategoryUseCase).execute(any());
+
+        // Act - When
+        final var request = delete("/categories/{id}", expectedId)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        final ResultActions response = this.mvc.perform(request).andDo(print());
+
+        // Assert - Then
+        response.andExpect(status().isNoContent());
+
+        verify(deleteCategoryUseCase, times(1)).execute(expectedId);
     }
 }
