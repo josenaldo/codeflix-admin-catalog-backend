@@ -365,6 +365,7 @@ class CategoryApiTest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
+        final var expectedErrorCount = 1;
         final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
 
         when(updateCategoryUseCase.execute(any()))
@@ -383,7 +384,7 @@ class CategoryApiTest {
         response
             .andExpect(status().isUnprocessableEntity())
             .andExpect(header().string("Location", nullValue()))
-            .andExpect(jsonPath("$.errors", hasSize(1)))
+            .andExpect(jsonPath("$.errors", hasSize(expectedErrorCount)))
             .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
     }
 }
