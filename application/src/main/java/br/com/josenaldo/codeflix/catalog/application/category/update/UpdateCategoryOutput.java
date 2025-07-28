@@ -16,7 +16,7 @@ import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
  * @version 1.0
  */
 public record UpdateCategoryOutput(
-    CategoryID id
+    String id
 ) {
 
     /**
@@ -30,6 +30,11 @@ public record UpdateCategoryOutput(
      * identifier.
      */
     public static UpdateCategoryOutput from(Category category) {
-        return new UpdateCategoryOutput(category.getId());
+        return new UpdateCategoryOutput(category.getId().getValue());
+    }
+
+
+    public static UpdateCategoryOutput from(String anId) {
+        return new UpdateCategoryOutput(anId);
     }
 }

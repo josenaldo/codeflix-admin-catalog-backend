@@ -1,16 +1,19 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.api;
 
+import static io.vavr.API.*;
 import static io.vavr.API.Left;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -21,6 +24,8 @@ import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCateg
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.CategoryOutput;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
+import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryOutput;
+import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryValidator;
@@ -29,6 +34,7 @@ import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.API;
 import java.util.Objects;
@@ -86,6 +92,9 @@ class CategoryApiTest {
     @MockitoBean
     private GetCategoryByIdUseCase getCategoryByIdUseCase;
 
+    @MockitoBean
+    private UpdateCategoryUseCase updateCategoryUseCase;
+
     @Autowired
     private ObjectMapper mapper;
 
@@ -122,7 +131,7 @@ class CategoryApiTest {
         );
 
         when(createCategoryUseCase.execute(any()))
-            .thenReturn(API.Right(CreateCategoryOutput.from(expectedId)));
+            .thenReturn(Right(CreateCategoryOutput.from(expectedId)));
 
         // Act - When
         final var request = post("/categories")
@@ -285,5 +294,39 @@ class CategoryApiTest {
             .andExpect(header().string("Location", nullValue()))
             .andExpect(jsonPath("$.errors", hasSize(0)))
             .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+    }
+
+    @Test
+    void givenAValidCommand_whenCallsUpdateCategory_thenShouldReturnCategoryId() throws Exception {
+
+        // Arrange - Given
+        final var expectedId = CategoryID.unique().getValue();
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        when(updateCategoryUseCase.execute(any())).
+            thenReturn(Right(UpdateCategoryOutput.from(expectedId)));
+
+        // Act - When
+        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+        final var request = put("/categories/{id}", expectedId)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(this.mapper.writeValueAsString(aCommand));
+
+        final var response = this.mvc.perform(request).andDo(print());
+
+        // Assert - Then
+        response
+            .andExpect(status().isOk())
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id", equalTo(expectedId)));
+
+        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+            Objects.equals(expectedName,cmd.name())
+                && Objects.equals(expectedDescription,cmd.description())
+                && Objects.equals(expectedIsActive,cmd.isActive())
+            ));
     }
 }

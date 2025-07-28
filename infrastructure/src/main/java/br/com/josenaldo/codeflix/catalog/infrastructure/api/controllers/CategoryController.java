@@ -5,12 +5,17 @@ import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCateg
 import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.CategoryOutput;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
+import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryCommand;
+import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryOutput;
+import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.api.CategoryApi;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CategoryApiOutput;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.presenters.CategoryApiPresenter;
+import io.vavr.control.Either;
 import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
@@ -24,12 +29,16 @@ public class CategoryController implements CategoryApi {
 
     private final GetCategoryByIdUseCase getCategoryByIdUseCase;
 
+    private final UpdateCategoryUseCase updateCategoryUseCase;
+
     public CategoryController(
-        CreateCategoryUseCase createCategoryUseCase,
-        GetCategoryByIdUseCase getCategoryByIdUseCase
+       final CreateCategoryUseCase createCategoryUseCase,
+       final GetCategoryByIdUseCase getCategoryByIdUseCase,
+       final UpdateCategoryUseCase updateCategoryUseCase
     ) {
         this.createCategoryUseCase = Objects.requireNonNull(createCategoryUseCase);
         this.getCategoryByIdUseCase = Objects.requireNonNull(getCategoryByIdUseCase);
+        this.updateCategoryUseCase =  Objects.requireNonNull(updateCategoryUseCase);
     }
 
     /**
@@ -83,5 +92,26 @@ public class CategoryController implements CategoryApi {
         final CategoryOutput categoryOutput = getCategoryByIdUseCase.execute(id);
 
         return CategoryApiPresenter.present(categoryOutput);
+    }
+
+    @Override
+    public ResponseEntity<?> updateById(final String id, final UpdateCategoryApiInput input) {
+
+        final var aCommand = UpdateCategoryCommand.with(
+            id,
+            input.name(),
+            input.description(),
+            input.isActive()
+        );
+
+        final Function<Notification, ResponseEntity<?>> onError = notification ->
+            ResponseEntity.unprocessableEntity().body(notification);
+
+        final Function<UpdateCategoryOutput, ResponseEntity<?>> onSuccess = ResponseEntity::ok;
+
+        return this.updateCategoryUseCase.execute(aCommand).fold(
+            onError,
+            onSuccess
+        );
     }
 }

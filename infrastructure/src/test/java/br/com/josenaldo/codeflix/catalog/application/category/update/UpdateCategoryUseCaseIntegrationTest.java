@@ -117,7 +117,7 @@ class UpdateCategoryUseCaseIntegrationTest {
         assertThat(actualOutput.id()).isNotNull();
         assertThat(repository.count()).isEqualTo(1);
 
-        String id = actualOutput.id().getValue();
+        String id = actualOutput.id();
         var savedCategory = repository.findById(id).orElse(null);
         assertThat(savedCategory).isNotNull();
         assertThat(savedCategory.getId()).isEqualTo(existingCategory.getId());
@@ -232,7 +232,7 @@ class UpdateCategoryUseCaseIntegrationTest {
         assertThat(actualOutput.id()).isNotNull();
         assertThat(repository.count()).isEqualTo(1);
 
-        String id = actualOutput.id().getValue();
+        String id = actualOutput.id();
         var savedCategory = repository.findById(id).orElse(null);
         assertThat(savedCategory).isNotNull();
         assertThat(savedCategory.getId()).isEqualTo(existingCategory.getId());
