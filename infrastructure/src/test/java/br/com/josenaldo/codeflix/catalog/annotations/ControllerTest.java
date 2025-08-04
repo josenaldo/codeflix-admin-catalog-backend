@@ -1,11 +1,13 @@
 package br.com.josenaldo.codeflix.catalog.annotations;
 
+import br.com.josenaldo.codeflix.catalog.infrastructure.configuration.json.ObjectMapperConfig;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -14,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Inherited
 @ActiveProfiles("test")
 @WebMvcTest
+@Import(ObjectMapperConfig.class)
 public @interface ControllerTest {
 
     @AliasFor(annotation = WebMvcTest.class, attribute = "controllers")

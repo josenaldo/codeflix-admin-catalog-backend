@@ -1,12 +1,15 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.api;
 
 import static io.vavr.API.Left;
+import static io.vavr.API.List;
 import static io.vavr.API.Right;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,18 +29,23 @@ import br.com.josenaldo.codeflix.catalog.application.category.create.CreateCateg
 import br.com.josenaldo.codeflix.catalog.application.category.delete.DeleteCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.CategoryOutput;
 import br.com.josenaldo.codeflix.catalog.application.category.retrieve.get.GetCategoryByIdUseCase;
+import br.com.josenaldo.codeflix.catalog.application.category.retrieve.list.CategoryListOutput;
+import br.com.josenaldo.codeflix.catalog.application.category.retrieve.list.ListCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryOutput;
 import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
+import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryValidator;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
+import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryApiInput;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +107,9 @@ class CategoryApiTest {
     @MockitoBean
     private DeleteCategoryUseCase deleteCategoryUseCase;
 
+    @MockitoBean
+    private ListCategoryUseCase listCategoryUseCase;
+
     @Autowired
     private ObjectMapper mapper;
 
@@ -134,13 +145,12 @@ class CategoryApiTest {
             expectedIsActive
         );
 
-        when(createCategoryUseCase.execute(any()))
-            .thenReturn(Right(CreateCategoryOutput.from(expectedId)));
+        when(createCategoryUseCase.execute(any())).thenReturn(Right(CreateCategoryOutput.from(
+            expectedId)));
 
         // Act - When
-        final var request = post("/categories")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(this.mapper.writeValueAsString(aInput));
+        final var request = post("/categories").contentType(MediaType.APPLICATION_JSON)
+                                               .content(this.mapper.writeValueAsString(aInput));
 
         ResultActions response = this.mvc.perform(request).andDo(print());
 
@@ -150,13 +160,13 @@ class CategoryApiTest {
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.id", equalTo(expectedId.getValue())));
 
-        verify(createCategoryUseCase, times(1)).execute(
-            argThat(cmd ->
-                        Objects.equals(expectedName, cmd.name())
-                            && Objects.equals(expectedDescription, cmd.description())
-                            && Objects.equals(expectedIsActive, cmd.isActive())
-            )
-        );
+        verify(createCategoryUseCase, times(1)).execute(argThat(cmd -> Objects.equals(
+            expectedName,
+            cmd.name()
+        ) && Objects.equals(expectedDescription, cmd.description()) && Objects.equals(
+            expectedIsActive,
+            cmd.isActive()
+        )));
     }
 
     @Test
@@ -166,19 +176,14 @@ class CategoryApiTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
 
-        final var aInput = new CreateCategoryApiInput(
-            null,
-            expectedDescription,
-            expectedIsActive
-        );
+        final var aInput = new CreateCategoryApiInput(null, expectedDescription, expectedIsActive);
 
-        when(createCategoryUseCase.execute(any()))
-            .thenReturn(Left(Notification.create(new Error(expectedErrorMessage))));
+        when(createCategoryUseCase.execute(any())).thenReturn(Left(Notification.create(new Error(
+            expectedErrorMessage))));
 
         // Act - When
-        final var request = post("/categories")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(this.mapper.writeValueAsString(aInput));
+        final var request = post("/categories").contentType(MediaType.APPLICATION_JSON)
+                                               .content(this.mapper.writeValueAsString(aInput));
 
         ResultActions response = this.mvc.perform(request).andDo(print());
 
@@ -189,13 +194,15 @@ class CategoryApiTest {
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors.[0].message", equalTo(expectedErrorMessage)));
 
-        verify(createCategoryUseCase, times(1)).execute(
-            argThat(cmd ->
-                        Objects.equals(null, cmd.name())
-                            && Objects.equals(expectedDescription, cmd.description())
-                            && Objects.equals(expectedIsActive, cmd.isActive())
-            )
-        );
+        verify(createCategoryUseCase, times(1)).execute(argThat(cmd ->
+                                                                    Objects.equals(null, cmd.name())
+                                                                        && Objects.equals(
+                                                                        expectedDescription,
+                                                                        cmd.description()
+                                                                    ) && Objects.equals(
+                                                                        expectedIsActive,
+                                                                        cmd.isActive()
+                                                                    )));
     }
 
     @Test
@@ -206,19 +213,14 @@ class CategoryApiTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
 
-        final var aInput = new CreateCategoryApiInput(
-            null,
-            expectedDescription,
-            expectedIsActive
-        );
+        final var aInput = new CreateCategoryApiInput(null, expectedDescription, expectedIsActive);
 
-        when(createCategoryUseCase.execute(any()))
-            .thenThrow(DomainException.with(expectedErrorMessage));
+        when(createCategoryUseCase.execute(any())).thenThrow(DomainException.with(
+            expectedErrorMessage));
 
         // Act - When
-        final var request = post("/categories")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(this.mapper.writeValueAsString(aInput));
+        final var request = post("/categories").contentType(MediaType.APPLICATION_JSON)
+                                               .content(this.mapper.writeValueAsString(aInput));
 
         ResultActions response = this.mvc.perform(request).andDo(print());
 
@@ -229,13 +231,15 @@ class CategoryApiTest {
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors.[0].message", equalTo(expectedErrorMessage)));
 
-        verify(createCategoryUseCase, times(1)).execute(
-            argThat(cmd ->
-                        Objects.equals(null, cmd.name())
-                            && Objects.equals(expectedDescription, cmd.description())
-                            && Objects.equals(expectedIsActive, cmd.isActive())
-            )
-        );
+        verify(createCategoryUseCase, times(1)).execute(argThat(cmd ->
+                                                                    Objects.equals(null, cmd.name())
+                                                                        && Objects.equals(
+                                                                        expectedDescription,
+                                                                        cmd.description()
+                                                                    ) && Objects.equals(
+                                                                        expectedIsActive,
+                                                                        cmd.isActive()
+                                                                    )));
     }
 
     @Test
@@ -253,8 +257,7 @@ class CategoryApiTest {
 
         final var expectedId = aCategory.getId().getValue();
 
-        when(getCategoryByIdUseCase.execute(any()))
-            .thenReturn(CategoryOutput.from(aCategory));
+        when(getCategoryByIdUseCase.execute(any())).thenReturn(CategoryOutput.from(aCategory));
 
         // Act - When
         final var request = get("/categories/{id}", expectedId).accept(MediaType.APPLICATION_JSON);
@@ -281,8 +284,10 @@ class CategoryApiTest {
         final var expectedId = "invalid-id";
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
 
-        when(getCategoryByIdUseCase.execute(any()))
-            .thenThrow(NotFoundException.with(Category.class, expectedId));
+        when(getCategoryByIdUseCase.execute(any())).thenThrow(NotFoundException.with(
+            Category.class,
+            expectedId
+        ));
 
         // Act - When
         final var request = get(
@@ -293,11 +298,10 @@ class CategoryApiTest {
         final ResultActions response = this.mvc.perform(request).andDo(print());
 
         // Assert - Then
-        response
-            .andExpect(status().isNotFound())
-            .andExpect(header().string("Location", nullValue()))
-            .andExpect(jsonPath("$.errors", hasSize(0)))
-            .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+        response.andExpect(status().isNotFound())
+                .andExpect(header().string("Location", nullValue()))
+                .andExpect(jsonPath("$.errors", hasSize(0)))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 
     @Test
@@ -309,33 +313,39 @@ class CategoryApiTest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
-        when(updateCategoryUseCase.execute(any())).
-            thenReturn(Right(UpdateCategoryOutput.from(expectedId)));
+        when(updateCategoryUseCase.execute(any())).thenReturn(Right(UpdateCategoryOutput.from(
+            expectedId)));
 
         // Act - When
-        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
-        final var request = put("/categories/{id}", expectedId)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(this.mapper.writeValueAsString(aCommand));
+        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(
+            expectedName,
+            expectedDescription,
+            expectedIsActive
+        );
+        final var request = put("/categories/{id}", expectedId).accept(MediaType.APPLICATION_JSON)
+                                                               .contentType(MediaType.APPLICATION_JSON)
+                                                               .content(this.mapper.writeValueAsString(
+                                                                   aCommand));
 
         final var response = this.mvc.perform(request).andDo(print());
 
         // Assert - Then
-        response
-            .andExpect(status().isOk())
-            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id", equalTo(expectedId)));
+        response.andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.id", equalTo(expectedId)));
 
-        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
-            Objects.equals(expectedName,cmd.name())
-                && Objects.equals(expectedDescription,cmd.description())
-                && Objects.equals(expectedIsActive,cmd.isActive())
-            ));
+        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd -> Objects.equals(
+            expectedName,
+            cmd.name()
+        ) && Objects.equals(expectedDescription, cmd.description()) && Objects.equals(
+            expectedIsActive,
+            cmd.isActive()
+        )));
     }
 
     @Test
-    void givenInvalidId_whenCallsUpdateCategory_thenShouldReturnNotFoundException() throws Exception {
+    void givenInvalidId_whenCallsUpdateCategory_thenShouldReturnNotFoundException()
+        throws Exception {
         // Arrange - Given
         final var expectedId = CategoryID.unique().getValue();
         final var expectedName = "Filmes";
@@ -343,28 +353,34 @@ class CategoryApiTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
 
-        when(updateCategoryUseCase.execute(any()))
-            .thenThrow(NotFoundException.with(Category.class, expectedId));
+        when(updateCategoryUseCase.execute(any())).thenThrow(NotFoundException.with(
+            Category.class,
+            expectedId
+        ));
 
         // Act - When
-        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
-        final var request = put("/categories/{id}", expectedId)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(this.mapper.writeValueAsString(aCommand));
+        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(
+            expectedName,
+            expectedDescription,
+            expectedIsActive
+        );
+        final var request = put("/categories/{id}", expectedId).accept(MediaType.APPLICATION_JSON)
+                                                               .contentType(MediaType.APPLICATION_JSON)
+                                                               .content(this.mapper.writeValueAsString(
+                                                                   aCommand));
 
         final var response = this.mvc.perform(request).andDo(print());
 
         // Assert - Then
-        response
-            .andExpect(status().isNotFound())
-            .andExpect(header().string("Location", nullValue()))
-            .andExpect(jsonPath("$.errors", hasSize(0)))
-            .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+        response.andExpect(status().isNotFound())
+                .andExpect(header().string("Location", nullValue()))
+                .andExpect(jsonPath("$.errors", hasSize(0)))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 
     @Test
-    void givenInvalidName_whenCallsUpdateCategory_thenShouldReturnDomainException() throws Exception {
+    void givenInvalidName_whenCallsUpdateCategory_thenShouldReturnDomainException()
+        throws Exception {
         // Arrange - Given
         final var expectedId = CategoryID.unique().getValue();
         final String expectedName = null;
@@ -374,24 +390,27 @@ class CategoryApiTest {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
 
-        when(updateCategoryUseCase.execute(any()))
-            .thenReturn(Left(Notification.create(new Error(expectedErrorMessage))));
+        when(updateCategoryUseCase.execute(any())).thenReturn(Left(Notification.create(new Error(
+            expectedErrorMessage))));
 
         // Act - When
-        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
-        final var request = put("/categories/{id}", expectedId)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(this.mapper.writeValueAsString(aCommand));
+        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(
+            expectedName,
+            expectedDescription,
+            expectedIsActive
+        );
+        final var request = put("/categories/{id}", expectedId).accept(MediaType.APPLICATION_JSON)
+                                                               .contentType(MediaType.APPLICATION_JSON)
+                                                               .content(this.mapper.writeValueAsString(
+                                                                   aCommand));
 
         final var response = this.mvc.perform(request).andDo(print());
 
         // Assert - Then
-        response
-            .andExpect(status().isUnprocessableEntity())
-            .andExpect(header().string("Location", nullValue()))
-            .andExpect(jsonPath("$.errors", hasSize(expectedErrorCount)))
-            .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
+        response.andExpect(status().isUnprocessableEntity())
+                .andExpect(header().string("Location", nullValue()))
+                .andExpect(jsonPath("$.errors", hasSize(expectedErrorCount)))
+                .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)));
     }
 
     @Test
@@ -402,9 +421,10 @@ class CategoryApiTest {
         doNothing().when(this.deleteCategoryUseCase).execute(any());
 
         // Act - When
-        final var request = delete("/categories/{id}", expectedId)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON);
+        final var request = delete(
+            "/categories/{id}",
+            expectedId
+        ).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON);
 
         final ResultActions response = this.mvc.perform(request).andDo(print());
 
@@ -412,5 +432,69 @@ class CategoryApiTest {
         response.andExpect(status().isNoContent());
 
         verify(deleteCategoryUseCase, times(1)).execute(expectedId);
+    }
+
+    @Test
+    void givenAValidParams_whenCallsListCategories_thenShouldReturnCategories() throws Exception {
+        // Arrange - Given
+        final var aCategory = Category.newCategory("Filmes", "A categoria mais assistida", true);
+        final var expectedPage = 0;
+        final var expectedPerPage = 10;
+        final var expectedTerms = "Jamanta";
+        final var expectedSortField = "description";
+        final var expectedSortDirection = "desc";
+        final var expectedItemsCount = 1;
+        final var expectedTotal = 1;
+
+        final var expectedItems = List.of((CategoryListOutput.from(aCategory)));
+
+        when(this.listCategoryUseCase.execute(any())).thenReturn(Pagination.fromPage(
+            expectedPage,
+            expectedPerPage,
+            expectedTotal,
+            expectedItems
+        ));
+
+        // Act - When
+        final var request = get("/categories")
+            .queryParam("page", String.valueOf(expectedPage))
+            .queryParam("perPage", String.valueOf(expectedPerPage))
+            .queryParam("sortField", expectedSortField)
+            .queryParam("sortOrder", expectedSortDirection)
+            .queryParam("search", expectedTerms)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        final ResultActions response = this.mvc.perform(request).andDo(print());
+
+        // Assert - Then
+        response.andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
+                .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
+                .andExpect(jsonPath("$.data", hasSize(expectedItemsCount)))
+                .andExpect(jsonPath("$.data[0].id", equalTo(aCategory.getId().getValue())))
+                .andExpect(jsonPath("$.data[0].name", equalTo(aCategory.getName())))
+                .andExpect(jsonPath("$.data[0].description", equalTo(aCategory.getDescription())))
+                .andExpect(jsonPath("$.data[0].is_active", equalTo(aCategory.isActive())))
+                .andExpect(jsonPath(
+                    "$.data[0].created_at",
+                    equalTo(aCategory.getCreatedAt().toString())
+                ))
+                .andExpect(jsonPath(
+                    "$.data[0].updated_at",
+                    equalTo(aCategory.getUpdatedAt().toString())
+                ))
+                .andExpect(jsonPath("$.data[0].deleted_at", equalTo(aCategory.getDeletedAt())));
+
+        verify(listCategoryUseCase, times(1)).execute(argThat(
+            query ->
+                Objects.equals(expectedPage, query.page())
+                    && Objects.equals(expectedPerPage, query.perPage())
+                    && Objects.equals(expectedSortField, query.sort())
+                    && Objects.equals(expectedSortDirection, query.direction())
+                    && Objects.equals(expectedTerms, query.terms()
+                )));
     }
 }

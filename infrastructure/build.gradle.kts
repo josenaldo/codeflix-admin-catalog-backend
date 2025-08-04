@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.flyway.mysql)
     implementation(libs.flyway.gradle.plugin)
     implementation(libs.springdoc.openapi.starter)
+    implementation(libs.afterburner)
 
     testImplementation(libs.flyway.core)
 

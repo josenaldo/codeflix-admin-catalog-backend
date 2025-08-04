@@ -45,8 +45,8 @@ public interface CategoryApi {
         @RequestParam(name = "search", required = false, defaultValue = "") final String search,
         @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
         @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,
-        @RequestParam(name = "sortField", required = false, defaultValue = "name") final int sortField,
-        @RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") final int sortOrder
+        @RequestParam(name = "sortField", required = false, defaultValue = "name") final String sortField,
+        @RequestParam(name = "sortOrder", required = false, defaultValue = "ASC") final String sortOrder
     );
 
     @GetMapping(
