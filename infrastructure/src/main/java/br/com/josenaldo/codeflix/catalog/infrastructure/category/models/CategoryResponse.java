@@ -2,7 +2,7 @@ package br.com.josenaldo.codeflix.catalog.infrastructure.category.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record CategoryApiOutput(
+public record CategoryResponse(
     @JsonProperty("id") String id,
     @JsonProperty("name") String name,
     @JsonProperty("description") String description,
@@ -11,6 +11,4 @@ public record CategoryApiOutput(
     @JsonProperty("updated_at") String updatedAt,
     @JsonProperty("deleted_at") String deletedAt
 ) {
-
-
 }

@@ -26,6 +26,7 @@ import java.time.Instant;
 public record CategoryListOutput(
     CategoryID id,
     Instant createdAt,
+    Instant updatedAt,
     Instant deletedAt,
     String name,
     String description,
@@ -45,6 +46,7 @@ public record CategoryListOutput(
         return new CategoryListOutput(
             category.getId(),
             category.getCreatedAt(),
+            category.getUpdatedAt(),
             category.getDeletedAt(),
             category.getName(),
             category.getDescription(),

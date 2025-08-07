@@ -15,11 +15,11 @@ import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.api.CategoryApi;
-import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CategoryApiOutput;
-import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
-import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryApiInput;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CategoryListResponse;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CategoryResponse;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryRequest;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.presenters.CategoryApiPresenter;
-import io.vavr.control.Either;
 import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
@@ -53,7 +53,7 @@ public class CategoryController implements CategoryApi {
      * @return
      */
     @Override
-    public ResponseEntity<?> createCategory(final CreateCategoryApiInput input) {
+    public ResponseEntity<?> createCategory(final CreateCategoryRequest input) {
         final var aCommand = CreateCategoryCommand.with(
             input.name(),
             input.description(),
@@ -77,7 +77,7 @@ public class CategoryController implements CategoryApi {
      * @return
      */
     @Override
-    public CategoryApiOutput getById(final String id) {
+    public CategoryResponse getById(final String id) {
         final CategoryOutput categoryOutput = getCategoryByIdUseCase.execute(id);
 
         return CategoryApiPresenter.present(categoryOutput);
@@ -92,19 +92,20 @@ public class CategoryController implements CategoryApi {
      * @return
      */
     @Override
-    public Pagination<?> listCategories(
+    public Pagination<CategoryListResponse> listCategories(
         final String search,
         final int page,
         final int perPage,
         final String sortField,
         final String sortOrder
     ) {
-        return listCategoryUseCase
+        Pagination<CategoryListOutput> pagination = listCategoryUseCase
             .execute(new CategorySearchQuery(page, perPage, search, sortField, sortOrder));
+        return pagination.map(CategoryApiPresenter::present);
     }
 
     @Override
-    public ResponseEntity<?> updateById(final String id, final UpdateCategoryApiInput input) {
+    public ResponseEntity<?> updateById(final String id, final UpdateCategoryRequest input) {
 
         final var aCommand = UpdateCategoryCommand.with(
             id,

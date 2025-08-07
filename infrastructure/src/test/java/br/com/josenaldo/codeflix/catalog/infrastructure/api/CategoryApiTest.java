@@ -1,15 +1,12 @@
 package br.com.josenaldo.codeflix.catalog.infrastructure.api;
 
 import static io.vavr.API.Left;
-import static io.vavr.API.List;
 import static io.vavr.API.Right;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,15 +32,14 @@ import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCateg
 import br.com.josenaldo.codeflix.catalog.application.category.update.UpdateCategoryUseCase;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
-import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryValidator;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
-import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryApiInput;
-import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryApiInput;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryRequest;
+import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Objects;
@@ -117,7 +113,7 @@ class CategoryApiTest {
     /**
      * Tests the behavior of the category creation API when a valid command is provided.
      * <p>
-     * This method verifies that the API correctly processes a valid {@code CreateCategoryApiInput},
+     * This method verifies that the API correctly processes a valid {@code CreateCategoryRequest},
      * delegates to the use case, and returns the expected category ID in the response. It ensures
      * the proper integration between the controller, service layer, and response behavior.
      * <p>
@@ -139,7 +135,7 @@ class CategoryApiTest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
-        final var aInput = new CreateCategoryApiInput(
+        final var aInput = new CreateCategoryRequest(
             expectedName,
             expectedDescription,
             expectedIsActive
@@ -176,7 +172,7 @@ class CategoryApiTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
 
-        final var aInput = new CreateCategoryApiInput(null, expectedDescription, expectedIsActive);
+        final var aInput = new CreateCategoryRequest(null, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any())).thenReturn(Left(Notification.create(new Error(
             expectedErrorMessage))));
@@ -213,7 +209,7 @@ class CategoryApiTest {
         final var expectedIsActive = true;
         final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
 
-        final var aInput = new CreateCategoryApiInput(null, expectedDescription, expectedIsActive);
+        final var aInput = new CreateCategoryRequest(null, expectedDescription, expectedIsActive);
 
         when(createCategoryUseCase.execute(any())).thenThrow(DomainException.with(
             expectedErrorMessage));
@@ -317,7 +313,7 @@ class CategoryApiTest {
             expectedId)));
 
         // Act - When
-        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(
+        UpdateCategoryRequest aCommand = new UpdateCategoryRequest(
             expectedName,
             expectedDescription,
             expectedIsActive
@@ -359,7 +355,7 @@ class CategoryApiTest {
         ));
 
         // Act - When
-        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(
+        UpdateCategoryRequest aCommand = new UpdateCategoryRequest(
             expectedName,
             expectedDescription,
             expectedIsActive
@@ -394,7 +390,7 @@ class CategoryApiTest {
             expectedErrorMessage))));
 
         // Act - When
-        UpdateCategoryApiInput aCommand = new UpdateCategoryApiInput(
+        UpdateCategoryRequest aCommand = new UpdateCategoryRequest(
             expectedName,
             expectedDescription,
             expectedIsActive
@@ -470,7 +466,7 @@ class CategoryApiTest {
         // Assert - Then
         response.andExpect(status().isOk())
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.current_page", equalTo(expectedPage)))
+                .andExpect(jsonPath("$.page", equalTo(expectedPage)))
                 .andExpect(jsonPath("$.per_page", equalTo(expectedPerPage)))
                 .andExpect(jsonPath("$.total", equalTo(expectedTotal)))
                 .andExpect(jsonPath("$.data", hasSize(expectedItemsCount)))
