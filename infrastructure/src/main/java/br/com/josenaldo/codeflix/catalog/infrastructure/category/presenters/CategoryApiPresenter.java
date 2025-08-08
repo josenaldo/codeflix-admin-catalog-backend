@@ -11,12 +11,12 @@ public interface CategoryApiPresenter {
     static CategoryResponse present(CategoryOutput categoryOutput) {
         return new CategoryResponse(
             categoryOutput.id().getValue(),
+            categoryOutput.createdAt(),
+            categoryOutput.updatedAt(),
+            categoryOutput.deletedAt() != null ? categoryOutput.deletedAt() : null,
             categoryOutput.name(),
             categoryOutput.description(),
-            categoryOutput.isActive(),
-            categoryOutput.createdAt().toString(),
-            categoryOutput.updatedAt().toString(),
-            categoryOutput.deletedAt() != null ? categoryOutput.deletedAt().toString() : null
+            categoryOutput.isActive()
         );
     }
 
@@ -24,11 +24,9 @@ public interface CategoryApiPresenter {
 
         return new CategoryListResponse(
             categoryListOutput.id().getValue(),
-            categoryListOutput.createdAt().toString(),
-            categoryListOutput.updatedAt() != null ? categoryListOutput.updatedAt().toString()
-                : null,
-            categoryListOutput.deletedAt() != null ? categoryListOutput.deletedAt().toString()
-                : null,
+            categoryListOutput.createdAt(),
+            categoryListOutput.updatedAt() != null ? categoryListOutput.updatedAt() : null,
+            categoryListOutput.deletedAt() != null ? categoryListOutput.deletedAt() : null,
             categoryListOutput.name(),
             categoryListOutput.description(),
             categoryListOutput.isActive()

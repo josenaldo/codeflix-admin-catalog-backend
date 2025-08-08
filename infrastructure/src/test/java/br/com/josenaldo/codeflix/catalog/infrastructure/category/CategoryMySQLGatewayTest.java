@@ -80,26 +80,27 @@ class CategoryMySQLGatewayTest {
         assertThat(categoryRepository.count()).isEqualTo(1);
         assertThat(actualCategory).isNotNull();
         assertThat(actualCategory.getId()).isEqualTo(category.getId());
-        assertThat(actualCategory.getName()).isEqualTo(expectedName);
-        assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
-        assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
         assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getUpdatedAt());
         assertThat(actualCategory.getUpdatedAt()).isEqualTo(category.getUpdatedAt());
         assertThat(actualCategory.getDeletedAt()).isNull();
+        assertThat(actualCategory.getName()).isEqualTo(expectedName);
+        assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
+        assertThat(actualCategory.isActive()).isEqualTo(expectedIsActive);
 
         String id = actualCategory.getId().getValue();
         final var createdCategoryEntity = categoryRepository.findById(id).orElse(null);
         assertThat(createdCategoryEntity).isNotNull();
         assertThat(createdCategoryEntity.getId()).isEqualTo(category.getId().getValue());
-        assertThat(createdCategoryEntity.getName()).isEqualTo(expectedName);
-        assertThat(createdCategoryEntity.getDescription())
-            .isEqualTo(expectedDescription);
-        assertThat(createdCategoryEntity.isActive()).isEqualTo(expectedIsActive);
         assertThat(createdCategoryEntity.getCreatedAt())
             .isEqualTo(category.getCreatedAt());
         assertThat(createdCategoryEntity.getUpdatedAt())
             .isEqualTo(category.getUpdatedAt());
         assertThat(createdCategoryEntity.getDeletedAt()).isNull();
+        assertThat(createdCategoryEntity.getName()).isEqualTo(expectedName);
+        assertThat(createdCategoryEntity.getDescription())
+            .isEqualTo(expectedDescription);
+        assertThat(createdCategoryEntity.isActive()).isEqualTo(expectedIsActive);
+
     }
 
     /**
