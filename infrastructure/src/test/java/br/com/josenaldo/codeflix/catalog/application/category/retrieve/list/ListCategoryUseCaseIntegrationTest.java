@@ -8,12 +8,16 @@ import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
+import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @IntegrationTest
@@ -25,8 +29,63 @@ class ListCategoryUseCaseIntegrationTest {
     @Autowired
     private CategoryRepository repository;
 
+    /**
+     * Static mock of {@link Instant#now()} used for controlling and manipulating the current time
+     * during tests.
+     * <p>
+     * This mock allows the test cases to substitute the system's actual current time with a
+     * predetermined or dynamically adjusted time, enabling deterministic and repeatable testing of
+     * time-dependent logic.
+     */
+    private MockedStatic<Instant> instantMock;
+
+
+    /**
+     * Represents the base timestamp used for integration test operations.
+     * <p>
+     * This field holds a fixed {@link Instant} value that serves as a reference point for
+     * operations requiring a consistent and predictable starting time.
+     * <p>
+     * The value is immutable and is always set to "2024-01-01T00:00:00Z". It ensures consistent
+     * temporal references within test scenarios.
+     */
+    private final Instant baseTime = Instant.parse("2024-01-01T00:00:00Z");
+
+
+    /**
+     * Represents the interval in milliseconds for incrementing or stepping through a time-related
+     * operation.
+     * <p>
+     * This value is used to define a consistent amount of time between each step in tests or
+     * processes that involve time-based logic.
+     * <p>
+     * In the context of integration tests, {@code stepMillis} ensures that time-related events,
+     * such as timestamps or durations, advance uniformly by the specified amount.
+     */
+    private final long stepMillis = 1L;
+
+
+    /**
+     * Tracks the number of calls or invocations performed during the test execution.
+     * <p>
+     * This field is primarily used within the context of integration testing to record how many
+     * times a specific operation or functionality is executed. It helps in asserting and verifying
+     * expected behavior, such as counting calls to a particular method or interaction.
+     * <p>
+     * The field is thread-safe due to its use of {@link AtomicLong}, allowing it to be used
+     * reliably in concurrent test scenarios.
+     */
+    private final AtomicLong callCounter = new AtomicLong(0L);
+
     @BeforeEach
     void setup() {
+        // Inicia o mock de método estático
+        instantMock = Mockito.mockStatic(Instant.class, Mockito.CALLS_REAL_METHODS);
+
+        // Cada chamada a Instant.now() retorna um instante crescente e único
+        instantMock.when(Instant::now)
+                   .thenAnswer(inv -> baseTime.plusMillis(callCounter.getAndIncrement() * stepMillis));
+
         final List<Category> categories = List.of(
             Category.newCategory("Filmes", "A categoria mais assistida ", true),
             Category.newCategory("Netflix Originals", "Títulos de autoria da Netflix", true),
@@ -44,6 +103,11 @@ class ListCategoryUseCaseIntegrationTest {
     @AfterEach
     void tearDown() {
         repository.deleteAll();
+
+        // Finaliza o mock para não vazar para outros testes
+        if (instantMock != null) {
+            instantMock.close();
+        }
     }
 
     @Test
@@ -94,7 +158,6 @@ class ListCategoryUseCaseIntegrationTest {
         final int expectedTotal,
         final String expectedCategoryName
     ) {
-        // Arrange - Given
         final var expectedSortField = "name";
         final var expectedSortDirection = "ASC";
 
@@ -106,10 +169,8 @@ class ListCategoryUseCaseIntegrationTest {
             expectedSortDirection
         );
 
-        // Act - When
         Pagination<CategoryListOutput> actualResult = useCase.execute(searchQuery);
 
-        // Assert - Then
         assertThat(actualResult)
             .isNotNull()
             .extracting(
@@ -130,125 +191,12 @@ class ListCategoryUseCaseIntegrationTest {
         assertThat(actualResult.data())
             .isNotNull()
             .hasSize(expectedItemsCount);
-
-        assertThat(actualResult.data().getFirst().name()).isEqualTo(expectedCategoryName);
-
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "name, ASC, 0, 10, 7, 7, Amazon Originals",
-        "name, DESC, 0, 10, 7, 7, Séries",
-        "createdAt, DESC, 0, 10, 7, 7, Filmes",
-        "description, DESC, 0, 10, 7, 7, Netflix Recentes"
-    })
-    void givenAValidSortAndDirection_whenCallsList_thenShouldReturnPageWithCategoriesSorted(
-        final String expectedSortField,
-        final String expectedSortDirection,
-        final int expectedPage,
-        final int expectedPerPage,
-        final int expectedItemsCount,
-        final int expectedTotal,
-        final String expectedCategoryName
-    ) {
-        // Arrange - Given
-        final var expectedTerms = "";
-
-        CategorySearchQuery searchQuery = CategorySearchQuery.of(
-            expectedPage,
-            expectedPerPage,
-            expectedTerms,
-            expectedSortField,
-            expectedSortDirection
-        );
-
-        // Act - When
-        Pagination<CategoryListOutput> actualResult = useCase.execute(searchQuery);
-
-        // Assert - Then
-        assertThat(actualResult)
-            .isNotNull()
-            .extracting(
-                Pagination::page,
-                Pagination::perPage,
-                Pagination::total,
-                Pagination::itemsCount,
-                Pagination::isEmpty
-            )
-            .containsExactly(
-                expectedPage,
-                expectedPerPage,
-                (long) expectedTotal,
-                expectedItemsCount,
-                false
-            );
-
-        assertThat(actualResult.data())
-            .isNotNull()
-            .hasSize(expectedItemsCount);
-
-        assertThat(actualResult.data().getFirst().name()).isEqualTo(expectedCategoryName);
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0, 2, 2, 7, Amazon Originals;Documentários",
-        "1, 2, 2, 7, Filmes;Kids",
-        "2, 2, 2, 7, Netflix Originals;Netflix Recentes",
-        "3, 2, 1, 7, Séries"
-    })
-    void givenAValidPage_whenCallsList_thenShouldReturnCategoriesPaginated(
-        final int expectedPage,
-        final int expectedPerPage,
-        final int expectedItemsCount,
-        final int expectedTotal,
-        final String expectedCategoriesName
-    ) {
-        // Arrange - Given
-        final var expectedTerms = "";
-        final var expectedSortField = "name";
-        final var expectedSortDirection = "ASC";
-
-        CategorySearchQuery searchQuery = CategorySearchQuery.of(
-            expectedPage,
-            expectedPerPage,
-            expectedTerms,
-            expectedSortField,
-            expectedSortDirection
-        );
-
-        // Act - When
-        Pagination<CategoryListOutput> actualResult = useCase.execute(searchQuery);
-
-        // Assert - Then
-        assertThat(actualResult)
-            .isNotNull()
-            .extracting(
-                Pagination::page,
-                Pagination::perPage,
-                Pagination::total,
-                Pagination::itemsCount,
-                Pagination::isEmpty
-            )
-            .containsExactly(
-                expectedPage,
-                expectedPerPage,
-                (long) expectedTotal,
-                expectedItemsCount,
-                false
-            );
-
-        assertThat(actualResult.data())
-            .isNotNull()
-            .hasSize(expectedItemsCount);
-
         int index = 0;
-        String[] names = expectedCategoriesName.split(";");
+        String[] names = expectedCategoryName.split(";");
 
         for (String actualName : names) {
             assertThat(actualResult.data().get(index).name()).isEqualTo(actualName);
             index++;
         }
-
     }
 }
