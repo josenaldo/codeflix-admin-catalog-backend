@@ -1,10 +1,9 @@
-package br.com.josenaldo.codeflix.catalog.infrastructure.category.model;
+package br.com.josenaldo.codeflix.catalog.infrastructure.category.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.josenaldo.codeflix.catalog.annotations.JacksonTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
-import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CategoryResponse;
 import java.time.Instant;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -99,5 +98,4 @@ public class CategoryResponseTest {
                   .hasFieldOrPropertyWithValue("updatedAt", expectedUpdatedAt)
                   .hasFieldOrPropertyWithValue("deletedAt", expectedDeletedAt);
     }
-
 }

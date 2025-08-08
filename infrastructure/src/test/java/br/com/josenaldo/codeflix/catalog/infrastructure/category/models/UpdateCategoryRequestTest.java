@@ -1,7 +1,6 @@
-package br.com.josenaldo.codeflix.catalog.infrastructure.category.model;
+package br.com.josenaldo.codeflix.catalog.infrastructure.category.models;
 
 import br.com.josenaldo.codeflix.catalog.annotations.JacksonTest;
-import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
