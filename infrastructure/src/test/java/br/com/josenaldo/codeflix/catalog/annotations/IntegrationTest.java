@@ -30,7 +30,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@ActiveProfiles("test")
+@ActiveProfiles("test-integration")
 @SpringBootTest(classes = WebServerConfig.class)
 @ExtendWith(RepositoryCleanUpExtension.class)
 @EnableAutoConfiguration

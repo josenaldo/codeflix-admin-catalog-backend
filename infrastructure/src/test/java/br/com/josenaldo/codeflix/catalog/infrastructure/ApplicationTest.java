@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = Application.class)
-@ActiveProfiles(value = "test")
+@ActiveProfiles("test-integration")
 public class ApplicationTest {
 
     @Value("${server.port}")
