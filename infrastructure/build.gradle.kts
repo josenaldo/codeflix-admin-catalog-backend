@@ -49,6 +49,10 @@ dependencies {
 
     testImplementation(libs.flyway.core)
 
+    testImplementation(libs.test.containers.core)
+    testImplementation(libs.test.containers.mysql)
+    testImplementation(libs.test.containers.junit)
+
     runtimeOnly(libs.mysql.connector.j)
 }
 

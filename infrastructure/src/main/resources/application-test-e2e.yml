@@ -1,0 +1,10 @@
+# Database configuration
+database:
+    driver: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:${mysql.port}/codeflix_adm_videos
+    user: root
+    password: 123456
+
+logging:
+    level:
+        ROOT: INFO
