@@ -2,8 +2,8 @@ package br.com.josenaldo.codeflix.catalog.domain.exceptions;
 
 import br.com.josenaldo.codeflix.catalog.domain.AggregateRoot;
 import br.com.josenaldo.codeflix.catalog.domain.Identifier;
-import java.util.List;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
+import java.util.List;
 
 public class NotFoundException extends DomainException{
 
@@ -21,8 +21,7 @@ public class NotFoundException extends DomainException{
         final Class<? extends AggregateRoot<?>> anAggregate,
         final Identifier id
     ) {
-        final var anError = "%s with ID %s was not found".formatted(
-            anAggregate.getSimpleName(), id.getValue());
+        final var anError = createMessage(anAggregate.getSimpleName(), id.getValue());
 
             return new NotFoundException(anError, List.of());
         }
@@ -31,9 +30,16 @@ public class NotFoundException extends DomainException{
         final Class<? extends AggregateRoot<?>> anAggregate,
         final String id
     ) {
-        final var anError = "%s with ID %s was not found".formatted(
-            anAggregate.getSimpleName(), id);
+        final var anError = createMessage(anAggregate.getSimpleName(), id);
 
         return new NotFoundException(anError, List.of());
+    }
+
+    public static String createMessage(String anAggregate, String id) {
+        return "%s with ID %s was not found".formatted(anAggregate, id);
+    }
+
+    public static String createMessage(String anAggregate, Identifier id) {
+        return createMessage(anAggregate, id.getValue());
     }
 }

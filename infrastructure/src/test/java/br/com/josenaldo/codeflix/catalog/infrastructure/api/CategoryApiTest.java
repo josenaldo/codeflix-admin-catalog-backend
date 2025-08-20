@@ -278,7 +278,7 @@ class CategoryApiTest {
     void givenInvalidId_whenCallsGetCategory_thenShouldReturnNotFoundException() throws Exception {
         // Arrange - Given
         final var expectedId = "invalid-id";
-        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+        final var expectedErrorMessage = NotFoundException.createMessage("Category", expectedId);
 
         when(getCategoryByIdUseCase.execute(any())).thenThrow(NotFoundException.with(
             Category.class,
@@ -347,7 +347,7 @@ class CategoryApiTest {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
-        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+        final var expectedErrorMessage = NotFoundException.createMessage("Category", expectedId);
 
         when(updateCategoryUseCase.execute(any())).thenThrow(NotFoundException.with(
             Category.class,

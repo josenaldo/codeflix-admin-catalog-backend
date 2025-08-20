@@ -61,3 +61,5 @@ spring:
             "[hibernate.hibernate.generate_statistics]": true
             # Disables auto-commit in the Hibernate connection provider for controlled transaction management.
             "[hibernate.connection.provider_disables_autocommit]": true
+            # Enables nullability checks for entity attributes.
+            "[hibernate.check_nullability]": true

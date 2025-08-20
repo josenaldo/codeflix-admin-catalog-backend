@@ -196,6 +196,57 @@ public class CategoryE2ETest {
             .andExpect(jsonPath("$.data[2].name", equalTo("Séries")));
     }
 
+    @Test
+    void givenAValidCategoryId_whenGetCategoryByItsIdentifier_thenReturnTheCategory()
+        throws Exception {
+        // Arrange - Given
+        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
+        assertEquals(0, categoryRepository.count());
+
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var categoryId = this.givenACategory(
+            expectedName,
+            expectedDescription,
+            expectedIsActive
+        );
+
+        // Act - When
+        final var actualCategory = retrieveCategory(categoryId.getValue());
+
+        // Assert - Then
+        assertThat(actualCategory).isNotNull();
+        assertNotNull(actualCategory.id());
+        assertNotNull(actualCategory.createdAt());
+        assertNotNull(actualCategory.updatedAt());
+        assertNull(actualCategory.deletedAt());
+        assertThat(expectedName).isEqualTo(actualCategory.name());
+        assertThat(expectedDescription).isEqualTo(actualCategory.description());
+        assertThat(expectedIsActive).isEqualTo(actualCategory.isActive());
+    }
+
+    @Test
+    void givenAnInexistentCategoryId_whenGetCategoryByItsIdentifier_thenReturnANotFoundError()
+        throws Exception {
+        // Arrange - Given
+        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
+        assertEquals(0, categoryRepository.count());
+
+        final var categoryId = CategoryID.unique();
+
+        // Act - When
+        MockHttpServletRequestBuilder aRequest = get("/categories/" + categoryId.getValue())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON);
+
+        ResultActions response = this.mockMvc.perform(aRequest);
+
+        // Assert - Then
+        response.andExpect(status().isNotFound());
+    }
+
     private ResultActions listCategories(final int page, final int perPage) throws Exception {
         return listCategories(page, perPage, "", "", "");
     }
@@ -262,4 +313,6 @@ public class CategoryE2ETest {
 
         return CategoryID.fromString(actualId);
     }
+
+
 }

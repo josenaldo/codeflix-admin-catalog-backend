@@ -4,7 +4,6 @@ import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
-import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import java.util.function.Supplier;
 
 /**

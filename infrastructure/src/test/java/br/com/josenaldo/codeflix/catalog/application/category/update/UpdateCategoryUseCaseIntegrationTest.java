@@ -16,7 +16,6 @@ import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryValidator;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
-import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import java.util.List;
@@ -328,7 +327,7 @@ class UpdateCategoryUseCaseIntegrationTest {
         final var invalidId = CategoryID.unique();
 
         final var expectedErrorCount = 0;
-        final var expectedMessage = "Category with ID %s was not found".formatted(invalidId.getValue());
+        final var expectedMessage = NotFoundException.createMessage("Category", invalidId);
 
         final var command = UpdateCategoryCommand.with(
             invalidId.getValue(),

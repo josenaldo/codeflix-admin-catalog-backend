@@ -77,7 +77,7 @@ class GetCategoryByIdUseCaseTest {
     void givenNonExistentCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = CategoryID.unique();
-        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId.getValue());
+        final var expectedErrorMessage = NotFoundException.createMessage("Category", expectedId);
 
         when(categoryGateway.findById(expectedId)).thenReturn(Optional.empty());
 
@@ -98,7 +98,7 @@ class GetCategoryByIdUseCaseTest {
     void givenEmptyCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = "";
-        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+        final var expectedErrorMessage = NotFoundException.createMessage("Category", expectedId);
 
         // Act - When
         final var actualException = catchException(() -> useCase.execute(expectedId));
@@ -119,7 +119,7 @@ class GetCategoryByIdUseCaseTest {
     void givenBlankCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = "   ";
-        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+        final var expectedErrorMessage = NotFoundException.createMessage("Category", expectedId);
 
         // Act - When
         final var actualException = catchException(() -> useCase.execute(expectedId));
@@ -140,7 +140,7 @@ class GetCategoryByIdUseCaseTest {
     void givenInvalidCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final var expectedId = "invalid-id";
-        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+        final var expectedErrorMessage = NotFoundException.createMessage("Category", expectedId);
 
         // Act - When
         final var actualException = catchException(() -> useCase.execute(expectedId));
@@ -161,7 +161,7 @@ class GetCategoryByIdUseCaseTest {
     void givenNullCategoryId_whenGetCategoryById_thenShouldThrowNotFoundException() {
         // Arrange - Given
         final String expectedId = null;
-        final var expectedErrorMessage = "Category with ID %s was not found".formatted(expectedId);
+        final var expectedErrorMessage = NotFoundException.createMessage("Category", expectedId);
 
         // Act - When
         final var actualException = catchException(() -> useCase.execute(expectedId));
