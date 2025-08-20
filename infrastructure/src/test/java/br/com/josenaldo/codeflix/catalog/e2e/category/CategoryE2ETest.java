@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -19,6 +20,7 @@ import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCa
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import br.com.josenaldo.codeflix.catalog.infrastructure.configuration.json.Json;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -62,12 +64,15 @@ public class CategoryE2ETest {
         registry.add("mysql.port", port::toString);
     }
 
+    @BeforeEach
+    void setUp() {
+        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
+        assertEquals(0, categoryRepository.count());
+    }
+
     @Test
     void givenValidCategoryData_whenAddACategory_thenItShouldBePersisted() throws Exception {
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
-
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -94,10 +99,7 @@ public class CategoryE2ETest {
     @Test
     void givenValidPageAndPerPage_whenListCategories_thenReturnPaginatedCategories()
         throws Exception {
-
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
 
         // Act - When
         final var categoryId1 = this.givenACategory("Filmes", null, true);
@@ -145,10 +147,7 @@ public class CategoryE2ETest {
     @Test
     void givenValidSearchTerm_whenListCategories_thenShouldReturnFilteredResults()
         throws Exception {
-
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
 
         // Act - When
         final var categoryId1 = this.givenACategory("Filmes", null, true);
@@ -172,10 +171,7 @@ public class CategoryE2ETest {
     @Test
     void givenValidSortFieldAndSortOrder_whenListCategories_thenShouldReturnOrderedResults()
         throws Exception {
-
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
 
         // Act - When
         final var categoryId1 = this.givenACategory("Filmes", "C", true);
@@ -200,9 +196,6 @@ public class CategoryE2ETest {
     void givenValidCategoryId_whenGetCategoryByItsIdentifier_thenReturnTheCategory()
         throws Exception {
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
-
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -231,9 +224,6 @@ public class CategoryE2ETest {
     void givenAnInexistentCategoryId_whenGetCategoryByItsIdentifier_thenReturnANotFoundError()
         throws Exception {
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
-
         final var categoryId = CategoryID.unique();
 
         // Act - When
@@ -251,9 +241,6 @@ public class CategoryE2ETest {
     void givenValidCategoryIdAndData_whenUpdateCategoryByItsIdentifier_thenReturnTheCategory()
         throws Exception {
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
-
         final var categoryId = this.givenACategory(
             "Movies",
             null,
@@ -293,9 +280,6 @@ public class CategoryE2ETest {
     void givenAnActiveCategory_whenUpdateCategoryByItsIdentifierWithFalseActive_thenInactivateTheCategory()
         throws Exception {
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
-
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = false;
@@ -335,9 +319,6 @@ public class CategoryE2ETest {
     void givenAnInactiveCategory_whenUpdateCategoryByItsIdentifierWithTrueActive_thenActivateTheCategory()
         throws Exception {
         // Arrange - Given
-        assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
-        assertEquals(0, categoryRepository.count());
-
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -373,6 +354,25 @@ public class CategoryE2ETest {
         assertThat(expectedIsActive).isEqualTo(actualCategory.isActive());
     }
 
+    @Test
+    void givenValidCategoryId_whenDeleteCategoryByItsIdentifier_thenReturnNoContent()
+        throws Exception {
+        // Arrange - Given
+        final var categoryId = this.givenACategory("Filmes", null, true);
+
+        // Act - When
+        final var request = delete("/categories/" + categoryId.getValue())
+            .contentType(MediaType.APPLICATION_JSON);
+
+        this.mockMvc.perform(request)
+                    .andExpect(status().isNoContent());
+
+        // Assert - Then
+        final var categoryExists = categoryRepository.existsById(categoryId.getValue());
+
+        assertThat(categoryExists).isFalse();
+    }
+
     private ResultActions listCategories(final int page, final int perPage) throws Exception {
         return listCategories(page, perPage, "", "", "");
     }
@@ -389,7 +389,6 @@ public class CategoryE2ETest {
         final String sortField,
         final String sortOrder
     ) throws Exception {
-
         MockHttpServletRequestBuilder aRequest = get("/categories")
             .queryParam("page", String.valueOf(page))
             .queryParam("perPage", String.valueOf(perPage))
@@ -439,6 +438,4 @@ public class CategoryE2ETest {
 
         return CategoryID.fromString(actualId);
     }
-
-
 }
