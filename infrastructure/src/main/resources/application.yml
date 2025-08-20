@@ -1,6 +1,8 @@
 server:
     # The port on which the application runs.
     port: 8080
+    servlet:
+        context-path: /api
     compression:
         # Enable HTTP response compression to reduce response size.
         enabled: true

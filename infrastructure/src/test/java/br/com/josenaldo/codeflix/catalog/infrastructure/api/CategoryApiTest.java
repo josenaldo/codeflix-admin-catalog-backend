@@ -384,7 +384,7 @@ class CategoryApiTest {
         final var expectedIsActive = true;
 
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = CategoryValidator.NULL_NAME_ERROR;
+        final var expectedErrorMessage = "field name: must not be blank";
 
         when(updateCategoryUseCase.execute(any())).thenReturn(Left(Notification.create(new Error(
             expectedErrorMessage))));
