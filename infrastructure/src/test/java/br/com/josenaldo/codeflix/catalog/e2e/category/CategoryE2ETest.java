@@ -61,7 +61,7 @@ public class CategoryE2ETest {
     }
 
     @Test
-    void givenIAmACatalogAdmin_whenIAddACategory_thenItShouldBePersisted() throws Exception {
+    void givenValidCategoryData_whenAddACategory_thenItShouldBePersisted() throws Exception {
         // Arrange - Given
         assertThat(MY_SQL_CONTAINER.isRunning()).isTrue();
         assertEquals(0, categoryRepository.count());
@@ -77,22 +77,21 @@ public class CategoryE2ETest {
             expectedIsActive
         );
 
-        final var actualCategory = retrieveCategory(categoryId.getValue());
-
         // Assert - Then
+        final var actualCategory = categoryRepository.findById(categoryId.getValue()).orElse(null);
         assertThat(actualCategory).isNotNull();
-        assertNotNull(actualCategory.id());
-        assertNotNull(actualCategory.createdAt());
-        assertNotNull(actualCategory.updatedAt());
-        assertNull(actualCategory.deletedAt());
-        assertThat(expectedName).isEqualTo(actualCategory.name());
-        assertThat(expectedDescription).isEqualTo(actualCategory.description());
+        assertNotNull(actualCategory.getId());
+        assertNotNull(actualCategory.getCreatedAt());
+        assertNotNull(actualCategory.getUpdatedAt());
+        assertNull(actualCategory.getDeletedAt());
+        assertThat(expectedName).isEqualTo(actualCategory.getName());
+        assertThat(expectedDescription).isEqualTo(actualCategory.getDescription());
         assertThat(expectedIsActive).isEqualTo(actualCategory.isActive());
 
     }
 
     @Test
-    void givenIAmCatalogAdmin_whenIListCategories_thenIShouldNavigateToAllCategories()
+    void givenValidPageAndPerPage_whenListCategories_thenReturnPaginatedCategories()
         throws Exception {
 
         // Arrange - Given
