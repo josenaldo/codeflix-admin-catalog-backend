@@ -20,6 +20,7 @@ import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.Category
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.CreateCategoryRequest;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.models.UpdateCategoryRequest;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.presenters.CategoryApiPresenter;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
@@ -105,7 +106,10 @@ public class CategoryController implements CategoryApi {
     }
 
     @Override
-    public ResponseEntity<?> updateById(final String id, final UpdateCategoryRequest input) {
+    public ResponseEntity<?> updateById(
+        final String id,
+        @Valid final UpdateCategoryRequest input
+    ) {
 
         final var aCommand = UpdateCategoryCommand.with(
             id,

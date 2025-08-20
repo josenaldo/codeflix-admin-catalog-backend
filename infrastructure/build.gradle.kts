@@ -41,6 +41,7 @@ dependencies {
     }
     implementation(libs.spring.boot.starter.undertow)
     implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.validation)
     implementation(libs.h2)
     implementation(libs.flyway.mysql)
     implementation(libs.flyway.gradle.plugin)

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +76,7 @@ public interface CategoryApi {
     })
     ResponseEntity<?> updateById(
         @PathVariable(name = "id") String id,
-        @RequestBody UpdateCategoryRequest input
+        @RequestBody @Valid UpdateCategoryRequest input
     );
 
     @DeleteMapping(
