@@ -12,7 +12,7 @@ import java.time.Instant;
  * entities considered to be the root of their aggregates. It also implements the {@link Cloneable}
  * interface, allowing safe cloning of its instances.
  *
- * @author YourName
+ * @author Josenaldo de Oliveira Matos Filho
  * @version 1.0
  */
 public class Category extends AggregateRoot<CategoryID> implements Cloneable {
@@ -36,13 +36,13 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
      * Internal constructor for creating a {@code Category} instance with all necessary fields.
      *
      * @param id          The unique identifier of this category.
-     * @param name        The name of the category.
-     * @param description A textual description of the category.
-     * @param active      {@code true} if the category is active; {@code false} otherwise.
      * @param createdAt   The date/time when the category was created.
      * @param updatedAt   The date/time when the category was last updated.
      * @param deletedAt   The date/time when the category was deactivated, or {@code null} if it is
      *                    still active.
+     * @param name        The name of the category.
+     * @param description A textual description of the category.
+     * @param active      {@code true} if the category is active; {@code false} otherwise.
      */
     private Category(
         final CategoryID id,
@@ -115,13 +115,13 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
      */
     public static Category with(final Category category) {
         return with(
-            category.getId(),
-            category.getCreatedAt(),
-            category.getUpdatedAt(),
-            category.getDeletedAt(),
-            category.getName(),
-            category.getDescription(),
-            category.isActive()
+            category.id,
+            category.createdAt,
+            category.updatedAt,
+            category.deletedAt,
+            category.name,
+            category.description,
+            category.active
         );
     }
 
@@ -133,7 +133,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
      *                          errors.
      */
     @Override
-    public void validate(ValidationHandler validationHandler) {
+    public void validate(final ValidationHandler validationHandler) {
         new CategoryValidator(this, validationHandler).validate();
     }
 

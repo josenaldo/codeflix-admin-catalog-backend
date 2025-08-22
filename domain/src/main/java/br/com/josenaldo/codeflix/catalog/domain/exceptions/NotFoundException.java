@@ -5,10 +5,11 @@ import br.com.josenaldo.codeflix.catalog.domain.Identifier;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import java.util.List;
 
-public class NotFoundException extends DomainException{
+public class NotFoundException extends DomainException {
 
     /**
-     * Private constructor to create a new {@code DomainException} with a message and a list of errors.
+     * Private constructor to create a new {@code DomainException} with a message and a list of
+     * errors.
      *
      * @param message The detail message for this exception.
      * @param errors  The list of {@link Error} objects associated with this exception.
@@ -22,9 +23,8 @@ public class NotFoundException extends DomainException{
         final Identifier id
     ) {
         final var anError = createMessage(anAggregate.getSimpleName(), id.getValue());
-
-            return new NotFoundException(anError, List.of());
-        }
+        return new NotFoundException(anError, List.of());
+    }
 
     public static NotFoundException with(
         final Class<? extends AggregateRoot<?>> anAggregate,

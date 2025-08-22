@@ -39,14 +39,14 @@ class CategoryTest {
     }
 
     @Test
-    void givenAnInvalidNullName_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
-        // Given
+    void givenAnInvalidNullName_whenCallsValidate_thenThrowDomainException() {
+        // Arrange - Given
         var category = Category.newCategory(null, "A categoria mais assistida", true);
 
-        // When
+        // Act - When
         final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
 
-        // Then
+        // Assert - Then
         String expectedMessage = "'name' should not be null";
 
         assertThat(actualException)
@@ -63,14 +63,14 @@ class CategoryTest {
     }
 
     @Test
-    void givenAnInvalidEmptyName_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
-        // Given
+    void givenAanInvalidEmptyName_whenCallsValidate_thenThrowDomainException() {
+        // Arrange - Given
         var category = Category.newCategory("    ", "A categoria mais assistida", true);
 
-        // When
+        // When - Then
         final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
 
-        // Then
+        // Assert - Then
         String expectedMessage = "'name' should not be empty";
 
         assertThat(actualException)
@@ -86,14 +86,14 @@ class CategoryTest {
     }
 
     @Test
-    void givenAnInvalidNameLengthLessThan3_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
-        // Given
+    void givenAnInvalidNameLengthLessThan3_whenCallsValidate_thenThrowDomainException() {
+        // Arrange - Given
         var category = Category.newCategory("Fi    ", "A categoria mais assistida", true);
 
-        // When
+        // When - Then
         final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
 
-        // Then
+        // Assert - Then
         String expectedMessage = "'name' length must be between 3 and 255 characters";
 
         assertThat(actualException)
@@ -109,14 +109,14 @@ class CategoryTest {
     }
 
     @Test
-    void givenAnInvalidNameLengthMoreThan255_whenCallNewCategoryAndValidate_thenShouldThrowDomainException() {
-        // Given
+    void givenAnInvalidNameLengthMoreThan255_whenCallsValidate_thenThrowDomainException() {
+        // Arrange - Given
         var category = Category.newCategory("F".repeat(256), "A categoria mais assistida", true);
 
-        // When
+        // When - Then
         final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
 
-        // Then
+        // Assert - Then
         String expectedMessage = "'name' length must be between 3 and 255 characters";
 
         assertThat(actualException)
@@ -132,29 +132,31 @@ class CategoryTest {
     }
 
     @Test
-    void givenAValidEmptyDescription_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
-        // Given
+    void givenAValidEmptyDescription_whenCallsValidate_thenNotThrowDomainException() {
+        // Arrange - Given
         var category = Category.newCategory("Filmes", "", true);
 
-        // When
+        // When - Then
         final var actualException = catchException(() -> category.validate(new ThrowsValidationHandler()));
 
-        // Then
+        // Assert - Then
         assertThat(actualException).isNull();
     }
 
     @Test
-    void givenAValidFalseIsActive_whenCallNewCategoryAndValidade_thenShouldNotThrowDomainException() {
-        // Given
-        var category = Category.newCategory("Filmes", "A categoria mais assistida", false);
+    void givenAValidFalseIsActive_whenCallsValidate_thenNotThrowDomainException() {
+        // Arrange - Given
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        var category = Category.newCategory(expectedName, expectedDescription, false);
 
         // When - Then
         assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
 
         assertThat(category).isNotNull();
         assertThat(category.getId()).isNotNull();
-        assertThat(category.getName()).isEqualTo("Filmes");
-        assertThat(category.getDescription()).isEqualTo("A categoria mais assistida");
+        assertThat(category.getName()).isEqualTo(expectedName);
+        assertThat(category.getDescription()).isEqualTo(expectedDescription);
         assertThat(category.isActive()).isFalse();
         assertThat(category.getCreatedAt()).isNotNull();
         assertThat(category.getUpdatedAt()).isNotNull();
@@ -163,23 +165,25 @@ class CategoryTest {
     }
 
     @Test
-    void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactive() {
-        // Given
-        final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
+    void givenAValidActiveCategory_whenCallsDeactivate_thenReturnCategoryInactive() {
+        // Arrange - Given
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var category = Category.newCategory(expectedName, expectedDescription, true);
         final Instant updatedAt = category.getUpdatedAt();
 
         assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
         assertThat(category.isActive()).isTrue();
         assertThat(category.getDeletedAt()).isNull();
 
-        // When
+        // When - Then
         final Category actualCategory = category.deactivate();
 
-        // Then
+        // Assert - Then
         assertThat(actualCategory).isNotNull();
         assertThat(actualCategory.getId()).isEqualTo(category.getId());
-        assertThat(actualCategory.getName()).isEqualTo(category.getName());
-        assertThat(actualCategory.getDescription()).isEqualTo(category.getDescription());
+        assertThat(actualCategory.getName()).isEqualTo(expectedName);
+        assertThat(actualCategory.getDescription()).isEqualTo(expectedDescription);
 
         assertThat(actualCategory.isActive()).isFalse();
         assertThat(actualCategory.getCreatedAt()).isEqualTo(category.getCreatedAt());
@@ -188,8 +192,8 @@ class CategoryTest {
     }
 
     @Test
-    void givenAValidDeactivatedCategory_whenCallActivate_thenReturnCategoryActive() {
-        // Given
+    void givenAValidDeactivatedCategory_whenCallsActivate_thenReturnCategoryActive() {
+        // Arrange - Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", false);
         final Instant updatedAt = category.getUpdatedAt();
 
@@ -197,10 +201,10 @@ class CategoryTest {
         assertThat(category.isActive()).isFalse();
         assertThat(category.getDeletedAt()).isNotNull();
 
-        // When
+        // When - Then
         final Category actualCategory = category.activate();
 
-        // Then
+        // Assert - Then
         assertThat(actualCategory).isNotNull();
         assertThat(actualCategory.getId()).isEqualTo(category.getId());
         assertThat(actualCategory.getName()).isEqualTo(category.getName());
@@ -213,8 +217,8 @@ class CategoryTest {
     }
 
     @Test
-    void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated() {
-        // Given
+    void givenAValidCategory_whenCallsUpdate_thenReturnCategoryUpdated() {
+        // Arrange - Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         final Instant createdAt = category.getCreatedAt();
         final Instant updatedAt = category.getUpdatedAt();
@@ -226,14 +230,14 @@ class CategoryTest {
         assertThat(updatedAt).isNotNull();
         assertThat(deletedAt).isNull();
 
-        // When
+        // When - Then
         final Category actualCategory = category.update(
             "Séries",
             "A categoria menos assistida",
             true
         );
 
-        // Then
+        // Assert - Then
         assertThat(actualCategory).isNotNull();
         assertThat(actualCategory.getId()).isEqualTo(category.getId());
         assertThat(actualCategory.getName()).isEqualTo("Séries");
@@ -246,8 +250,8 @@ class CategoryTest {
     }
 
     @Test
-    void givenAValidCategory_whenCallUpdateWithInactive_thenReturnCategoryUpdatedAndDeactivates() {
-        // Given
+    void givenAValidCategory_whenCallsUpdateWithInactive_thenReturnCategoryUpdatedAndDeactivates() {
+        // Arrange - Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         final Instant createdAt = category.getCreatedAt();
         final Instant updatedAt = category.getUpdatedAt();
@@ -259,14 +263,14 @@ class CategoryTest {
         assertThat(updatedAt).isNotNull();
         assertThat(deletedAt).isNull();
 
-        // When
+        // When - Then
         final Category actualCategory = category.update(
             "Séries",
             "A categoria menos assistida",
             false
         );
 
-        // Then
+        // Assert - Then
         assertThat(actualCategory).isNotNull();
         assertThat(actualCategory.getId()).isEqualTo(category.getId());
         assertThat(actualCategory.getName()).isEqualTo("Séries");
@@ -279,20 +283,20 @@ class CategoryTest {
     }
 
     @Test
-    void givenAValidCategory_whenCallUpdateWithInvalidName_thenItShouldThrowDomainExceptionOnValidate() {
-        // Given
+    void givenAValidCategory_whenCallsUpdateWithInvalidName_thenItShouldThrowDomainExceptionOnValidate() {
+        // Arrange - Given
         final var category = Category.newCategory("Filmes", "A categoria mais assistida", true);
         final Instant updatedAt = category.getUpdatedAt();
 
         assertThatNoException().isThrownBy(() -> category.validate(new ThrowsValidationHandler()));
         assertThat(category.isActive()).isTrue();
 
-        // When
+        // When - Then
         final Category actualCategory = category.update(null, "A categoria menos assistida", true);
 
         final var actualException = catchException(() -> actualCategory.validate(new ThrowsValidationHandler()));
 
-        // Then
+        // Assert - Then
         String expectedMessage = "'name' should not be null";
 
         assertThat(actualCategory.getName()).isNull();
