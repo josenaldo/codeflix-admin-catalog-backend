@@ -44,6 +44,9 @@ public class GenreValidator extends Validator {
      */
     public static final String NAME_LENGTH_OUT_OF_RANGE_ERROR = "'name' length must be between 1 and 255 characters";
 
+    /**
+     * Represents the Genre object being validated by the {@link GenreValidator}.
+     */
     private final Genre genre;
 
     /**
