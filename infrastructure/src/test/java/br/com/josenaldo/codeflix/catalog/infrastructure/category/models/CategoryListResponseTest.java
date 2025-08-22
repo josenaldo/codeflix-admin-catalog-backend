@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.josenaldo.codeflix.catalog.annotations.JacksonTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
-import java.time.Instant;
+import br.com.josenaldo.codeflix.catalog.domain.utils.InstantUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.json.JacksonTester;
@@ -23,9 +23,9 @@ public class CategoryListResponseTest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
 
-        final var expectedCreatedAt = Instant.now();
-        final var expectedUpdatedAt = Instant.now();
-        final var expectedDeletedAt = Instant.now();
+        final var expectedCreatedAt = InstantUtils.now();
+        final var expectedUpdatedAt = InstantUtils.now();
+        final var expectedDeletedAt = InstantUtils.now();
 
         // Act - When
         final var response = new CategoryListResponse(

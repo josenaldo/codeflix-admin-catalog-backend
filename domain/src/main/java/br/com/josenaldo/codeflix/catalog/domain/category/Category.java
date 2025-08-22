@@ -1,6 +1,7 @@
 package br.com.josenaldo.codeflix.catalog.domain.category;
 
 import br.com.josenaldo.codeflix.catalog.domain.AggregateRoot;
+import br.com.josenaldo.codeflix.catalog.domain.utils.InstantUtils;
 import br.com.josenaldo.codeflix.catalog.domain.validation.ValidationHandler;
 import java.time.Instant;
 
@@ -74,7 +75,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
         final boolean active
     ) {
         final var id = CategoryID.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = active ? null : now;
 
         return new Category(id, now, now, deletedAt, name, description, active);
@@ -181,7 +182,7 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
      */
     public Category deactivate() {
         if (getDeletedAt() == null) {
-            this.deletedAt = Instant.now();
+            this.deletedAt = InstantUtils.now();
         }
         this.active = false;
         this.touch();

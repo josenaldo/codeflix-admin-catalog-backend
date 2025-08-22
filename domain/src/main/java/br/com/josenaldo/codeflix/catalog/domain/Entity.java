@@ -1,5 +1,6 @@
 package br.com.josenaldo.codeflix.catalog.domain;
 
+import br.com.josenaldo.codeflix.catalog.domain.utils.InstantUtils;
 import br.com.josenaldo.codeflix.catalog.domain.validation.ValidationHandler;
 import java.time.Instant;
 import java.util.Objects;
@@ -48,8 +49,8 @@ public abstract class Entity<ID extends Identifier> {
 
         this.id = Objects.requireNonNull(id, "id must not be null");
 
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
+        this.createdAt = InstantUtils.now();
+        this.updatedAt = InstantUtils.now();
     }
 
     /**
@@ -125,7 +126,7 @@ public abstract class Entity<ID extends Identifier> {
      * called whenever an entity is modified.
      */
     protected void touch() {
-        this.updatedAt = Instant.now();
+        this.updatedAt = InstantUtils.now();
     }
 
     /**

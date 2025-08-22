@@ -17,7 +17,6 @@ import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,12 +120,12 @@ class GetCategoryByIdUseCaseIntegrationTest {
         assertThat(actualCategory).isNotNull();
         assertThat(actualCategory.id()).isEqualTo(expectedId);
 
-        Instant actualCreatedAt = actualCategory.createdAt().truncatedTo(ChronoUnit.SECONDS);
-        Instant expectedCreatedAt = category.getCreatedAt().truncatedTo(ChronoUnit.SECONDS);
+        Instant actualCreatedAt = actualCategory.createdAt();
+        Instant expectedCreatedAt = category.getCreatedAt();
         assertThat(actualCreatedAt).isEqualTo(expectedCreatedAt);
 
-        Instant actualUpdatedAt = actualCategory.updatedAt().truncatedTo(ChronoUnit.SECONDS);
-        Instant expectedUpdatedAt = category.getUpdatedAt().truncatedTo(ChronoUnit.SECONDS);
+        Instant actualUpdatedAt = actualCategory.updatedAt();
+        Instant expectedUpdatedAt = category.getUpdatedAt();
         assertThat(actualUpdatedAt).isEqualTo(expectedUpdatedAt);
 
         assertThat(actualCategory.deletedAt()).isNull();
@@ -141,10 +140,10 @@ class GetCategoryByIdUseCaseIntegrationTest {
         assertThat(savedCategory.getDescription()).isEqualTo(expectedDescription);
         assertThat(savedCategory.isActive()).isEqualTo(expectedIsActive);
 
-        Instant savedCreatedAt = savedCategory.getCreatedAt().truncatedTo(ChronoUnit.SECONDS);
+        Instant savedCreatedAt = savedCategory.getCreatedAt();
         assertThat(savedCreatedAt).isEqualTo(expectedCreatedAt);
 
-        Instant savedUpdatedAt = savedCategory.getUpdatedAt().truncatedTo(ChronoUnit.SECONDS);
+        Instant savedUpdatedAt = savedCategory.getUpdatedAt();
         assertThat(savedUpdatedAt).isEqualTo(expectedUpdatedAt);
 
         assertThat(savedCategory.getDeletedAt()).isNull();

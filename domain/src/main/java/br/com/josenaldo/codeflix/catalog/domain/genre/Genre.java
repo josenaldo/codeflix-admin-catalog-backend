@@ -3,6 +3,7 @@ package br.com.josenaldo.codeflix.catalog.domain.genre;
 import br.com.josenaldo.codeflix.catalog.domain.AggregateRoot;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotificationException;
+import br.com.josenaldo.codeflix.catalog.domain.utils.InstantUtils;
 import br.com.josenaldo.codeflix.catalog.domain.validation.ValidationHandler;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import java.time.Instant;
@@ -108,7 +109,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
         final List<Category> categories
     ) {
         final var id = GenreID.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = active ? null : now;
 
         return new Genre(
@@ -241,7 +242,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
      */
     public Genre deactivate() {
         if (getDeletedAt() == null) {
-            this.deletedAt = Instant.now();
+            this.deletedAt = InstantUtils.now();
         }
         this.active = false;
         this.touch();
