@@ -11,7 +11,7 @@ import br.com.josenaldo.codeflix.catalog.domain.validation.Validator;
  * within the allowed range. It collects any validation errors through the provided
  * {@link ValidationHandler}.
  * <p>
- * The defined name constraints include a minimum length of 3 characters and a maximum length of 255
+ * The defined name constraints include a minimum length of 1 character and a maximum length of 255
  * characters.
  *
  * @author Josenaldo de Oliveira Matos Filho
@@ -100,5 +100,6 @@ public class GenreValidator extends Validator {
         if (length < NAME_MIN_LENGTH || length > NAME_MAX_LENGTH) {
             this.validationHandler().append(new Error(NAME_LENGTH_OUT_OF_RANGE_ERROR));
         }
+
     }
 }

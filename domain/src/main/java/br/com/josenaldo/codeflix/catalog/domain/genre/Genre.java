@@ -11,7 +11,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a genre in the application's domain layer. A {@code Genre} has a name, and an active
@@ -29,14 +28,15 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
 
     /**
      * A constant string used to represent the error message for validation failures during the
-     * creation of a {@code Genre}.
+     * validation of a {@code Genre}.
      *
      * <p>
      * This message is intended to be used in scenarios where validation errors prevent the
      * successful instantiation or modification of a {@code Genre}. It provides a user-friendly
      * explanation of the failure reason, which can be logged or displayed in error responses.
      */
-    public static final String GENRE_VALIDATION_ERROR_MESSAGE = "The Genre could not be created because of validation errors.";
+    public static final String GENRE_VALIDATION_ERROR_MESSAGE =
+        "operation could not be performed due to validation errors";
 
     /**
      * The name of the genre.
@@ -56,8 +56,8 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     /**
      * Internal constructor for creating a {@code Genre} instance with all necessary fields.
      * <p>
-     * The validation of the provided attributes is performed using the provided
-     * {@link ValidationHandler}. If validation fails, an exception will be thrown.
+     * The validation of the provided attributes is performed by calling the
+     * {@link #selfValidate()}. If validation fails, an exception will be thrown.
      *
      * @param id         The unique identifier of this genre.
      * @param createdAt  The date/time when the genre was created.
@@ -81,7 +81,8 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
         super(id, createdAt, updatedAt, deletedAt);
         this.name = name;
         this.active = active;
-        this.categories = categories;
+        this.categories = new ArrayList<>(
+            categories != null ? categories : Collections.emptyList());
 
         this.selfValidate();
     }
@@ -112,7 +113,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
             deletedAt,
             name,
             active,
-            Objects.requireNonNullElseGet(categories, ArrayList::new)
+            categories
         );
     }
 
@@ -174,7 +175,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
             genre.deletedAt,
             genre.name,
             genre.active,
-            new ArrayList<>(genre.categories)
+            genre.categories
         );
     }
 
@@ -184,8 +185,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
      * {@link NotificationException} is thrown with detailed information about the issues.
      * <p>
      * This method internally creates a {@link Notification} object to collect validation errors and
-     * calls the {@link #validate(ValidationHandler)} (NotificationHandler)} method to perform the
-     * actual validation.
+     * calls the {@link #validate(ValidationHandler)} method to perform the actual validation.
      * <p>
      * If the {@link Notification} contains errors after validation, a {@link NotificationException}
      * is raised with the error details.
@@ -247,11 +247,14 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     }
 
     /**
-     * Updates the name, description, and active status of this genre. If {@code active} is
-     * {@code true}, the genre is activated; otherwise, it is deactivated.
+     * Updates the name, active status, and categories of this genre. If {@code active} is
+     * {@code true}, the genre is activated; otherwise, it is deactivated. If categories are
+     * provided, they will replace the existing ones, ven if the list is empty. If no categories are
+     * null, the existing list of categories will replaced by an empty list.
      *
-     * @param name   The new name of the genre.
-     * @param active {@code true} to activate the genre; {@code false} to deactivate.
+     * @param name       The new name of the genre.
+     * @param active     {@code true} to activate the genre; {@code false} to deactivate.
+     * @param categories The new list of categories associated with the genre.
      * @return This {@code Genre} instance, for a fluent interface.
      */
     public Genre update(
@@ -266,9 +269,55 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
             this.deactivate();
         }
 
-        this.categories = new ArrayList<>(categories);
+        this.categories = new ArrayList<>(
+            categories != null ? categories : Collections.emptyList());
+
         this.touch();
         this.selfValidate();
+        return this;
+    }
+
+    /**
+     * Adds a new category to the list of categories associated with this {@code Genre}.
+     * <p>
+     * If the provided {@code categoryID} is {@code null}, the method returns the current instance
+     * of the genre without making any changes. Otherwise, the category is added to the genre, and
+     * the last updated timestamp is adjusted.
+     *
+     * @param categoryID The {@link CategoryID} to add to this genre. Must not be {@code null} to
+     *                   take effect.
+     * @return This {@code Genre} instance, allowing for method chaining. If {@code categoryID} is
+     * {@code null}, no changes are made, and the current instance is returned as is.
+     */
+    public Genre addCategory(final CategoryID categoryID) {
+        if (categoryID == null) {
+            return this;
+        }
+
+        this.categories.add(categoryID);
+        this.touch();
+        return this;
+    }
+
+    /**
+     * Removes a specified category from the list of categories associated with this {@code Genre}.
+     * <p>
+     * If the given {@link CategoryID} is {@code null}, the method does nothing and returns the
+     * current instance of the {@code Genre}. Otherwise, the category is removed from the genre, and
+     * the last updated timestamp is adjusted.
+     *
+     * @param aCategoryID The {@link CategoryID} to remove from this genre. If {@code null}, no
+     *                    changes are made.
+     * @return This {@code Genre} instance, enabling method chaining. If the specified category is
+     * not found, it is simply ignored.
+     */
+    public Genre removeCategory(final CategoryID aCategoryID) {
+        if (aCategoryID == null) {
+            return this;
+        }
+
+        this.categories.remove(aCategoryID);
+        this.touch();
         return this;
     }
 
