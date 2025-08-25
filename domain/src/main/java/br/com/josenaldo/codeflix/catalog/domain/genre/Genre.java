@@ -2,6 +2,7 @@ package br.com.josenaldo.codeflix.catalog.domain.genre;
 
 import br.com.josenaldo.codeflix.catalog.domain.AggregateRoot;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
+import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotificationException;
 import br.com.josenaldo.codeflix.catalog.domain.utils.InstantUtils;
 import br.com.josenaldo.codeflix.catalog.domain.validation.ValidationHandler;
@@ -50,7 +51,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     /**
      * The list of categories associated with this genre.
      */
-    private final List<Category> categories;
+    private List<CategoryID> categories;
 
     /**
      * Internal constructor for creating a {@code Genre} instance with all necessary fields.
@@ -75,22 +76,14 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
         final Instant deletedAt,
         final String name,
         final boolean active,
-        List<Category> categories
+        final List<CategoryID> categories
     ) {
         super(id, createdAt, updatedAt, deletedAt);
         this.name = name;
         this.active = active;
         this.categories = categories;
 
-        Notification notification = Notification.create();
-        this.validate(notification);
-
-        if (notification.hasErrors()) {
-            throw new NotificationException(
-                GENRE_VALIDATION_ERROR_MESSAGE
-                , notification
-            );
-        }
+        this.selfValidate();
     }
 
     /**
@@ -106,7 +99,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     public static Genre newGenre(
         final String name,
         final boolean active,
-        final List<Category> categories
+        final List<CategoryID> categories
     ) {
         final var id = GenreID.unique();
         final var now = InstantUtils.now();
@@ -162,7 +155,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
         final Instant deletedAt,
         final String name,
         final boolean active,
-        List<Category> categories
+        final List<CategoryID> categories
     ) {
         return new Genre(genreID, createdAt, updatedAt, deletedAt, name, active, categories);
     }
@@ -186,6 +179,33 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     }
 
     /**
+     * Validates the current state of this {@code Genre} instance by checking if its attributes meet
+     * the required conditions and business rules. If the validation detects any errors, a
+     * {@link NotificationException} is thrown with detailed information about the issues.
+     * <p>
+     * This method internally creates a {@link Notification} object to collect validation errors and
+     * calls the {@link #validate(ValidationHandler)} (NotificationHandler)} method to perform the
+     * actual validation.
+     * <p>
+     * If the {@link Notification} contains errors after validation, a {@link NotificationException}
+     * is raised with the error details.
+     *
+     * <p>The validation ensures that the genre's current attributes are consistent and conform
+     * to expected constraints before proceeding with subsequent operations.
+     *
+     * @throws NotificationException If validation errors are detected, containing the details of
+     *                               the issues.
+     */
+    protected void selfValidate() {
+        Notification notification = Notification.create();
+        this.validate(notification);
+
+        if (notification.hasErrors()) {
+            throw new NotificationException(GENRE_VALIDATION_ERROR_MESSAGE, notification);
+        }
+    }
+
+    /**
      * Validates the current state of this genre, checking whether the required fields are correctly
      * set and meeting any business rules.
      *
@@ -197,42 +217,6 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
         new GenreValidator(this, validationHandler).validate();
     }
 
-    /**
-     * Retrieves the unique identifier of this genre.
-     *
-     * @return A {@link GenreID} representing the unique identifier.
-     */
-    @Override
-    public GenreID getId() {
-        return id;
-    }
-
-    /**
-     * Retrieves the name of this genre.
-     *
-     * @return The genre name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Indicates whether this genre is currently active.
-     *
-     * @return {@code true} if the genre is active; {@code false} otherwise.
-     */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * Retrieves the list of categories associated with this genre.
-     *
-     * @return The list of {@link Category} objects.
-     */
-    public List<Category> getCategories() {
-        return Collections.unmodifiableList(categories);
-    }
 
     /**
      * Deactivates this genre by setting its {@code active} property to {@code false} and assigning
@@ -270,15 +254,59 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
      * @param active {@code true} to activate the genre; {@code false} to deactivate.
      * @return This {@code Genre} instance, for a fluent interface.
      */
-    public Genre update(final String name, final boolean active) {
+    public Genre update(
+        final String name,
+        final boolean active,
+        final List<CategoryID> categories
+    ) {
         this.name = name;
         if (active) {
             this.activate();
         } else {
             this.deactivate();
         }
+
+        this.categories = new ArrayList<>(categories);
         this.touch();
+        this.selfValidate();
         return this;
+    }
+
+    /**
+     * Retrieves the unique identifier of this genre.
+     *
+     * @return A {@link GenreID} representing the unique identifier.
+     */
+    @Override
+    public GenreID getId() {
+        return id;
+    }
+
+    /**
+     * Retrieves the name of this genre.
+     *
+     * @return The genre name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Indicates whether this genre is currently active.
+     *
+     * @return {@code true} if the genre is active; {@code false} otherwise.
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * Retrieves the list of categories associated with this genre.
+     *
+     * @return The list of {@link Category} objects.
+     */
+    public List<CategoryID> getCategories() {
+        return Collections.unmodifiableList(categories);
     }
 
     /**
