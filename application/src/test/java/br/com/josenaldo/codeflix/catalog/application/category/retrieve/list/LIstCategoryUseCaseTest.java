@@ -8,9 +8,9 @@ import static org.mockito.Mockito.when;
 
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
-import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
+import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ class LIstCategoryUseCaseTest {
         final var expectedDirection = "ASC";
         int expectedItemCount = categories.size();
 
-        final CategorySearchQuery query = CategorySearchQuery.of(
+        final SearchQuery query = SearchQuery.of(
             expectedPage,
             expectedPerPage,
             expectedTerm,
@@ -105,7 +105,7 @@ class LIstCategoryUseCaseTest {
         final var expectedDirection = "ASC";
         int expectedItemCount = 0;
 
-        final CategorySearchQuery query = CategorySearchQuery.of(
+        final SearchQuery query = SearchQuery.of(
             expectedPage,
             expectedPerPage,
             expectedTerm,
@@ -151,7 +151,7 @@ class LIstCategoryUseCaseTest {
         final var expectedSort = "createdAt";
         final var expectedDirection = "ASC";
 
-        final CategorySearchQuery query = CategorySearchQuery.of(
+        final SearchQuery query = SearchQuery.of(
             expectedPage,
             expectedPerPage,
             expectedTerm,

@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import br.com.josenaldo.codeflix.catalog.annotations.IntegrationTest;
 import br.com.josenaldo.codeflix.catalog.application.category.CategoryTestUtils;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
-import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
+import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import java.time.Instant;
 import java.util.List;
@@ -121,7 +121,7 @@ class ListCategoryUseCaseIntegrationTest {
         final var expectedItemsCount = 0;
         final var expectedTotal = 0;
 
-        CategorySearchQuery searchQuery = CategorySearchQuery.of(
+        SearchQuery searchQuery = SearchQuery.of(
             expectedPage,
             expectedPerPage,
             expectedTerms,
@@ -161,7 +161,7 @@ class ListCategoryUseCaseIntegrationTest {
         final var expectedSortField = "name";
         final var expectedSortDirection = "ASC";
 
-        CategorySearchQuery searchQuery = CategorySearchQuery.of(
+        SearchQuery searchQuery = SearchQuery.of(
             expectedPage,
             expectedPerPage,
             expectedTerms,

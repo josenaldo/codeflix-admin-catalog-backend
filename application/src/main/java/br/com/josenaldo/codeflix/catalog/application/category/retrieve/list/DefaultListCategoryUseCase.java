@@ -2,9 +2,9 @@ package br.com.josenaldo.codeflix.catalog.application.category.retrieve.list;
 
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
-import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
+import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
 import java.util.Objects;
 
 /**
@@ -45,24 +45,24 @@ public class DefaultListCategoryUseCase extends ListCategoryUseCase {
     }
 
     /**
-     * Executes the use case for listing categories based on the given search query.
+     * Executes the use case for listing categories based on the given search queries.
      * <p>
      * This method uses the {@link CategoryGateway} to fetch a paginated list of {@link Category}
-     * objects according to the provided {@link CategorySearchQuery}. The retrieved categories are
+     * objects according to the provided {@link SearchQuery}. The retrieved categories are
      * then mapped to a {@link CategoryListOutput} format.
      * <p>
      * If any runtime exception occurs during the retrieval process, it is caught and rethrown as a
      * {@link DomainException} with the appropriate error message.
      *
-     * @param query the search query containing filtering and pagination parameters.
+     * @param aSearchQuery the search query containing filtering and pagination parameters.
      * @return a {@link Pagination} containing a paginated list of {@link CategoryListOutput}
      * objects.
      * @throws DomainException if an error occurs during the category retrieval process.
      */
     @Override
-    public Pagination<CategoryListOutput> execute(CategorySearchQuery query) {
+    public Pagination<CategoryListOutput> execute(SearchQuery aSearchQuery) {
         try {
-            Pagination<Category> categoryPagination = categoryGateway.findAll(query);
+            Pagination<Category> categoryPagination = categoryGateway.findAll(aSearchQuery);
             return categoryPagination.map(CategoryListOutput::from);
         } catch (RuntimeException e) {
             throw DomainException.with(e.getMessage());

@@ -3,8 +3,8 @@ package br.com.josenaldo.codeflix.catalog.infrastructure.category;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
-import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
+import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
 import java.util.Optional;
@@ -49,12 +49,12 @@ public class CategoryMySQLGateway implements CategoryGateway {
      * <p>
      * This method should save the provided category and return the persisted instance.
      *
-     * @param category the category to be created.
+     * @param aCategory the category to be created.
      * @return the persisted category, or null if not implemented.
      */
     @Override
-    public Category create(final Category category) {
-        return save(category);
+    public Category create(final Category aCategory) {
+        return save(aCategory);
     }
 
     /**
@@ -62,12 +62,12 @@ public class CategoryMySQLGateway implements CategoryGateway {
      * <p>
      * This method should update the category details and return the updated instance.
      *
-     * @param category the category with updated information.
+     * @param aCategory the category with updated information.
      * @return the updated category, or null if not implemented.
      */
     @Override
-    public Category update(Category category) {
-        return save(category);
+    public Category update(Category aCategory) {
+        return save(aCategory);
     }
 
     /**
@@ -115,26 +115,26 @@ public class CategoryMySQLGateway implements CategoryGateway {
      * Retrieves a paginated list of {@link Category} objects based on the search searchQuery.
      * <p>
      * This method should execute the search using the criteria provided in
-     * {@link CategorySearchQuery} and return a {@link Pagination} object containing the list of
+     * {@link SearchQuery} and return a {@link Pagination} object containing the list of
      * categories.
      *
-     * @param searchQuery the search searchQuery containing filtering and pagination parameters.
+     * @param aSearchQuery the search searchQuery containing filtering and pagination parameters.
      * @return a {@link Pagination} containing the list of categories, or null if not implemented.
      */
     @Override
-    public Pagination<Category> findAll(CategorySearchQuery searchQuery) {
+    public Pagination<Category> findAll(SearchQuery aSearchQuery) {
 
         Pageable pageable = PageRequest.of(
-            searchQuery.page(),
-            searchQuery.perPage(),
+            aSearchQuery.page(),
+            aSearchQuery.perPage(),
             Sort.by(
-                Direction.fromString(searchQuery.direction()),
-                searchQuery.sort()
+                Direction.fromString(aSearchQuery.direction()),
+                aSearchQuery.sort()
             )
         );
 
         Specification<CategoryJpaEntity> termLikeSpecification = CategoryRepository.getTermLikeSpecification(
-            searchQuery);
+            aSearchQuery);
 
         final var pageResult = this.categoryRepository.findAll(
             Specification.where(termLikeSpecification), pageable);

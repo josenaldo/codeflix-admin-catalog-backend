@@ -17,8 +17,7 @@ import java.util.Objects;
  * retrieves the category data through the {@link CategoryGateway}.
  * <p>
  * If the input is invalid or the category is not found, an exception is thrown using the helper
- * method from
- * {@link CategoryExceptions}.
+ * method from {@link CategoryExceptions}.
  *
  * @author Josenaldo de Oliveira Matos Filho
  * @version 1.0
@@ -55,9 +54,7 @@ public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
      *
      * @param input the unique identifier of the category as a {@code String}.
      * @return a {@link CategoryOutput} containing the details of the retrieved category.
-     * @throws DomainException if the category is not
-     *                                                                     found or if the
-     *                                                                     identifier is invalid.
+     * @throws DomainException if the category is not found or if the identifier is invalid.
      */
     @Override
     public CategoryOutput execute(String input) {

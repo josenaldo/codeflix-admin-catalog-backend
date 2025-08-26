@@ -1,7 +1,6 @@
 package br.com.josenaldo.codeflix.catalog.domain.genre;
 
 import br.com.josenaldo.codeflix.catalog.domain.AggregateRoot;
-import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotificationException;
 import br.com.josenaldo.codeflix.catalog.domain.utils.InstantUtils;
@@ -25,7 +24,6 @@ import java.util.List;
  */
 public class Genre extends AggregateRoot<GenreID> implements Cloneable {
 
-
     /**
      * A constant string used to represent the error message for validation failures during the
      * validation of a {@code Genre}.
@@ -36,7 +34,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
      * explanation of the failure reason, which can be logged or displayed in error responses.
      */
     public static final String GENRE_VALIDATION_ERROR_MESSAGE =
-        "operation could not be performed due to validation errors";
+        "Genre has validation errors";
 
     /**
      * The name of the genre.
@@ -217,7 +215,6 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
         new GenreValidator(this, validationHandler).validate();
     }
 
-
     /**
      * Deactivates this genre by setting its {@code active} property to {@code false} and assigning
      * the current time to {@code deletedAt}, if it is not already set.
@@ -247,23 +244,29 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     }
 
     /**
-     * Updates the name, active status, and categories of this genre. If {@code active} is
-     * {@code true}, the genre is activated; otherwise, it is deactivated. If categories are
-     * provided, they will replace the existing ones, ven if the list is empty. If no categories are
-     * null, the existing list of categories will replaced by an empty list.
+     * Updates the name, active status, and categories of this genre.
+     * <p>
+     * If {@code active} is {@code true}, the genre is activated; otherwise, it is deactivated  (and
+     * {@code deletedAt} is set to the current time).
+     * <p>
+     * If categories are provided, they will replace the existing ones, ven if the list is empty. If
+     * no categories are null, the existing list of categories will replaced by an empty list.
      *
-     * @param name       The new name of the genre.
-     * @param active     {@code true} to activate the genre; {@code false} to deactivate.
-     * @param categories The new list of categories associated with the genre.
+     * @param aName      the new name of the genre; must not be {@code null} or blank and must
+     *                   respect length constraints.
+     * @param isActive   {@code true} to activate the genre; {@code false} to deactivate.
+     * @param categories the new list of associated category identifiers; if {@code null}, an empty
+     *                   list is used.
      * @return This {@code Genre} instance, for a fluent interface.
+     * @throws NotificationException if the new state violates validation constraints.
      */
     public Genre update(
-        final String name,
-        final boolean active,
+        final String aName,
+        final boolean isActive,
         final List<CategoryID> categories
     ) {
-        this.name = name;
-        if (active) {
+        this.name = aName;
+        if (isActive) {
             this.activate();
         } else {
             this.deactivate();
@@ -350,10 +353,11 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     }
 
     /**
-     * Retrieves the list of categories associated with this genre.
+     * Retrieves the list of category identifiers associated with this genre.
      *
-     * @return The list of {@link Category} objects.
+     * @return an unmodifiable list of {@link CategoryID}; never {@code null}.
      */
+
     public List<CategoryID> getCategories() {
         return Collections.unmodifiableList(categories);
     }
@@ -367,7 +371,9 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     @Override
     public Genre clone() {
         try {
-            return (Genre) super.clone();
+            Genre clone = (Genre) super.clone();
+            clone.categories = new ArrayList<>(this.categories);
+            return clone;
         } catch (CloneNotSupportedException e) {
             throw new IllegalStateException("The Genre object could not be cloned.", e);
         }

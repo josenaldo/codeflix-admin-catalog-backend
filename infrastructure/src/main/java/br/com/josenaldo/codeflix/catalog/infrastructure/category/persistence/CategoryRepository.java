@@ -2,7 +2,7 @@ package br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence;
 
 import static br.com.josenaldo.codeflix.catalog.infrastructure.utils.SpecificationUtils.like;
 
-import br.com.josenaldo.codeflix.catalog.domain.category.CategorySearchQuery;
+import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,15 +25,15 @@ public interface CategoryRepository extends JpaRepository<CategoryJpaEntity, Str
     /**
      * Builds a JPA Specification to filter {@link CategoryJpaEntity} objects based on a search term.
      * <p>
-     * This method checks if the {@link CategorySearchQuery} contains a non-blank term. If a valid term is provided,
+     * This method checks if the {@link SearchQuery} contains a non-blank term. If a valid term is provided,
      * it creates a Specification that performs a "like" match on both the "name" and "description" fields.
      * If no valid term is present, the method returns null.
      *
-     * @param searchQuery the search query containing the term used for filtering.
+     * @param aSearchQuery the search query containing the term used for filtering.
      * @return a Specification for filtering by the search term, or null if no valid term is provided.
      */
-    static Specification<CategoryJpaEntity> getTermLikeSpecification(CategorySearchQuery searchQuery) {
-        return Optional.ofNullable(searchQuery.terms())
+    static Specification<CategoryJpaEntity> getTermLikeSpecification(SearchQuery aSearchQuery) {
+        return Optional.ofNullable(aSearchQuery.terms())
                 .filter(str -> !str.isBlank())
                 .map(str -> {
                     Specification<CategoryJpaEntity> nameLike = like("name", str);
