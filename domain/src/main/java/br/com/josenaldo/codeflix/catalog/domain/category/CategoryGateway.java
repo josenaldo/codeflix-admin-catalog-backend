@@ -2,6 +2,7 @@ package br.com.josenaldo.codeflix.catalog.domain.category;
 
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -67,4 +68,20 @@ public interface CategoryGateway {
      * @return A {@link Pagination} of categories that match the specified search query.
      */
     Pagination<Category> findAll(SearchQuery aSearchQuery);
+
+    /**
+     * Resolves the subset of the provided identifiers that correspond to existing categories.
+     * <p>
+     * This method accepts an iterable of {@link CategoryID} values and returns a list containing
+     * only those identifiers that exist in the data store. The result:
+     * <ul>
+     *   <li>Never contains {@code null} entries.</li>
+     *   <li>Is not guaranteed to preserve the order of the input.</li>
+     *   <li>Is empty if none of the provided identifiers exist.</li>
+     * </ul>
+     *
+     * @param ids the identifiers to check for existence; must not be {@code null}.
+     * @return a list of {@link CategoryID} values that exist in the data store; never {@code null}.
+     */
+    List<CategoryID> existsByIds(Iterable<CategoryID> ids);
 }

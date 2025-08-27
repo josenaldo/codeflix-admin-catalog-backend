@@ -7,6 +7,8 @@ import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryJpaEntity;
 import br.com.josenaldo.codeflix.catalog.infrastructure.category.persistence.CategoryRepository;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -145,5 +147,13 @@ public class CategoryMySQLGateway implements CategoryGateway {
             pageResult.getTotalElements(),
             pageResult.map(CategoryJpaEntity::to).toList()
         );
+    }
+
+    /**
+     * TODO: Implementar quando chegarmos na camada de Infraestrutura de Genre
+     */
+    @Override
+    public List<CategoryID> existsByIds(Iterable<CategoryID> ids) {
+        return Collections.emptyList();
     }
 }

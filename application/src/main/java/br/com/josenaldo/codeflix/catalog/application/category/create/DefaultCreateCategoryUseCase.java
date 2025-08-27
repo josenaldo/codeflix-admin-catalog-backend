@@ -36,7 +36,10 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
      * @param categoryGateway the gateway used for category persistence; must not be {@code null}.
      */
     public DefaultCreateCategoryUseCase(final CategoryGateway categoryGateway) {
-        this.categoryGateway = Objects.requireNonNull(categoryGateway);
+        this.categoryGateway = Objects.requireNonNull(
+            categoryGateway,
+            "the CategoryGateway must not be null"
+        );
     }
 
     /**

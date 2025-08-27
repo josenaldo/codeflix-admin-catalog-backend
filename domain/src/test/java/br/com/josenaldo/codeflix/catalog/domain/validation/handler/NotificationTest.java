@@ -105,9 +105,7 @@ class NotificationTest {
     void givenValidValidation_whenCallingValidate_thenNoErrorsAreAdded() {
         // Arrange - Given
         Notification notification = Notification.create();
-        ValidationHandler.Validation validation = () -> {
-            // No exception thrown
-        };
+        ValidationHandler.Validation<Notification> validation = () -> notification;
 
         // Act - When
         notification.validate(validation);
@@ -126,7 +124,7 @@ class NotificationTest {
         Notification notification = Notification.create();
         Error error1 = new Error("Domain error 1");
         Error error2 = new Error("Domain error 2");
-        ValidationHandler.Validation validation = () -> {
+        ValidationHandler.Validation<Notification> validation = () -> {
             throw DomainException.with(List.of(error1, error2));
         };
 
@@ -145,7 +143,7 @@ class NotificationTest {
     void givenGenericException_whenCallingValidate_thenErrorWithExceptionMessageIsAdded() {
         // Arrange - Given
         Notification notification = Notification.create();
-        ValidationHandler.Validation validation = () -> {
+        ValidationHandler.Validation<Notification> validation = () -> {
             throw new RuntimeException("Generic error");
         };
 

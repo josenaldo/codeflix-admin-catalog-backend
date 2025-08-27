@@ -100,15 +100,15 @@ public class Notification implements ValidationHandler {
      * @return the current {@code Notification} instance after attempting validation.
      */
     @Override
-    public Notification validate(Validation validation) {
+    public <T> T validate(Validation<T> validation) {
         try {
-            validation.validate();
+            return validation.validate();
         } catch (final DomainException e) {
             this.errors.addAll(e.getErrors());
         } catch (final Exception e) {
             this.errors.add(new Error(e.getMessage()));
         }
-        return this;
+        return null;
     }
 
     /**

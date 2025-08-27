@@ -60,15 +60,14 @@ public class ThrowsValidationHandler implements ValidationHandler {
      * @throws DomainException If an exception is thrown during validation.
      */
     @Override
-    public ValidationHandler validate(Validation validation) {
+    public <T> T validate(Validation<T> validation) {
         try {
-            validation.validate();
+            return validation.validate();
         } catch (final Exception exception) {
             String message = exception.getMessage();
             List<Error> errors = List.of(new Error(message));
             throw DomainException.with(errors);
         }
-        return this;
     }
 
     /**

@@ -37,6 +37,19 @@ public record CreateCategoryCommand(
         return new CreateCategoryCommand(name, description, isActive);
     }
 
+    /**
+     * Creates a new {@code CreateCategoryCommand} instance with the specified parameters.
+     * <p>
+     * This static factory method provides a convenient way to instantiate a command while ensuring
+     * null safety for the {@code isActive} parameter. If {@code isActive} is {@code null}, it
+     * defaults to {@code true}.
+     *
+     * @param name        the name of the category.
+     * @param description the description of the category.
+     * @param isActive    indicates whether the category is active; if {@code null}, it defaults to
+     *                    {@code true}.
+     * @return a new {@code CreateCategoryCommand} instance.
+     */
     public static CreateCategoryCommand with(
         final String name,
         final String description,
