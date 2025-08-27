@@ -33,6 +33,15 @@ public record Pagination<T>(
 ) {
 
     /**
+     * Represents the first page number.
+     */
+    public static final int FIRST_PAGE = 0;
+    /**
+     * Represents the default number of items per page.
+     */
+    public static final int DEFAULT_PER_PAGE = 10;
+
+    /**
      * Creates a new {@code Pagination} object by specifying the current page number, the number of
      * items per page, the total count of items, and the list of items for the current page.
      *
@@ -45,7 +54,7 @@ public record Pagination<T>(
      */
     public Pagination {
 
-        if (page < 0) {
+        if (page < FIRST_PAGE) {
             throw new IllegalArgumentException("Page number must be equal or greater than 0.");
         }
 

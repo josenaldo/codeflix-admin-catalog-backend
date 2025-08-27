@@ -32,7 +32,7 @@ public class CreateGenreUseCaseTest {
     private CategoryGateway categoryGateway;
 
     @Test
-    void givenValidCommand_whenCreateGenre_thenShouldReturnGenre() {
+    void givenValidCommandWithEmptyCategories_whenCreateGenre_thenShouldReturnGenreID() {
         // Arrange - Given
         final var expectedName = "Ação";
         final var expectedIsActive = true;
@@ -63,6 +63,52 @@ public class CreateGenreUseCaseTest {
                         && Objects.isNull(aGenre.getDeletedAt())
                         && Objects.equals(expectedName, aGenre.getName())
                         && Objects.equals(expectedIsActive, aGenre.isActive())
+                        && Objects.equals(expectedCategories, aGenre.getCategories())
+            )
+        );
+    }
+
+    @Test
+    void givenAValidCommandWithCategories_CreateGenre_thenShouldReturnGenreID() {
+        // Arrange - Given
+        final var expectedName = "Ação";
+        final var expectedIsActive = true;
+        final CategoryID categoryID1 = CategoryID.unique();
+        final CategoryID categoryID2 = CategoryID.unique();
+        final var expectedCategories = List.of(
+            categoryID1, categoryID2
+        );
+
+        CreateGenreCommand aCommand = CreateGenreCommand.with(
+            expectedName,
+            expectedIsActive,
+            asString(expectedCategories)
+        );
+        when(categoryGateway.existsByIds(any())).thenReturn(expectedCategories);
+
+        when(genreGateway.create(any()))
+            .thenAnswer(returnsFirstArg());
+
+        // Act - When
+        final CreateGenreOutput actualOutput = useCase.execute(aCommand);
+
+        // Assert - Then
+        assertThat(actualOutput).isNotNull();
+        assertThat(actualOutput.id()).isNotNull();
+
+        verify(categoryGateway, times(1)).existsByIds(expectedCategories);
+
+        verify(genreGateway, times(1)).create(
+            argThat(
+                aGenre ->
+                    Objects.nonNull(aGenre)
+                        && Objects.nonNull(aGenre.getId())
+                        && Objects.nonNull(aGenre.getCreatedAt())
+                        && Objects.nonNull(aGenre.getUpdatedAt())
+                        && Objects.isNull(aGenre.getDeletedAt())
+                        && Objects.equals(expectedName, aGenre.getName())
+                        && Objects.equals(expectedIsActive, aGenre.isActive())
+                        && Objects.equals(expectedCategories, aGenre.getCategories())
             )
         );
     }

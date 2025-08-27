@@ -542,7 +542,71 @@ public class GenreTest {
             .containsAll(expectedCategories);
     }
 
+    @Test
+    void givenAValidEmptyCategoriesGenre_whenCallsAddCategories_thenReturnOk() {
+        // Arrange - Given
+        final var expectedName = "Ação";
+        final var expectedIsActive = true;
 
+        final CategoryID seriesID = CategoryID.unique();
+        final CategoryID moviesID = CategoryID.unique();
+        final List<CategoryID> expectedCategories = List.of(seriesID, moviesID);
+        final var expectedCategoriesCount = 2;
+
+        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
+        final var expectedId = actualGenre.getId();
+        final var expectedCreatedAt = actualGenre.getCreatedAt();
+        final var expectedUpdatedAt = actualGenre.getUpdatedAt();
+
+        assertThatNoException().isThrownBy(() -> actualGenre.validate(new ThrowsValidationHandler()));
+        assertThat(actualGenre.getCategories()).hasSize(0);
+
+        // When - Then
+        actualGenre.addCategories(expectedCategories);
+
+        // Assert - Then
+        assertThat(actualGenre.getId()).isEqualTo(expectedId);
+        assertThat(actualGenre.getCreatedAt()).isEqualTo(expectedCreatedAt);
+        assertThat(actualGenre.getUpdatedAt()).isAfter(expectedUpdatedAt);
+        assertThat(actualGenre.getDeletedAt()).isNull();
+        assertThat(actualGenre.getName()).isEqualTo(expectedName);
+        assertThat(actualGenre.isActive()).isTrue();
+        assertThat(actualGenre.getCategories())
+            .hasSize(expectedCategoriesCount)
+            .containsAll(expectedCategories);
+    }
+
+    @Test
+    void givenAValidEmptyCategoriesGenre_whenCallsAddCategoriesWithEmptyList_thenReturnOk() {
+        // Arrange - Given
+        final var expectedName = "Ação";
+        final var expectedIsActive = true;
+
+        final var expectedCategories = List.<CategoryID>of();
+        final var expectedCategoriesCount = 0;
+
+        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
+        final var expectedId = actualGenre.getId();
+        final var expectedCreatedAt = actualGenre.getCreatedAt();
+        final var expectedUpdatedAt = actualGenre.getUpdatedAt();
+
+        assertThatNoException().isThrownBy(() -> actualGenre.validate(new ThrowsValidationHandler()));
+        assertThat(actualGenre.getCategories()).hasSize(0);
+
+        // When - Then
+        actualGenre.addCategories(expectedCategories);
+
+        // Assert - Then
+        assertThat(actualGenre.getId()).isEqualTo(expectedId);
+        assertThat(actualGenre.getCreatedAt()).isEqualTo(expectedCreatedAt);
+        assertThat(actualGenre.getUpdatedAt()).isEqualTo(expectedUpdatedAt);
+        assertThat(actualGenre.getDeletedAt()).isNull();
+        assertThat(actualGenre.getName()).isEqualTo(expectedName);
+        assertThat(actualGenre.isActive()).isTrue();
+        assertThat(actualGenre.getCategories())
+            .hasSize(expectedCategoriesCount)
+            .containsAll(expectedCategories);
+    }
 }
 
 

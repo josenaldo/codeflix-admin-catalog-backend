@@ -29,38 +29,28 @@ public record SearchQuery(
      * <p>
      * This constructor performs the following validations and transformations:
      * <ul>
-     *   <li>Ensures page number is positive, defaulting to {@link #FIRST_PAGE} if not</li>
-     *   <li>Ensures perPage is positive, defaulting to {@link #DEFAULT_PER_PAGE} if not</li>
+     *   <li>Ensures page number is positive, defaulting to {@link Pagination#FIRST_PAGE} if not</li>
+     *   <li>Ensures perPage is positive, defaulting to {@link Pagination#DEFAULT_PER_PAGE} if not</li>
      *   <li>Trims terms or sets to null if empty</li>
      *   <li>Validates and trims sort field, defaulting to {@link #DEFAULT_SORT} if invalid</li>
      *   <li>Validates and trims direction, defaulting to {@link #DEFAULT_DIRECTION} if invalid</li>
      * </ul>
      *
-     * @param page      the page number to request (will be set to {@link #FIRST_PAGE} if <= 0)
-     * @param perPage   number of items per page (will be set to {@link #DEFAULT_PER_PAGE} if <= 0)
+     * @param page      the page number to request (will be set to {@link Pagination#FIRST_PAGE} if < 0)
+     * @param perPage   number of items per page (will be set to {@link Pagination#DEFAULT_PER_PAGE} if <= 0)
      * @param terms     search terms to filter by (will be trimmed if not null)
      * @param sort      field name to sort by (will default to {@link #DEFAULT_SORT} if invalid)
      * @param direction sort direction (will default to {@link #DEFAULT_DIRECTION} if invalid)
      */
     public SearchQuery {
-        page = page > 0 ? page : FIRST_PAGE;
-        perPage = perPage > 0 ? perPage : DEFAULT_PER_PAGE;
+        page = Math.max(page, Pagination.FIRST_PAGE);
+        perPage = perPage > 0 ? perPage : Pagination.DEFAULT_PER_PAGE;
         terms = terms != null ? terms.trim() : null;
-        sort = sort != null && sort.trim().isEmpty() ? sort.trim() : DEFAULT_SORT;
-        direction = direction != null && direction.trim().isEmpty()
+        sort = sort != null && !sort.trim().isEmpty() ? sort.trim() : DEFAULT_SORT;
+        direction = direction != null && !direction.trim().isEmpty()
             ? direction.trim()
             : DEFAULT_DIRECTION;
     }
-
-    /**
-     * Represents the first page number.
-     */
-    public static final int FIRST_PAGE = 1;
-
-    /**
-     * Represents the default number of items per page.
-     */
-    public static final int DEFAULT_PER_PAGE = 10;
 
     /**
      * Represents the default attribute to sort the categories by.
@@ -82,8 +72,8 @@ public record SearchQuery(
      * <p>
      * This method returns a {@code SearchQuery} initialized with the following defaults:
      * <ul>
-     *   <li>page: {@link #FIRST_PAGE}</li>
-     *   <li>perPage: {@link #DEFAULT_PER_PAGE}</li>
+     *   <li>page: {@link Pagination#FIRST_PAGE}</li>
+     *   <li>perPage: {@link Pagination#DEFAULT_PER_PAGE}</li>
      *   <li>terms: {@link #EMPTY_TERM}</li>
      *   <li>sort: {@link #DEFAULT_SORT}</li>
      *   <li>direction: {@link #DEFAULT_DIRECTION}</li>
@@ -93,8 +83,8 @@ public record SearchQuery(
      */
     public static SearchQuery empty() {
         return new SearchQuery(
-            FIRST_PAGE,
-            DEFAULT_PER_PAGE,
+            Pagination.FIRST_PAGE,
+            Pagination.DEFAULT_PER_PAGE,
             EMPTY_TERM,
             DEFAULT_SORT,
             DEFAULT_DIRECTION

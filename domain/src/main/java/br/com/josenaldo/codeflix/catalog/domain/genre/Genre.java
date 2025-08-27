@@ -303,6 +303,27 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
     }
 
     /**
+     * Adds a list of categories to the current genre.
+     * <p>
+     * This method updates the associated categories by adding all provided {@link CategoryID}
+     * instances to the existing list. If the provided list of categories is {@code null}, the
+     * method does nothing and immediately returns the current instance.
+     *
+     * @param categories a list of {@link CategoryID} objects to associate with the genre. If
+     *                   {@code null}, no categories are added.
+     * @return the current {@link Genre} instance with the updated list of categories.
+     */
+    public Genre addCategories(final List<CategoryID> categories) {
+        if (categories == null || categories.isEmpty()) {
+            return this;
+        }
+
+        this.categories.addAll(categories);
+        this.touch();
+        return this;
+    }
+
+    /**
      * Removes a specified category from the list of categories associated with this {@code Genre}.
      * <p>
      * If the given {@link CategoryID} is {@code null}, the method does nothing and returns the
