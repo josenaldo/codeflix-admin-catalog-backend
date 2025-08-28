@@ -26,4 +26,7 @@ import br.com.josenaldo.codeflix.catalog.application.UseCase;
 public abstract class CreateGenreUseCase extends
     UseCase<CreateGenreCommand, CreateGenreOutput> {
 
+    public static final String GENRE_CREATION_ERROR = "Could not create aggregate Genre";
+
+    public static final String GENRE_CATEGORIES_NOT_FOUND = "Some categories could not be found";
 }
