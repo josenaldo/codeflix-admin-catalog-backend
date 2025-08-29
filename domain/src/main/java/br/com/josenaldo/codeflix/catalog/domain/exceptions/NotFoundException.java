@@ -4,6 +4,7 @@ import br.com.josenaldo.codeflix.catalog.domain.AggregateRoot;
 import br.com.josenaldo.codeflix.catalog.domain.Identifier;
 import br.com.josenaldo.codeflix.catalog.domain.validation.Error;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Represents a specialized domain exception indicating that a specific aggregate root was not
@@ -79,6 +80,51 @@ public class NotFoundException extends DomainException {
         final var anError = createMessage(anAggregate.getSimpleName(), id);
 
         return new NotFoundException(anError, List.of());
+    }
+
+    /**
+     * Creates a {@link Supplier} that, when invoked, supplies a {@link NotFoundException} for a
+     * given aggregate root class and its identifier.
+     * <p>
+     * This method is useful for deferred exception creation, typically in methods or APIs that
+     * require lazy evaluation of exceptions. The generated exception contains a standardized error
+     * message indicating that the specified aggregate root with the particular identifier could not
+     * be found.
+     *
+     * @param anAggregate The class of the aggregate root that was not found. Must not be
+     *                    {@code null}.
+     * @param anId        The identifier of the missing aggregate root. Must not be {@code null}.
+     * @return A {@link Supplier} that supplies a {@link NotFoundException} when invoked.
+     * @throws NullPointerException if either {@code anAggregate} or {@code anId} is {@code null}.
+     */
+    public static Supplier<NotFoundException> supplierOf(
+        final Class<? extends AggregateRoot<?>> anAggregate,
+        Identifier anId
+    ) {
+        return () -> NotFoundException.with(anAggregate, anId);
+    }
+
+    /**
+     * Creates a {@link Supplier} that, when invoked, supplies a {@link NotFoundException} for the
+     * specified aggregate root class and its identifier.
+     * <p>
+     * This method is particularly useful in scenarios where the exception creation needs to be
+     * deferred or lazily evaluated. It ensures that the generated exception instance contains a
+     * standardized error message indicating that the specified aggregate root with the given
+     * identifier could not be found.
+     *
+     * @param anAggregate The class of the aggregate root that was not found. Must not be
+     *                    {@code null}.
+     * @param anId        The identifier of the missing aggregate root. Must not be {@code null}.
+     * @return A {@link Supplier} that, when invoked, supplies a properly formatted
+     * {@link NotFoundException} indicating the missing aggregate root.
+     * @throws NullPointerException if either {@code anAggregate} or {@code anId} is {@code null}.
+     */
+    public static Supplier<NotFoundException> supplierOf(
+        final Class<? extends AggregateRoot<?>> anAggregate,
+        String anId
+    ) {
+        return () -> NotFoundException.with(anAggregate, anId);
     }
 
     /**

@@ -1,10 +1,9 @@
 package br.com.josenaldo.codeflix.catalog.application.category.update;
 
-import static br.com.josenaldo.codeflix.catalog.application.category.exceptions.CategoryExceptions.categoryNotFoundException;
-
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
+import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import io.vavr.API;
 import io.vavr.control.Either;
@@ -65,8 +64,9 @@ public class DefaultUpdateCategoryUseCase extends UpdateCategoryUseCase {
         final String description = command.description();
         final boolean isActive = command.isActive();
 
-        Category category = this.categoryGateway.findById(id)
-                                                .orElseThrow(categoryNotFoundException(id));
+        Category category = this.categoryGateway
+            .findById(id)
+            .orElseThrow(NotFoundException.supplierOf(Category.class, id));
 
         final var notification = Notification.create();
 
