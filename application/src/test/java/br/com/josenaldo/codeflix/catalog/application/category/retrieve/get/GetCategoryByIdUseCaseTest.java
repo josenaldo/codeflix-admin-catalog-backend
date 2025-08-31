@@ -3,28 +3,25 @@ package br.com.josenaldo.codeflix.catalog.application.category.retrieve.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import br.com.josenaldo.codeflix.catalog.application.UseCaseTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.NotFoundException;
+import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Get Category By Id Use Case Test
  */
-@ExtendWith(MockitoExtension.class)
-class GetCategoryByIdUseCaseTest {
+class GetCategoryByIdUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultGetCategoryByIdUseCase useCase;
@@ -32,9 +29,9 @@ class GetCategoryByIdUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    @BeforeEach
-    public void setup() {
-        reset(categoryGateway);
+    @Override
+    public List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     /**

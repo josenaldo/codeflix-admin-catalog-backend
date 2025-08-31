@@ -5,11 +5,11 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.argThat;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import br.com.josenaldo.codeflix.catalog.application.UseCaseTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
@@ -20,18 +20,14 @@ import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for the UpdateCategoryUseCase.
  */
-@ExtendWith(MockitoExtension.class)
-class UpdateCategoryUseCaseTest {
+class UpdateCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultUpdateCategoryUseCase useCase;
@@ -39,12 +35,9 @@ class UpdateCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    /**
-     * Resets the mock objects before each test.
-     */
-    @BeforeEach
-    void tearDown() {
-        reset(categoryGateway);
+    @Override
+    public List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     /**

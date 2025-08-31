@@ -3,27 +3,23 @@ package br.com.josenaldo.codeflix.catalog.application.category.retrieve.list;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
+import br.com.josenaldo.codeflix.catalog.application.UseCaseTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.Pagination;
 import br.com.josenaldo.codeflix.catalog.domain.pagination.SearchQuery;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * List Categories UseCase unit tests
  */
-@ExtendWith(MockitoExtension.class)
-class LIstCategoryUseCaseTest {
+class LIstCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultListCategoryUseCase useCase;
@@ -31,9 +27,9 @@ class LIstCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    @BeforeEach
-    public void setup() {
-        reset(categoryGateway);
+    @Override
+    public List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     /**

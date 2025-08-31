@@ -8,36 +8,31 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import br.com.josenaldo.codeflix.catalog.application.UseCaseTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.validation.handler.Notification;
 import io.vavr.control.Either;
+import java.util.List;
 import java.util.Objects;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for the CreateCategoryUseCase.
  */
-@ExtendWith(MockitoExtension.class)
-class CreateCategoryUseCaseTest {
 
+class CreateCategoryUseCaseTest extends UseCaseTest {
+    
     @InjectMocks
     private DefaultCreateCategoryUseCase useCase;
 
     @Mock
     private CategoryGateway categoryGateway;
 
-    /**
-     * Resets the mock objects before each test.
-     */
-    @BeforeEach
-    void tearDown() {
-        Mockito.reset(categoryGateway);
+    @Override
+    public List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     /**

@@ -5,23 +5,20 @@ import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import br.com.josenaldo.codeflix.catalog.application.UseCaseTest;
 import br.com.josenaldo.codeflix.catalog.domain.category.Category;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryGateway;
 import br.com.josenaldo.codeflix.catalog.domain.category.CategoryID;
 import br.com.josenaldo.codeflix.catalog.domain.exceptions.DomainException;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-class DeleteCategoryUseCaseTest {
+class DeleteCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultDeleteCategoryUseCase useCase;
@@ -29,14 +26,9 @@ class DeleteCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    /**
-     * Resets the category gateway mock before each test.
-     * <p>
-     * This ensures that previous interactions do not affect the outcome of subsequent tests.
-     */
-    @BeforeEach
-    public void setup() {
-        reset(categoryGateway);
+    @Override
+    public List<Object> getMocks() {
+        return List.of(categoryGateway);
     }
 
     /**
