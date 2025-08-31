@@ -200,7 +200,6 @@ public class CreateGenreUseCaseTest extends UseCaseTest {
     @Test
     void givenAnInvalidNullName_whenCallsCreateGenre_thenThrowsNotificationException() {
         // Arrange - Given
-        final String expectedName = null;
         final var expectedIsActive = true;
         final var expectedCategories = List.<CategoryID>of();
 
@@ -209,7 +208,7 @@ public class CreateGenreUseCaseTest extends UseCaseTest {
         final var expectedErrorCount = 1;
 
         CreateGenreCommand aCommand = CreateGenreCommand.with(
-            expectedName,
+            null,
             expectedIsActive,
             asString(expectedCategories)
         );
