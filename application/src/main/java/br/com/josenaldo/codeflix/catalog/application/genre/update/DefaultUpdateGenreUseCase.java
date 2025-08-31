@@ -64,11 +64,8 @@ public class DefaultUpdateGenreUseCase extends UpdateGenreUseCase {
         final CategoryGateway aCategoryGateway,
         final GenreGateway aGenreGateway
     ) {
-        categoryGateway = Objects.requireNonNull(
-            aCategoryGateway,
-            "categoryGateway must not be null"
-        );
-        genreGateway = Objects.requireNonNull(aGenreGateway, "genreGateway must not be null");
+        categoryGateway = Objects.requireNonNull(aCategoryGateway, CATEGORY_GATEWAY_NULL_ERROR);
+        genreGateway = Objects.requireNonNull(aGenreGateway, GENRE_GATEWAY_NULL_ERROR);
     }
 
     /**
@@ -110,7 +107,7 @@ public class DefaultUpdateGenreUseCase extends UpdateGenreUseCase {
         notification.validate(() -> aGenre.update(aName, isActive, categories));
 
         if (notification.hasErrors()) {
-            var errorMessage = "Could not update Aggregate Genre %s"
+            var errorMessage = UPDATE_GENRE_VALIDATION_ERROR_MESSAGE_TEMPLATE
                 .formatted(anId.getValue());
             throw new NotificationException(errorMessage, notification);
         }
@@ -170,13 +167,16 @@ public class DefaultUpdateGenreUseCase extends UpdateGenreUseCase {
         if (ids.size() != retrievedIds.size()) {
             final var missingIds = new ArrayList<>(ids);
             missingIds.removeAll(retrievedIds);
-            final var missingIdsMessage = missingIds.stream()
-                                                    .map(CategoryID::getValue)
-                                                    .collect(Collectors.joining(", "));
 
-            br.com.josenaldo.codeflix.catalog.domain.validation.Error missingIdsError = new Error(
-                "Some categories could not be found: %s".formatted(
-                    missingIdsMessage));
+            final var missingIdsMessage = missingIds
+                .stream()
+                .map(CategoryID::getValue)
+                .collect(Collectors.joining(", "));
+
+            final Error missingIdsError = new Error(
+                GENRE_CATEGORIES_NOT_FOUND_ERROR_TEMPLATE.formatted(missingIdsMessage)
+            );
+
             notification.append(missingIdsError);
         }
 

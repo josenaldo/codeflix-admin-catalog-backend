@@ -75,11 +75,8 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
         final CategoryGateway categoryGateway,
         final GenreGateway genreGateway
     ) {
-        this.categoryGateway = Objects.requireNonNull(
-            categoryGateway,
-            "categoryGateway must not be null"
-        );
-        this.genreGateway = Objects.requireNonNull(genreGateway, "genreGateway must not be null");
+        this.categoryGateway = Objects.requireNonNull(categoryGateway, CATEGORY_GATEWAY_NULL_ERROR);
+        this.genreGateway = Objects.requireNonNull(genreGateway, GENRE_GATEWAY_NULL_ERROR);
     }
 
     /**
@@ -115,7 +112,10 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
         final var aGenre = notification.validate(() -> Genre.newGenre(aName, isActive, categories));
 
         if (notification.hasErrors()) {
-            throw new NotificationException(GENRE_CREATION_ERROR, notification);
+            throw new NotificationException(
+                CREATE_GENRE_VALIDATION_ERROR_MESSAGE_TEMPLATE,
+                notification
+            );
         }
 
         return CreateGenreOutput.from(genreGateway.create(aGenre));
@@ -143,15 +143,21 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
         }
 
         final List<CategoryID> retrievedIds = categoryGateway.existsByIds(ids);
+
         if (ids.size() != retrievedIds.size()) {
             final var missingIds = new ArrayList<>(ids);
             missingIds.removeAll(retrievedIds);
-            final var missingIdsMessage = missingIds.stream()
-                                                    .map(CategoryID::getValue)
-                                                    .collect(Collectors.joining(", "));
 
-            Error missingIdsError = new Error("Some categories could not be found: %s".formatted(
-                missingIdsMessage));
+            final var missingIdsCsv
+                = missingIds
+                .stream()
+                .map(CategoryID::getValue)
+                .collect(Collectors.joining(", "));
+
+            final Error missingIdsError = new Error(
+                GENRE_CATEGORIES_NOT_FOUND_ERROR_TEMPLATE.formatted(missingIdsCsv)
+            );
+
             notification.append(missingIdsError);
         }
 
@@ -174,7 +180,7 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
      * @throws DomainException      if any string in the list is not a valid category identifier.
      */
     private List<CategoryID> toCategoryID(final List<String> categories) {
-        Objects.requireNonNull(categories, "categories must not be null");
+        Objects.requireNonNull(categories, CATEGORIES_NULL_ERROR_MESSAGE);
         return categories.stream().map(CategoryID::fromString).toList();
     }
 }

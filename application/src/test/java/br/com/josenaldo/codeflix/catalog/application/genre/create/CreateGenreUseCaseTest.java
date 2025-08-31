@@ -163,7 +163,7 @@ public class CreateGenreUseCaseTest {
         final var expectedIsActive = true;
         final var expectedCategories = List.<CategoryID>of();
 
-        final var expectedErrorMessage = CreateGenreUseCase.GENRE_CREATION_ERROR;
+        final var expectedErrorMessage = CreateGenreUseCase.CREATE_GENRE_VALIDATION_ERROR_MESSAGE_TEMPLATE;
         final var expectedDetailMessage = GenreValidator.EMPTY_NAME_ERROR;
         final var expectedErrorCount = 1;
 
@@ -201,7 +201,7 @@ public class CreateGenreUseCaseTest {
         final var expectedIsActive = true;
         final var expectedCategories = List.<CategoryID>of();
 
-        final var expectedErrorMessage = CreateGenreUseCase.GENRE_CREATION_ERROR;
+        final var expectedErrorMessage = CreateGenreUseCase.CREATE_GENRE_VALIDATION_ERROR_MESSAGE_TEMPLATE;
         final var expectedDetailMessage = GenreValidator.NULL_NAME_ERROR;
         final var expectedErrorCount = 1;
 
@@ -244,11 +244,10 @@ public class CreateGenreUseCaseTest {
             categoryID1, categoryID2
         );
 
-        final var expectedErrorMessage = CreateGenreUseCase.GENRE_CREATION_ERROR;
-        final var expectedDetailMessage = "%s: %s".formatted(
-            CreateGenreUseCase.GENRE_CATEGORIES_NOT_FOUND,
-            categoryID2.getValue()
-        );
+        final var expectedErrorMessage = CreateGenreUseCase
+            .CREATE_GENRE_VALIDATION_ERROR_MESSAGE_TEMPLATE;
+        final var expectedDetailMessage = CreateGenreUseCase
+            .GENRE_CATEGORIES_NOT_FOUND_ERROR_TEMPLATE.formatted(categoryID2.getValue());
         final var expectedErrorCount = 1;
 
         CreateGenreCommand aCommand = CreateGenreCommand.with(
@@ -292,11 +291,9 @@ public class CreateGenreUseCaseTest {
             categoryID1, categoryID2
         );
 
-        final var expectedErrorMessage = CreateGenreUseCase.GENRE_CREATION_ERROR;
-        final var expectedDetailMessage1 = "%s: %s".formatted(
-            CreateGenreUseCase.GENRE_CATEGORIES_NOT_FOUND,
-            categoryID2.getValue()
-        );
+        final var expectedErrorMessage = CreateGenreUseCase.CREATE_GENRE_VALIDATION_ERROR_MESSAGE_TEMPLATE;
+        final var expectedDetailMessage1 = CreateGenreUseCase
+            .GENRE_CATEGORIES_NOT_FOUND_ERROR_TEMPLATE.formatted(categoryID2.getValue());
         final var expectedDetailMessage2 = GenreValidator.EMPTY_NAME_ERROR;
         final var expectedErrorCount = 2;
 
