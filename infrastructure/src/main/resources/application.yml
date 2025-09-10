@@ -6,9 +6,11 @@ server:
     compression:
         # Enable HTTP response compression to reduce response size.
         enabled: true
-        # Comma-separated list of MIME types to compress. These types are commonly used for text and JSON responses.
+        # Comma-separated list of MIME types to compress. These types are commonly used for text
+        # and JSON responses.
         mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
-        # Minimum response size (in bytes) required to trigger compression. Responses smaller than 1024 bytes are not compressed.
+        # The minimum response size (in bytes) required to trigger compression. Responses smaller
+        # than 1024 bytes are not compressed.
         min-response-size: 1024
     undertow:
         threads:
@@ -23,6 +25,13 @@ server:
             # process multiple requests concurrently.
             worker: 16
 spring:
+    mvc:
+        problemdetails:
+            # Enable support for problem details format (RFC 9457).This means that error responses
+            # will be returned with the application/problem+json media type and contain structured
+            # information about the error, including fields like type, title, status, detail,
+            # and potentially instance.
+            enabled: true
     datasource:
         # JDBC driver class name for connecting to the database. Defaults to MySQL driver.
         driver-class-name: ${database.driver:com.mysql.cj.jdbc.Driver}
@@ -38,18 +47,21 @@ spring:
             # Maximum time (in milliseconds) that a client will wait for a connection from the pool.
             # A low value (250 ms) is used to quickly detect connection availability issues.
             connection-timeout: 250
-            # Maximum lifetime (in milliseconds) of a connection in the pool. Connections older than this are recycled.
+            # Maximum lifetime (in milliseconds) of a connection in the pool. Connections older
+            # than this are recycled.
             max-lifetime: 600000
             # Maximum number of connections in the pool to support high concurrency.
             maximum-pool-size: 20
             # Minimum number of idle connections maintained in the pool for immediate use.
             minimum-idle: 10
-            # Name of the connection pool, which helps in identifying the pool in logs and monitoring tools.
+            # Name of the connection pool, which helps in identifying the pool in logs and
+            # monitoring tools.
             pool-name: master
     jpa:
         # Specifies the database platform for Hibernate to generate compatible SQL syntax.
         database-platform: org.hibernate.dialect.MySQLDialect
-        # Disables the Open Session in View pattern to avoid performance and session management issues.
+        # Disables the Open Session in View pattern to avoid performance and session management
+        # issues.
         open-in-view: false
         # Enable logging of SQL statements for debugging purposes.
         show-sql: true
@@ -61,7 +73,8 @@ spring:
             "[hibernate-dialect]": org.hibernate.dialect.MySQLDialect
             # Enables generation of Hibernate statistics, which can be used for performance analysis.
             "[hibernate.hibernate.generate_statistics]": true
-            # Disables auto-commit in the Hibernate connection provider for controlled transaction management.
+            # Disables auto-commit in the Hibernate connection provider for controlled transaction
+            # management.
             "[hibernate.connection.provider_disables_autocommit]": true
             # Enables nullability checks for entity attributes.
             "[hibernate.check_nullability]": true

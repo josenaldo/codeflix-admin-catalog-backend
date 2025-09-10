@@ -50,44 +50,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-/**
- * Unit tests for the {@link CategoryApi} controller.
- * <p>
- * This test class ensures the proper behavior of the {@code CategoryApi} endpoints by simulating
- * HTTP requests and verifying the interactions with application service layers. It uses
- * {@code MockMvc} to simulate HTTP requests and JSON responses, enhancing the test coverage of the
- * API.
- * <p>
- * The primary goal is to validate the integration of the controller, serialization/deserialization
- * of request/response, and interactions with the service layer while ensuring the API adheres to
- * the expected behavior and contracts.
- * <p>
- * This class verifies:
- * <ul>
- *   <li>HTTP response statuses are as expected for valid/invalid inputs.</li>
- *   <li>Serialization of input and output objects.</li>
- *   <li>Correct delegation of tasks to the service layer.</li>
- *   <li>Structured and correct HTTP headers in responses.</li>
- * </ul>
- * <p>
- * Dependencies are mocked to focus on API and controller behavior without invoking actual service logic.
- *
- * @author Josenaldo de Oliveira Matos Filho
- */
 @ControllerTest(controllers = CategoryApi.class)
 class CategoryApiTest {
 
-    /**
-     * Provides the {@link MockMvc} instance for testing the application's controllers.
-     * <p>
-     * This variable is used to simulate HTTP requests and perform end-to-end tests of the
-     * controllers in the Spring MVC application. It facilitates the validation of controller
-     * behavior, including request handling, response processing, and integration with service
-     * layers.
-     * <p>
-     * The {@link Autowired} annotation ensures that this instance is automatically injected by the
-     * Spring framework during test initialization.
-     */
     @Autowired
     private MockMvc mvc;
 
@@ -109,24 +74,6 @@ class CategoryApiTest {
     @Autowired
     private ObjectMapper mapper;
 
-
-    /**
-     * Tests the behavior of the category creation API when a valid command is provided.
-     * <p>
-     * This method verifies that the API correctly processes a valid {@code CreateCategoryRequest},
-     * delegates to the use case, and returns the expected category ID in the response. It ensures
-     * the proper integration between the controller, service layer, and response behavior.
-     * <p>
-     * Specifically, it performs the following verifications:
-     * <ul>
-     *     <li>Checks that the HTTP response status is 201 Created.</li>
-     *     <li>Validates that the {@code Location} header in the response is correct.</li>
-     *     <li>Ensures that the use case is executed exactly once with the expected command inputs.</li>
-     * </ul>
-     *
-     * @throws Exception if any unexpected error occurs during the test execution, including errors
-     *                   related to JSON serialization or MockMvc simulation.
-     */
     @Test
     void givenAValidCommand_whenCallsCreateCategory_thenShouldReturnCategoryId() throws Exception {
         // Arrange - Given
@@ -190,15 +137,12 @@ class CategoryApiTest {
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors.[0].message", equalTo(expectedErrorMessage)));
 
-        verify(createCategoryUseCase, times(1)).execute(argThat(cmd ->
-                                                                    Objects.equals(null, cmd.name())
-                                                                        && Objects.equals(
-                                                                        expectedDescription,
-                                                                        cmd.description()
-                                                                    ) && Objects.equals(
-                                                                        expectedIsActive,
-                                                                        cmd.isActive()
-                                                                    )));
+        verify(createCategoryUseCase, times(1)).execute(argThat(
+            cmd ->
+                Objects.equals(null, cmd.name())
+                    && Objects.equals(expectedDescription, cmd.description())
+                    && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
     }
 
     @Test
@@ -223,19 +167,19 @@ class CategoryApiTest {
         // Assert - Then
         response.andExpect(status().isUnprocessableEntity())
                 .andExpect(header().string("Location", nullValue()))
-                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(header().string(
+                    "Content-Type",
+                    MediaType.APPLICATION_PROBLEM_JSON_VALUE
+                ))
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors.[0].message", equalTo(expectedErrorMessage)));
 
-        verify(createCategoryUseCase, times(1)).execute(argThat(cmd ->
-                                                                    Objects.equals(null, cmd.name())
-                                                                        && Objects.equals(
-                                                                        expectedDescription,
-                                                                        cmd.description()
-                                                                    ) && Objects.equals(
-                                                                        expectedIsActive,
-                                                                        cmd.isActive()
-                                                                    )));
+        verify(createCategoryUseCase, times(1)).execute(argThat(
+            cmd ->
+                Objects.equals(null, cmd.name())
+                    && Objects.equals(expectedDescription, cmd.description())
+                    && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
     }
 
     @Test
@@ -297,7 +241,7 @@ class CategoryApiTest {
         response.andExpect(status().isNotFound())
                 .andExpect(header().string("Location", nullValue()))
                 .andExpect(jsonPath("$.errors", hasSize(0)))
-                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+                .andExpect(jsonPath("$.detail", equalTo(expectedErrorMessage)));
     }
 
     @Test
@@ -371,7 +315,7 @@ class CategoryApiTest {
         response.andExpect(status().isNotFound())
                 .andExpect(header().string("Location", nullValue()))
                 .andExpect(jsonPath("$.errors", hasSize(0)))
-                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
+                .andExpect(jsonPath("$.detail", equalTo(expectedErrorMessage)));
     }
 
     @Test
