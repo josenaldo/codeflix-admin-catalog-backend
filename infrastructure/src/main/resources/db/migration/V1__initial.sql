@@ -1,4 +1,4 @@
-CREATE TABLE category
+CREATE TABLE categories
 (
     id         VARCHAR(26) NOT NULL PRIMARY KEY,
     created_at DATETIME(6)  NOT NULL,

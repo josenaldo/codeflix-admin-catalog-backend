@@ -21,7 +21,7 @@ import java.time.Instant;
  * @version 1.0
  */
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
 public class CategoryJpaEntity {
 
     /**
