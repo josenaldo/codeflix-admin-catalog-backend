@@ -73,25 +73,6 @@ val databaseDriver = "com.mysql.cj.jdbc.Driver"
 
 liquibase {
 
-//    activities.register("main") {
-//        this.arguments = mapOf(
-//            "changeLogFile" to changelogFile,
-//            "url" to databaseUrl,
-//            "username" to databaseUser,
-//            "password" to databasePassword,
-//            "classpath" to rootDir.toString(),
-//            "driver" to databaseDriver,
-//            "logLevel" to "info",
-//            "referenceUrl" to (
-//                "hibernate:spring:com.org.choosemysnooze" +
-//                    "?dialect=org.hibernate.dialect.M MySQLDialect" +
-//                    "&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy" +
-//                    "&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
-//                )
-//
-//        )
-//    }
-
     activities.register("main") {
         arguments = mapOf(
             "changelogFile" to changelogFile,
