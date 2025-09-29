@@ -1,7 +1,7 @@
 databaseChangeLog:
     -   changeSet:
             id: 0002-genres
-            author: ai-assistant
+            author: Josenaldo de Oliveira Matos Filho
             preConditions:
                 onFail: MARK_RAN
                 not:

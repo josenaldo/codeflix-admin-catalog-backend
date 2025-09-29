@@ -3,7 +3,7 @@ Codeflix Admin Catalog Backend – Development Guidelines
 Scope
 These notes capture project-specific information to speed up development, testing, and debugging of
 this codebase. They assume familiarity with Java, Gradle, Spring Boot, JPA/Hibernate,
-Testcontainers/Flyway, and layered architectures.
+Testcontainers/Liquibase, and layered architectures.
 
 Project overview
 
@@ -11,7 +11,7 @@ Project overview
 - Spring Boot app lives in infrastructure (main class:
   br.com.josenaldo.codeflix.catalog.infrastructure.Application). Web container uses Undertow instead
   of Tomcat.
-- Persistence: JPA/Hibernate. Migrations: Flyway (MySQL). H2 is used in some test scenarios.
+- Persistence: JPA/Hibernate. Migrations: Liquibase (MySQL). H2 is used in some test scenarios.
 - Testing: JUnit 5 with custom composed annotations to standardize integration, gateway, and E2E
   contexts.
 
@@ -55,15 +55,11 @@ Database and migrations
 
 - Local MySQL via Docker Compose: docker-compose up -d (service name: db, image: mysql:8.4). Ports
   map 33064->3306. Default DB: codeflix_adm_videos; user root/root.
-- Flyway is wired into the infrastructure module and the Gradle plugin is applied. Defaults are
-  pulled from env vars or fall back to the docker-compose host:
-    - FLYWAY_DB_URL (default jdbc:mysql://codeflix-admin-catalog-backend-db:
-      3306/codeflix_adm_videos)
-    - FLYWAY_DB_USER (default root)
-    - FLYWAY_DB_PASSWORD (default root)
-- Migrations: infrastructure/src/main/resources/db/migration (files include V1__initial.sql and
-  U1__initial.sql). Clean is enabled (cleanDisabled=false) to ease local resets. Exercise caution.
-
+- Liquibase is wired into the infrastructure. It uses the default configured Spring datasource
+- Migrations:
+    - master.yaml - main migration file.
+    - infrastructure/src/main/resources/config/liquibase/changes - migration files for each module.
+  
 Testing
 Test taxonomy
 
