@@ -1,5 +1,5 @@
 databaseChangeLog:
     -   include:
-            file: src/main/resources/config/liquibase/changes/0001-initial.yaml
+            file: config/liquibase/changes/0001-initial.yaml
     -   include:
-            file: src/main/resources/config/liquibase/changes/0002-create-genre-aggregate.yaml
+            file: config/liquibase/changes/0002-create-genre-aggregate.yaml

@@ -47,7 +47,7 @@ databaseChangeLog:
 
     -   changeSet:
             id: 0003-genres-categories
-            author: ai-assistant
+            author: Josenaldo de Oliveira Matos Filho
             preConditions:
                 onFail: MARK_RAN
                 not:
