@@ -1,0 +1,90 @@
+databaseChangeLog:
+    -   changeSet:
+            id: 0002-genres
+            author: ai-assistant
+            preConditions:
+                onFail: MARK_RAN
+                not:
+                    tableExists:
+                        tableName: genres
+            changes:
+                -   createTable:
+                        tableName: genres
+                        columns:
+                            -   column:
+                                    name: id
+                                    type: VARCHAR(26)
+                                    constraints:
+                                        primaryKey: true
+                                        nullable: false
+                            -   column:
+                                    name: created_at
+                                    type: DATETIME(6)
+                                    constraints:
+                                        nullable: false
+                            -   column:
+                                    name: updated_at
+                                    type: DATETIME(6)
+                                    constraints:
+                                        nullable: false
+                            -   column:
+                                    name: deleted_at
+                                    type: DATETIME(6)
+                            -   column:
+                                    name: name
+                                    type: VARCHAR(255)
+                                    constraints:
+                                        nullable: false
+                            -   column:
+                                    name: active
+                                    type: BOOLEAN
+                                    defaultValueBoolean: true
+                                    constraints:
+                                        nullable: false
+            rollback:
+                -   dropTable:
+                        tableName: genres
+
+    -   changeSet:
+            id: 0003-genres-categories
+            author: ai-assistant
+            preConditions:
+                onFail: MARK_RAN
+                not:
+                    tableExists:
+                        tableName: genres_categories
+            changes:
+                -   createTable:
+                        tableName: genres_categories
+                        columns:
+                            -   column:
+                                    name: genre_id
+                                    type: VARCHAR(26)
+                                    constraints:
+                                        nullable: false
+                            -   column:
+                                    name: category_id
+                                    type: VARCHAR(26)
+                                    constraints:
+                                        nullable: false
+                -   addUniqueConstraint:
+                        tableName: genres_categories
+                        columnNames: genre_id, category_id
+                        constraintName: idx_genre_category
+                -   addForeignKeyConstraint:
+                        baseTableName: genres_categories
+                        baseColumnNames: genre_id
+                        referencedTableName: genres
+                        referencedColumnNames: id
+                        onDelete: CASCADE
+                        constraintName: fk_genre_id
+                -   addForeignKeyConstraint:
+                        baseTableName: genres_categories
+                        baseColumnNames: category_id
+                        referencedTableName: categories
+                        referencedColumnNames: id
+                        onDelete: CASCADE
+                        constraintName: fk_category_id
+            rollback:
+                -   dropTable:
+                        tableName: genres_categories

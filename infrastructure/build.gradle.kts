@@ -2,9 +2,6 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath(libs.flyway.mysql)
-    }
 }
 
 plugins {
@@ -13,7 +10,6 @@ plugins {
 
     alias(libs.plugins.spring.boot.plugin)
     alias(libs.plugins.spring.dependency.management.plugin)
-    alias(libs.plugins.flyway.plugin)
 }
 
 group = "br.com.josenaldo.codeflix.infrastructure"
@@ -43,26 +39,15 @@ dependencies {
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.h2)
-    implementation(libs.flyway.mysql)
-    implementation(libs.flyway.gradle.plugin)
+    implementation(libs.liquibase.core)
     implementation(libs.springdoc.openapi.starter)
     implementation(libs.afterburner)
-
-    testImplementation(libs.flyway.core)
 
     testImplementation(libs.test.containers.core)
     testImplementation(libs.test.containers.mysql)
     testImplementation(libs.test.containers.junit)
 
     runtimeOnly(libs.mysql.connector.j)
-}
-
-flyway {
-    url = System.getenv("FLYWAY_DB_URL")
-        ?: "jdbc:mysql://codeflix-admin-catalog-backend-db:3306/codeflix_adm_videos"
-    user = System.getenv("FLYWAY_DB_USER") ?: "root"
-    password = System.getenv("FLYWAY_DB_PASSWORD") ?: "root"
-    cleanDisabled = false
 }
 
 tasks {

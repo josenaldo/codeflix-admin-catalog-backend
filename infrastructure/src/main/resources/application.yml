@@ -57,6 +57,7 @@ spring:
             # Name of the connection pool, which helps in identifying the pool in logs and
             # monitoring tools.
             pool-name: master
+
     jpa:
         # Specifies the database platform for Hibernate to generate compatible SQL syntax.
         database-platform: org.hibernate.dialect.MySQLDialect
@@ -78,3 +79,10 @@ spring:
             "[hibernate.connection.provider_disables_autocommit]": true
             # Enables nullability checks for entity attributes.
             "[hibernate.check_nullability]": true
+
+    liquibase:
+        enabled: true
+        change-log: classpath:config/liquibase/master.yaml
+        database-change-log-table: databasechangelog
+        database-change-log-lock-table: databasechangeloglock
+

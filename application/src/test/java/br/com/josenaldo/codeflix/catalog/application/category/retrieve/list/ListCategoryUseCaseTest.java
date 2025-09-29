@@ -19,7 +19,7 @@ import org.mockito.Mock;
 /**
  * List Categories UseCase unit tests
  */
-class LIstCategoryUseCaseTest extends UseCaseTest {
+class ListCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultListCategoryUseCase useCase;

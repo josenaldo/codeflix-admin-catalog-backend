@@ -1,20 +1,19 @@
 [versions]
-spring-boot = "3.4.3"
+spring-boot = "3.5.6"
 spring-dependency-management = "1.1.7"
-flyway = "10.20.1"
-mysql-connector-j = "9.1.0"
-h2 = "2.3.232"
+liquibase = "4.33.0"
+mysql-connector-j = "9.4.0"
+h2 = "2.4.240"
 ulid = "5.2.3"
-vavr = "0.10.6"
-mockito = "3.12.4"
-openapi = "2.8.9"
-afterburner="2.12.0"
+vavr = "0.10.7"
+mockito = "5.20.0"
+openapi = "2.8.13"
+afterburner = "2.20.0"
 testcontainers = "1.21.3"
 
 [plugins]
 spring-boot-plugin = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management-plugin = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
-flyway-plugin = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 
 [libraries]
 spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
@@ -25,14 +24,11 @@ spring-boot-starter-tomcat = { module = "org.springframework.boot:spring-boot-st
 spring-boot-starter-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "spring-boot" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 
-afterburner = { module = "com.fasterxml.jackson.module:jackson-module-afterburner", version.ref="afterburner" }
+afterburner = { module = "com.fasterxml.jackson.module:jackson-module-afterburner", version.ref = "afterburner" }
 
 mysql-connector-j = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-connector-j" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
-flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
-flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
-flyway-gradle-plugin = { module = "org.flywaydb.flyway:org.flywaydb.flyway.gradle.plugin", version.ref = "flyway" }
-
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
 ulid = { module = "com.github.f4b6a3:ulid-creator", version.ref = "ulid" }
 vavr = { module = "io.vavr:vavr", version.ref = "vavr" }
 
