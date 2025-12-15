@@ -1,17 +1,16 @@
-@file:Suppress("SpellCheckingInspection")
-
 plugins {
-	java
+    java
     alias(libs.plugins.spring.boot.plugin)
     alias(libs.plugins.spring.dependency.management.plugin)
 }
 
 group = "br.com.josenaldo.codeflix"
 version = "0.0.1-SNAPSHOT"
+description = "Codeflix Catalog Backend"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = JavaLanguageVersion.of(25)
 	}
 }
 

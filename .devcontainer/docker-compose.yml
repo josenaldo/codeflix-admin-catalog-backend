@@ -9,7 +9,7 @@ services:
     networks:
       - codeflix
     ports:
-        - "9090:9090"
+        - "9595:9595"
         - "8080:8080"
     depends_on:
       db:
