@@ -34,6 +34,14 @@ public interface GenreGateway {
     Genre create(Genre aGenre);
 
     /**
+     * Updates an existing {@link Genre} in the underlying data store.
+     *
+     * @param aGenre The aGenre object with updated information.
+     * @return The updated {@code Genre}, reflecting any changes persisted.
+     */
+    Genre update(Genre aGenre);
+
+    /**
      * Deletes the {@link Genre} identified by the given {@link GenreID} from the underlying data
      * store.
      *
@@ -48,14 +56,6 @@ public interface GenreGateway {
      * @return An {@link Optional} containing the {@code Genre} if found, or empty if not found.
      */
     Optional<Genre> findById(GenreID id);
-
-    /**
-     * Updates an existing {@link Genre} in the underlying data store.
-     *
-     * @param aGenre The aGenre object with updated information.
-     * @return The updated {@code Genre}, reflecting any changes persisted.
-     */
-    Genre update(Genre aGenre);
 
     /**
      * Retrieves a paginated list of {@link Genre} objects based on the provided search criteria.

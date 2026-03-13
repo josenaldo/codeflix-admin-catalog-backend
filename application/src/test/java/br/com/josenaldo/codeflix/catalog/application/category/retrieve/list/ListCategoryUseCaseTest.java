@@ -16,9 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-/**
- * List Categories UseCase unit tests
- */
 class ListCategoryUseCaseTest extends UseCaseTest {
 
     @InjectMocks
@@ -32,9 +29,6 @@ class ListCategoryUseCaseTest extends UseCaseTest {
         return List.of(categoryGateway);
     }
 
-    /**
-     * Given a valid query, when calls list categories, then return all categories
-     */
     @Test
     void givenAValidQuery_whenCallsListCategories_thenReturnCategories() {
         // Arrange - Given
@@ -88,9 +82,6 @@ class ListCategoryUseCaseTest extends UseCaseTest {
             .hasSize(expectedItemCount);
     }
 
-    /**
-     * Given a valid query with no results, when calls list categories, then return empty list
-     */
     @Test
     void givenAValidQueryWithNoResults_whenCallsListCategories_thenReturnEmptyList() {
         // Arrange - Given
@@ -116,7 +107,8 @@ class ListCategoryUseCaseTest extends UseCaseTest {
             List.of()
         );
 
-        Pagination<CategoryListOutput> expectedResult = expectedPagination.map(CategoryListOutput::from);
+        final Pagination<CategoryListOutput> expectedResult = expectedPagination.map(
+            CategoryListOutput::from);
 
         when(categoryGateway.findAll(query)).thenReturn(expectedPagination);
 
@@ -135,9 +127,6 @@ class ListCategoryUseCaseTest extends UseCaseTest {
             .hasSize(expectedItemCount);
     }
 
-    /**
-     * Given a valid query, when gateway throws exception, then throw exception
-     */
     @Test
     void givenAValidQuery_whenGatewayThrowsException_thenThrowException() {
         // Arrange - Given

@@ -165,7 +165,7 @@ public class Genre extends AggregateRoot<GenreID> implements Cloneable {
      * @param genre The genre to copy.
      * @return A new {@code Genre} instance.
      */
-    public Genre with(final Genre genre) {
+    public static Genre with(final Genre genre) {
         return with(
             genre.id,
             genre.createdAt,
